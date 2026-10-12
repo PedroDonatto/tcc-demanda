@@ -1,0 +1,83 @@
+# Sala de Situação: atualiza os dados todo mês e publica o site (GitHub Pages).
+# - Todo dia 20 (06h de Brasília) baixa os meses novos do DATASUS, treina de novo,
+#   gera a página e publica. Também dá pra rodar na mão: aba Actions > Run workflow.
+# - Quando alguém altera app/web no main, só republica a página.
+name: Sala de Situação
+
+on:
+  push:
+    branches: [main]
+    paths: ["app/web/**", ".github/workflows/sala.yml"]
+  schedule:
+    - cron: "0 9 20 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: sala
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Cache dos arquivos já baixados do DATASUS
+        uses: actions/cache@v4
+        with:
+          path: data/interim
+          key: datasus-${{ github.run_id }}
+          restore-keys: datasus-
+      - name: Pipeline completo
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -m src.ingest_sih
+          python -m src.ingest_cnes
+          python -m src.ingest_ibge
+          python -m src.build_dataset regiao
+          python -m src.train regiao 12
+          python -m src.prever 6 18
+          python -m src.experimentos
+          python -m src.exportar_web
+      - name: Guardar resultados no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add outputs app/web/index.html
+          git commit -m "Atualização automática dos dados e previsões" || echo "Sem mudanças"
+          git push
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/web
+
+  republicar:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/web
+
+  publicar:
+    needs: [atualizar, republicar]
+    if: always() && (needs.atualizar.result == 'success' || needs.republicar.result == 'success')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
