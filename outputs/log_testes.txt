@@ -1,0 +1,21 @@
+ok leitor DBF
+ok filtros SIH
+ok CNES
+ok sem vazamento (24 atributos)
+ok sem vazamento também para h=3
+  origem 2023-06 -> prevê 2023-07 (treino: 159 linhas) [1/6]
+  origem 2023-07 -> prevê 2023-08 (treino: 162 linhas) [2/6]
+  origem 2023-08 -> prevê 2023-09 (treino: 165 linhas) [3/6]
+  origem 2023-09 -> prevê 2023-10 (treino: 168 linhas) [4/6]
+  origem 2023-10 -> prevê 2023-11 (treino: 171 linhas) [5/6]
+  origem 2023-11 -> prevê 2023-12 (treino: 174 linhas) [6/6]
+         modelo   MAE   RMSE     R2  n  treino_s  inferencia_ms
+       LightGBM 4.812  6.064  0.531 18     0.069          3.806
+Sazonal_ingenuo 4.889  5.888  0.558 18       NaN            NaN
+   RandomForest 4.975  5.869  0.561 18     0.518         63.709
+Media_historica 5.223  6.893  0.394 18       NaN            NaN
+        XGBoost 5.245  6.056  0.532 18     0.308          5.691
+        Ingenuo 8.278 10.341 -0.363 18       NaN            NaN
+ok treino walk-forward + gráfico
+
+TODOS OS TESTES PASSARAM

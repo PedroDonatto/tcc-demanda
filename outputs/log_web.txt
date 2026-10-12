@@ -1,0 +1,2 @@
+Mapa IBGE: 645 municípios
+OK: C:\Users\pedro\Downloads\tcc-demanda\tcc-demanda\outputs\web_data.json (395 KB), 53 regiões, melhor modelo LightGBM

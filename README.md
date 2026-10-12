@@ -33,6 +33,8 @@ Ou etapa por etapa:
 | 3. IBGE | `python -m src.ingest_ibge` | `ibge_municipios`, `ibge_populacao` |
 | 4. Painel | `python -m src.build_dataset regiao` | `painel_regiao.parquet` |
 | 5. Modelos | `python -m src.train regiao 12` | `outputs/metricas_regiao.csv` + gráfico |
+| 6. Previsão 2026 | `python -m src.prever 6 18` | `previsao_total.csv`, `previsao_regiao.csv`, `grafico_previsao.png`, modelos em `models/` |
+| Dashboard | dois cliques em `abrir_dashboard.bat` (ou `streamlit run app/dashboard.py`) | abre no navegador |
 | Banco SQL | `python -m src.db "SELECT * FROM painel_regiao LIMIT 5"` | `data/tcc.duckdb` |
 
 Testes (sem internet): `python -m tests.test_pipeline`
@@ -61,6 +63,19 @@ Testes (sem internet): `python -m tests.test_pipeline`
   modelo é treinado do zero só com meses anteriores (h = 1).
   O teste `tests/test_pipeline.py` prova que alterar o futuro não muda nenhum
   atributo do passado.
+
+- **Previsão do futuro (estratégia direta):** um modelo por horizonte
+  (1 a 6 meses à frente). Para h meses à frente, todos os atributos são
+  deslocados em h−1 meses a mais, então nada depende de previsões anteriores.
+- **Margem de erro (faixa de 80%):** backtest com 18 origens (2024–2025):
+  treina até a origem, prevê h meses à frente e guarda o erro. Os quantis de
+  10% e 90% desses erros formam a faixa. Por região, o erro é padronizado pela
+  raiz da previsão (escala de contagem), para servir a regiões grandes e
+  pequenas. Se o modelo tiver viés, a faixa é alargada até conter a previsão.
+- **Validação com o real de 2026:** os arquivos do SIH vão até jun/2026, então
+  a previsão de 2026 (feita só com dados até dez/2025) é comparada com o que
+  aconteceu. Meses com menos de 3 competências posteriores ficam como
+  "parcial", porque AIHs atrasadas ainda podem chegar.
 
 ## Configurar
 

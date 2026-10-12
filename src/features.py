@@ -7,6 +7,11 @@ são calculadas sobre a série já deslocada: shift(1).rolling(w).
 
 Atributos de calendário (mês, ano) e o indicador de pandemia são conhecidos
 antecipadamente e podem usar o próprio mês t.
+
+Horizonte h (estratégia DIRETA): para prever h meses à frente, a origem é
+t-h. Todos os deslocamentos ganham +(h-1), de modo que "y_lag1" passa a ser
+o último valor observado na origem. Assim um mesmo conjunto de nomes de
+atributos serve para qualquer horizonte, sem previsões recursivas.
 """
 from __future__ import annotations
 
@@ -22,38 +27,44 @@ DEFASAGEM_POP = 12
 
 
 def criar_atributos(painel: pd.DataFrame, lags=LAGS, janelas=JANELAS,
-                    exogenas_lag=("int_ansiedade",)) -> pd.DataFrame:
+                    exogenas_lag=("int_ansiedade",), h: int = 1) -> pd.DataFrame:
+    if h < 1:
+        raise ValueError("h deve ser >= 1")
+    d = h - 1  # deslocamento extra por causa do horizonte
     df = painel.sort_values(["unidade", "mes"]).copy()
     g = df.groupby("unidade", sort=False)
 
-    # --- defasagens do alvo
+    # --- defasagens do alvo (relativas à origem t-h)
     for k in lags:
-        df[f"y_lag{k}"] = g["y"].shift(k)
+        df[f"y_lag{k}"] = g["y"].shift(k + d)
 
-    # --- janelas móveis e expansiva (sempre sobre o passado)
-    passado = g["y"].shift(1)
+    # --- janelas móveis e expansiva (sempre sobre o passado da origem)
+    passado = g["y"].shift(1 + d)
     gp = passado.groupby(df["unidade"], sort=False)
     for w in janelas:
         df[f"y_media{w}"] = gp.transform(lambda s, w=w: s.rolling(w).mean())
         df[f"y_dp{w}"] = gp.transform(lambda s, w=w: s.rolling(w).std())
     df["y_media_exp"] = gp.transform(lambda s: s.expanding().mean())
 
-    # --- diferenças disponíveis na origem t-1 (Equação 4 do texto)
+    # --- diferenças disponíveis na origem (Equação 4 do texto)
     df["y_diff1"] = df["y_lag1"] - df["y_lag2"]
-    df["y_diff12"] = df["y_lag1"] - g["y"].shift(13)
+    df["y_diff12"] = df["y_lag1"] - g["y"].shift(13 + d)
+
+    # --- baseline sazonal ingênuo: mesmo mês do ano anterior (h <= 12)
+    df["y_sazonal"] = g["y"].shift(12) if h <= 12 else np.nan
 
     # --- outras séries (multivariado), sempre defasadas
     for col in exogenas_lag:
         if col in df:
             for k in (1, 12):
-                df[f"{col}_lag{k}"] = g[col].shift(k)
+                df[f"{col}_lag{k}"] = g[col].shift(k + d)
     for col in ("leitos_sm_sus", "leitos_tot_sus"):
         if col in df:
-            df[f"{col}_lag{DEFASAGEM_LEITOS}"] = g[col].shift(DEFASAGEM_LEITOS)
+            df[f"{col}_lag{DEFASAGEM_LEITOS}"] = g[col].shift(DEFASAGEM_LEITOS + d)
     if "pop" in df:
-        df["pop_lag"] = g["pop"].shift(DEFASAGEM_POP)
+        df["pop_lag"] = g["pop"].shift(DEFASAGEM_POP + d)
 
-    # --- calendário (conhecido de antemão)
+    # --- calendário do mês-alvo (conhecido de antemão)
     mes = df["mes"].dt.month
     df["mes_sin"] = np.sin(2 * np.pi * (mes - 1) / 12)
     df["mes_cos"] = np.cos(2 * np.pi * (mes - 1) / 12)

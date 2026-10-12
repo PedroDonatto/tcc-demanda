@@ -8,3 +8,4 @@ data/*.duckdb
 data/*.duckdb.wal
 !**/.gitkeep
 *.part
+models/*.joblib

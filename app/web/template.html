@@ -1,0 +1,842 @@
+<meta charset="utf-8">
+<title>Sala de Situação Saúde Mental</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sala de controle hospitalar noturna. Cena 3D da ala no topo com HUD,
+   linha do tempo logo abaixo; depois mapa, desafio, "por dentro da IA" e tabela.
+   Visual escuro por escolha (monitores de UTI), tema único. */
+:root{
+  --noite:#0a1420;        /* fundo da sala */
+  --painel:#0f1d2c;       /* superfícies */
+  --painel-2:#14273a;
+  --linha:#22384d;        /* bordas e grades */
+  --texto:#e4edf5;
+  --texto-2:#93a8bb;
+  --monitor:#4fd1e8;      /* previsão / IA */
+  --monitor-fraco:rgba(79,209,232,.18);
+  --ambar:#f2b04c;        /* faixa de incerteza / atenção */
+  --ambar-fraco:rgba(242,176,76,.22);
+  --real:#c9a7ff;         /* dado real */
+  --alta:#ff7a6b;         /* aumento */
+  --queda:#5aa9ff;        /* queda */
+  --ok:#5fd39a;
+  --f-display:"Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --f-texto:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-dado:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --raio:10px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--noite);color:var(--texto)}
+body{font-family:var(--f-texto);font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;letter-spacing:.01em;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.45rem,2.6vw,1.9rem)}
+h3{font-size:1.05rem}
+p{margin:0}
+.olho{font-family:var(--f-dado);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--texto-2)}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--f-dado)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--monitor);outline-offset:2px}
+
+/* ---------- topo */
+.topo{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(10,20,32,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--linha)}
+.topo-in{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.marca{display:flex;align-items:center;gap:10px;margin-right:auto}
+.pulso{width:30px;height:18px}
+.marca b{font-family:var(--f-display);font-size:1.02rem;letter-spacing:.04em}
+.marca span{display:block;font-size:.72rem;color:var(--texto-2);font-family:var(--f-dado);letter-spacing:.06em}
+.ctrl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ctrl label{font-family:var(--f-dado);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--texto-2)}
+select{background:var(--painel-2);border:1px solid var(--linha);border-radius:8px;padding:6px 10px;max-width:240px}
+
+/* ---------- hero */
+.hero{padding-top:22px;display:grid;gap:14px}
+.hero-tit{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:8px 20px}
+.hero-tit h1{font-size:clamp(1.7rem,3.6vw,2.6rem);line-height:1.08}
+.hero-tit h1 em{font-style:normal;color:var(--monitor)}
+.hero-tit p{color:var(--texto-2);max-width:46ch}
+.palco{position:relative;border:1px solid var(--linha);border-radius:14px;overflow:hidden;background:radial-gradient(120% 90% at 30% 20%,#12263a 0%,var(--noite) 70%)}
+#cena{display:block;width:100%;height:clamp(340px,52vw,520px)}
+.hud{position:absolute;top:16px;right:16px;width:min(360px,calc(100% - 32px));background:rgba(12,24,37,.86);border:1px solid var(--linha);border-radius:12px;padding:16px 18px;display:grid;gap:10px;backdrop-filter:blur(6px)}
+.hud .grande{font-family:var(--f-display);font-size:2.7rem;line-height:1;font-weight:700}
+.hud .grande small{font-size:.95rem;font-weight:500;color:var(--texto-2);margin-left:6px}
+.hud .faixa{color:var(--ambar);font-family:var(--f-dado);font-size:.86rem}
+.hud .linha{display:flex;justify-content:space-between;gap:12px;border-top:1px dashed var(--linha);padding-top:8px;font-size:.9rem}
+.hud .linha span:first-child{color:var(--texto-2)}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-family:var(--f-dado);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid currentColor;width:fit-content}
+.chip.prev{color:var(--monitor)}
+.chip.hist{color:var(--texto-2)}
+.chip.real{color:var(--real)}
+.chip.fora{color:var(--alta)}
+.chip.dentro{color:var(--ok)}
+.barra-cap{height:8px;border-radius:99px;background:var(--painel-2);overflow:hidden;position:relative}
+.barra-cap i{position:absolute;inset:0 auto 0 0;background:var(--monitor);border-radius:99px}
+.barra-cap b{position:absolute;inset:0 auto 0 0;background:var(--ambar-fraco);border-radius:99px}
+.legenda-cena{position:absolute;left:16px;bottom:14px;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--texto-2);max-width:calc(100% - 32px)}
+.legenda-cena i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.escala{position:absolute;left:16px;top:16px;font-family:var(--f-dado);font-size:.74rem;color:var(--texto-2);background:rgba(12,24,37,.7);border:1px solid var(--linha);border-radius:8px;padding:6px 10px;max-width:calc(100% - 32px)}
+
+.tempo{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;background:var(--painel);border:1px solid var(--linha);border-radius:12px;padding:10px 14px}
+.play{width:44px;height:44px;border-radius:50%;border:1px solid var(--monitor);background:var(--monitor-fraco);color:var(--monitor);cursor:pointer;display:grid;place-items:center}
+.play svg{width:18px;height:18px}
+.trilho{position:relative;min-width:0}
+#sparkline{display:block;width:100%;height:74px;cursor:pointer}
+#cursor-mes{width:100%;margin:2px 0 0;accent-color:var(--monitor)}
+.tempo-rot{display:flex;justify-content:space-between;font-family:var(--f-dado);font-size:.7rem;color:var(--texto-2)}
+.como-ler{font-size:.88rem;color:var(--texto-2);border-left:2px solid var(--monitor);padding-left:12px;max-width:80ch}
+.como-ler b{color:var(--texto)}
+
+/* ---------- seções */
+section.bloco{margin-top:64px;display:grid;gap:18px}
+.cab{display:grid;gap:6px;max-width:70ch}
+.cab p{color:var(--texto-2)}
+.cartao{background:var(--painel);border:1px solid var(--linha);border-radius:var(--raio);padding:16px}
+.dois{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
+@media (max-width:860px){.dois{grid-template-columns:1fr}}
+
+/* mapa */
+.mapa-wrap{position:relative}
+#mapa svg{display:block;width:100%;height:auto}
+.reg{cursor:pointer;transition:opacity .15s}
+.reg:hover{opacity:.82}
+.reg.sel{stroke:var(--texto);stroke-width:2}
+.dica{position:absolute;pointer-events:none;background:var(--painel-2);border:1px solid var(--linha);border-radius:8px;padding:8px 10px;font-size:.82rem;max-width:240px;z-index:5}
+.seg{display:inline-flex;border:1px solid var(--linha);border-radius:9px;overflow:hidden;flex-wrap:wrap}
+.seg button{background:transparent;border:0;padding:7px 12px;cursor:pointer;color:var(--texto-2);font-size:.86rem}
+.seg button[aria-pressed="true"]{background:var(--painel-2);color:var(--texto)}
+.leg-mapa{display:flex;align-items:center;gap:8px;font-family:var(--f-dado);font-size:.72rem;color:var(--texto-2);flex-wrap:wrap}
+.leg-mapa .grad{height:10px;width:180px;max-width:50vw;border-radius:99px}
+.ranking{display:grid;gap:8px}
+.ranking li{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;cursor:pointer;padding:6px 8px;border-radius:8px}
+.ranking li:hover{background:var(--painel-2)}
+.ranking ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.ranking .v{font-family:var(--f-dado)}
+
+/* desafio */
+.arena{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px}
+@media (max-width:860px){.arena{grid-template-columns:1fr}}
+#graf-desafio{display:block;width:100%;height:260px}
+.palpite{display:grid;gap:10px}
+.palpite output{font-family:var(--f-display);font-size:2.2rem;font-weight:700;color:var(--real)}
+#palpite{width:100%;accent-color:var(--real)}
+.btn{border:1px solid var(--monitor);background:var(--monitor-fraco);color:var(--texto);padding:9px 16px;border-radius:9px;cursor:pointer;font-weight:600}
+.btn.sec{border-color:var(--linha);background:transparent}
+.btn:disabled{opacity:.45;cursor:default}
+.placar{display:flex;gap:12px;flex-wrap:wrap}
+.placar div{flex:1 1 90px;background:var(--painel-2);border-radius:9px;padding:8px 12px}
+.placar b{display:block;font-family:var(--f-display);font-size:1.6rem}
+.resultado{display:grid;gap:6px;font-size:.92rem}
+.resultado .r{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center}
+.resultado .r i{height:10px;border-radius:99px;display:block}
+.veredito{font-family:var(--f-display);font-size:1.15rem}
+
+/* IA */
+.pistas{display:grid;gap:8px}
+.pista{display:grid;grid-template-columns:minmax(0,1fr) 120px 48px;gap:10px;align-items:center;font-size:.9rem}
+.pista .t{height:8px;border-radius:99px;background:var(--painel-2);overflow:hidden}
+.pista .t i{display:block;height:100%;background:var(--monitor);border-radius:99px}
+#graf-placar{display:block;width:100%;height:280px}
+.destaques{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.destaques{grid-template-columns:1fr}}
+.destaque b{display:block;font-family:var(--f-display);font-size:2rem;line-height:1.1}
+.destaque p{color:var(--texto-2);font-size:.88rem}
+
+/* tabela */
+.tab-wrap{overflow-x:auto;border:1px solid var(--linha);border-radius:var(--raio)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:.88rem}
+th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--linha);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{font-family:var(--f-dado);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--texto-2);cursor:pointer;position:sticky;top:0;background:var(--painel)}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--painel-2)}
+td .sobe{color:var(--alta)} td .desce{color:var(--queda)}
+
+footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:var(--texto-2);font-size:.85rem;display:grid;gap:8px;max-width:90ch}
+@media (max-width:1040px){
+  .hud{position:static;width:auto;margin:0 12px 12px}
+  .legenda-cena{position:static;margin:12px 12px 8px}
+  .escala{top:10px;left:10px}
+}
+@media (max-width:640px){.hud .grande{font-size:2.2rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="topo">
+  <div class="topo-in">
+    <div class="marca">
+      <svg class="pulso" viewBox="0 0 30 18" aria-hidden="true"><polyline points="0,10 8,10 11,3 15,16 18,7 21,10 30,10" fill="none" stroke="var(--monitor)" stroke-width="2" stroke-linejoin="round"/></svg>
+      <div><b>SALA DE SITUAÇÃO</b><span>SAÚDE MENTAL · SP · SUS</span></div>
+    </div>
+    <div class="ctrl"><label for="sel-territorio">Território</label><select id="sel-territorio"></select></div>
+    <div class="ctrl"><label for="sel-modelo">Modelo de IA</label><select id="sel-modelo"></select></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" aria-labelledby="t-hero">
+    <div class="hero-tit">
+      <h1 id="t-hero">Quantas pessoas vão precisar de <em>internação por depressão e bipolaridade</em> no SUS de São Paulo?</h1>
+      <p>Arraste a linha do tempo. Cada leito aceso na ala virtual é ocupado por pacientes com transtornos de humor (CID F30–F39). Os leitos âmbar são a margem de segurança da previsão.</p>
+    </div>
+    <div class="palco">
+      <canvas id="cena" aria-label="Ala hospitalar virtual: leitos ocupados conforme a demanda do mês"></canvas>
+      <div class="escala" id="escala"></div>
+      <aside class="hud" id="hud" aria-live="polite"></aside>
+      <div class="legenda-cena">
+        <span><i style="background:var(--monitor)"></i>Leito ocupado (demanda prevista ou registrada)</span>
+        <span><i style="background:var(--ambar)"></i>Margem: leitos extras se vier no limite alto</span>
+      </div>
+    </div>
+    <div class="tempo">
+      <button class="play" id="play" aria-label="Reproduzir a linha do tempo"><svg viewBox="0 0 20 20"><path id="ico-play" d="M5 3l12 7-12 7z" fill="currentColor"/></svg></button>
+      <div class="trilho">
+        <canvas id="sparkline" aria-hidden="true"></canvas>
+        <label class="olho" for="cursor-mes" style="position:absolute;left:-9999px">Mês</label>
+        <input type="range" id="cursor-mes" min="0" max="137" step="1">
+        <div class="tempo-rot"><span>jan/2015</span><span id="rot-meio">histórico ◂ ▸ previsão</span><span>jun/2026</span></div>
+      </div>
+    </div>
+    <p class="como-ler"><b>Como ler:</b> até dez/2025 os números são o que aconteceu. De jan/2026 em diante, é o que a IA previu usando só dados até dez/2025. Depois comparamos com o real que o SUS já publicou: as bolinhas lilás no gráfico.</p>
+  </section>
+
+  <section class="bloco" id="mapa-sec" aria-labelledby="t-mapa">
+    <div class="cab">
+      <span class="olho">Mapa · 53 regiões do IBGE</span>
+      <h2 id="t-mapa">Onde a demanda deve crescer</h2>
+      <p>Clique numa região para ver a ala virtual, a previsão e o histórico dela. Vermelho: a IA espera mais internações nos próximos 6 meses do que a média de 2025. Azul: espera menos.</p>
+    </div>
+    <div class="seg" role="group" aria-label="Indicador do mapa">
+      <button data-ind="tend" aria-pressed="true">Tendência prevista</button>
+      <button data-ind="taxa" aria-pressed="false">Internações por 100 mil hab.</button>
+      <button data-ind="leitos" aria-pressed="false">Leitos de saúde mental</button>
+    </div>
+    <div class="dois">
+      <div class="cartao mapa-wrap"><div id="mapa"></div><div class="dica" id="dica" hidden></div><div class="leg-mapa" id="leg-mapa"></div></div>
+      <div class="cartao ranking" id="ranking"></div>
+    </div>
+  </section>
+
+  <section class="bloco" id="desafio" aria-labelledby="t-desafio">
+    <div class="cab">
+      <span class="olho">Teste na prática</span>
+      <h2 id="t-desafio">Você contra a IA</h2>
+      <p>Escolhemos uma região e um mês de 2025 que a IA nunca viu. Olhe os 12 meses anteriores e dê seu palpite. Depois revelamos o real, a previsão da IA e o chute "repetir o mês passado". É exatamente assim que os modelos foram testados.</p>
+    </div>
+    <div class="arena">
+      <div class="cartao">
+        <div class="olho" id="desafio-tit"></div>
+        <svg id="graf-desafio" role="img" aria-label="Últimos 12 meses da região do desafio"></svg>
+      </div>
+      <div class="cartao palpite">
+        <label for="palpite" class="olho">Seu palpite de internações</label>
+        <output id="palpite-out" for="palpite">0</output>
+        <input type="range" id="palpite" min="0" max="100" step="1">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="revelar">Revelar resultado</button>
+          <button class="btn sec" id="nova">Nova rodada</button>
+        </div>
+        <div class="resultado" id="resultado" aria-live="polite"></div>
+        <div class="placar"><div><span class="olho">Você</span><b id="pt-voce">0</b></div><div><span class="olho" id="pt-ia-rot">IA</span><b id="pt-ia">0</b></div><div><span class="olho">Empates</span><b id="pt-emp">0</b></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="ia" aria-labelledby="t-ia">
+    <div class="cab">
+      <span class="olho">Por dentro da IA</span>
+      <h2 id="t-ia">Como a IA chega no número, e quanto ela erra</h2>
+    </div>
+    <div class="destaques" id="destaques"></div>
+    <div class="dois">
+      <div class="cartao">
+        <h3>Erro médio conforme a distância da previsão</h3>
+        <p class="como-ler" style="margin:8px 0 6px"><b>Como ler:</b> quanto mais baixa a linha, menor o erro. Linhas pontilhadas são chutes simples. A IA precisa ficar abaixo delas para valer a pena.</p>
+        <svg id="graf-placar" role="img" aria-label="Erro percentual por horizonte e modelo"></svg>
+      </div>
+      <div class="cartao">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <h3>As pistas que a IA mais usa</h3>
+          <select id="sel-pistas" aria-label="Modelo das pistas"></select>
+        </div>
+        <p class="como-ler" style="margin:8px 0 12px"><b>Como ler:</b> quanto maior a barra, mais aquela informação pesa na decisão do modelo.</p>
+        <div class="pistas" id="pistas"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="tabela" aria-labelledby="t-tab">
+    <div class="cab">
+      <span class="olho">Todas as regiões</span>
+      <h2 id="t-tab">Previsão para o próximo mês, região por região</h2>
+      <p>Clique no título de uma coluna para ordenar e numa linha para abrir a região no topo.</p>
+    </div>
+    <div class="tab-wrap"><table id="tab"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <footer id="rodape"></footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script type="application/json" id="dados">__DADOS__</script>
+<script>
+(() => {
+"use strict";
+const D = JSON.parse(document.getElementById("dados").textContent);
+const css = getComputedStyle(document.documentElement);
+const C = n => css.getPropertyValue("--" + n).trim();
+const nf = new Intl.NumberFormat("pt-BR", {maximumFractionDigits: 0});
+const nf1 = new Intl.NumberFormat("pt-BR", {maximumFractionDigits: 1, minimumFractionDigits: 1});
+const fmt = v => v == null || isNaN(v) ? "—" : nf.format(Math.round(v));
+const MESES_NOME = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const rotMes = s => { const [a, m] = s.split("-"); return `${MESES_NOME[+m - 1]}/${a}`; };
+const diasNoMes = s => { const [a, m] = s.split("-").map(Number); return new Date(a, m, 0).getDate(); };
+const reduzir = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const TODOS_MESES = D.meses.concat(D.meses_prev);
+const NH = D.meses.length, NP = D.meses_prev.length;
+const NOME_MODELO = {RandomForest: "Random Forest", LightGBM: "LightGBM", XGBoost: "XGBoost",
+  Ensemble: "Combinação (RF + LightGBM)", Ingenuo: "Chute: repetir o mês anterior",
+  Sazonal_ingenuo: "Chute: repetir o mesmo mês do ano anterior", Media_historica: "Chute: média histórica"};
+const losEstado = D.total.los || 11;
+const entidades = [D.total].concat([...D.regioes].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
+const porId = Object.fromEntries(entidades.map(e => [e.id, e]));
+
+const estado = {id: "total", modelo: D.meta.melhor, idx: NH, tocando: false};
+
+/* ------------------------------------------------ séries por entidade */
+function serie(e, modelo) {
+  const p = e.prev[modelo];
+  return TODOS_MESES.map((m, i) => i < NH
+    ? {mes: m, v: e.y[i], tipo: "hist"}
+    : {mes: m, v: p.p[i - NH], lo: p.lo[i - NH], hi: p.hi[i - NH], tipo: "prev",
+       real: e.real26[i - NH], status: e.status26[i - NH]});
+}
+const los = e => e.los || losEstado;
+const leitosDemanda = (e, v, mes) => v * los(e) / diasNoMes(mes);
+
+/* ------------------------------------------------ seletores */
+const selT = document.getElementById("sel-territorio");
+entidades.forEach(e => selT.add(new Option(e.id === "total" ? "Estado de São Paulo (total)" : e.nome, e.id)));
+const selM = document.getElementById("sel-modelo");
+D.meta.modelos.forEach(m => selM.add(new Option(NOME_MODELO[m] + (m === D.meta.melhor ? " ★" : ""), m)));
+selM.value = estado.modelo;
+selT.addEventListener("change", () => selecionar(selT.value));
+selM.addEventListener("change", () => { estado.modelo = selM.value; cena.reescalar(); atualizarTudo(); });
+const cursor = document.getElementById("cursor-mes");
+cursor.max = TODOS_MESES.length - 1;
+cursor.value = estado.idx;
+cursor.addEventListener("input", () => { parar(); estado.idx = +cursor.value; atualizarMes(); });
+
+function selecionar(id) {
+  estado.id = id; selT.value = id;
+  cena.reescalar(); atualizarTudo();
+  document.querySelectorAll(".reg").forEach(p => p.classList.toggle("sel", p.dataset.id === id));
+}
+
+/* ------------------------------------------------ HUD */
+const hud = document.getElementById("hud");
+function atualizarHUD() {
+  const e = porId[estado.id], s = serie(e, estado.modelo)[estado.idx];
+  const mesAnt = estado.idx >= 12 ? serie(e, estado.modelo)[estado.idx - 12] : null;
+  const base = mesAnt ? (mesAnt.tipo === "hist" ? mesAnt.v : mesAnt.v) : null;
+  const vari = base ? (s.v / base - 1) * 100 : null;
+  const dia = s.v / diasNoMes(s.mes);
+  const ld = leitosDemanda(e, s.v, s.mes);
+  const cap = e.leitos_sm || 0;
+  let chips = s.tipo === "prev"
+    ? `<span class="chip prev">● Previsão da IA</span>`
+    : `<span class="chip hist">● Registrado no SUS</span>`;
+  let realLinha = "";
+  if (s.tipo === "prev" && s.real != null) {
+    const dentro = s.real >= s.lo && s.real <= s.hi;
+    if (s.status === "completo") {
+      chips += ` <span class="chip ${dentro ? "dentro" : "fora"}">${dentro ? "✓ real dentro da faixa" : "✕ real fora da faixa"}</span>`;
+      realLinha = `<div class="linha"><span>Real (já publicado)</span><b class="num" style="color:var(--real)">${fmt(s.real)}</b></div>`;
+    } else {
+      realLinha = `<div class="linha"><span>Real parcial (ainda chegando)</span><b class="num" style="color:var(--texto-2)">${fmt(s.real)}</b></div>`;
+    }
+  }
+  const pctCap = cap ? Math.min(100, ld / cap * 100) : 0;
+  const pctCapHi = cap && s.hi ? Math.min(100, leitosDemanda(e, s.hi, s.mes) / cap * 100) : pctCap;
+  hud.innerHTML = `
+    <div class="olho">${rotMes(s.mes)} · ${e.id === "total" ? "Estado de SP" : e.nome}</div>
+    <div>${chips}</div>
+    <div class="grande num">${fmt(s.v)}<small>internações</small></div>
+    ${s.tipo === "prev" ? `<div class="faixa">provável entre ${fmt(s.lo)} e ${fmt(s.hi)} (8 em 10 chances)</div>` : ""}
+    ${realLinha}
+    <div class="linha"><span>Por dia</span><b class="num">≈ ${nf1.format(dia)}</b></div>
+    <div class="linha"><span>Leitos ocupados em média</span><b class="num">≈ ${fmt(ld)}</b></div>
+    ${vari != null ? `<div class="linha"><span>vs ${rotMes(mesAnt.mes)}</span><b class="num" style="color:${vari >= 0 ? "var(--alta)" : "var(--queda)"}">${vari >= 0 ? "+" : ""}${nf1.format(vari)}%</b></div>` : ""}
+    <div class="linha" style="display:grid;gap:6px">
+      ${cap ? `<span>Uso dos ${fmt(cap)} leitos de saúde mental SUS da região: <b style="color:var(--texto)">${nf1.format(ld / cap * 100)}%</b></span>
+      <div class="barra-cap"><b style="width:${pctCapHi}%"></b><i style="width:${pctCap}%"></i></div>`
+      : `<span>A região não tem leitos de saúde mental SUS cadastrados: os pacientes são internados em outras regiões.</span>`}
+    </div>`;
+}
+
+/* ------------------------------------------------ CENA 3D */
+const cena = (() => {
+  const canvas = document.getElementById("cena");
+  const ok = (() => { try { return !!window.THREE && !!(canvas.getContext("webgl") || canvas.getContext("experimental-webgl")); } catch (e) { return false; } })();
+  if (!ok) return {reescalar() {}, definir() {}, ok: false};
+  const T = THREE;
+  const renderer = new T.WebGLRenderer({canvas, antialias: true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setClearColor(new T.Color(C("noite")), 1);
+  const scene = new T.Scene();
+  scene.fog = new T.Fog(new T.Color(C("noite")), 40, 90);
+  const cam = new T.OrthographicCamera(-20, 20, 12, -12, 0.1, 200);
+  scene.add(new T.HemisphereLight(0xbfdcff, 0x0a1420, 0.75));
+  const dir = new T.DirectionalLight(0xffffff, 0.55); dir.position.set(10, 20, 8); scene.add(dir);
+
+  const COLS = 12, ROWS = 8, MAX = COLS * ROWS, PX = 2.6, PZ = 3.4;
+  const W = COLS * PX + 4, Dp = ROWS * PZ + 6;
+  // piso e paredes (diorama em corte)
+  const piso = new T.Mesh(new T.BoxGeometry(W, 0.4, Dp), new T.MeshStandardMaterial({color: 0x13283b, roughness: .9}));
+  piso.position.y = -0.2; scene.add(piso);
+  const grade = new T.GridHelper(Math.max(W, Dp), Math.round(Math.max(W, Dp) / 1.3), 0x22384d, 0x1a2f43);
+  grade.position.y = 0.01; scene.add(grade);
+  const matParede = new T.MeshStandardMaterial({color: 0x1b3348, roughness: .8});
+  const paredeA = new T.Mesh(new T.BoxGeometry(W, 3.2, 0.3), matParede); paredeA.position.set(0, 1.6, -Dp / 2); scene.add(paredeA);
+  const paredeB1 = new T.Mesh(new T.BoxGeometry(0.3, 3.2, Dp * 0.62), matParede); paredeB1.position.set(-W / 2, 1.6, -Dp * 0.19); scene.add(paredeB1);
+  const paredeB2 = new T.Mesh(new T.BoxGeometry(0.3, 3.2, Dp * 0.22), matParede); paredeB2.position.set(-W / 2, 1.6, Dp * 0.39); scene.add(paredeB2);
+  // faixas de luz na parede (monitores)
+  for (let i = 0; i < 6; i++) {
+    const m = new T.Mesh(new T.PlaneGeometry(2.2, 0.9), new T.MeshBasicMaterial({color: new T.Color(C("monitor")), transparent: true, opacity: .35}));
+    m.position.set(-W / 2 + 4 + i * (W - 8) / 5, 2.1, -Dp / 2 + 0.17); scene.add(m);
+  }
+  const porta = new T.Vector3(-W / 2 - 1, 0, Dp * 0.22);
+
+  const geoCama = new T.BoxGeometry(1.5, 0.35, 2.5);
+  const geoColchao = new T.BoxGeometry(1.35, 0.22, 2.3);
+  const geoTravesseiro = new T.BoxGeometry(1.0, 0.16, 0.5);
+  const geoCorpo = new T.CylinderGeometry(0.38, 0.38, 1.4, 12); geoCorpo.rotateX(Math.PI / 2);
+  const geoCabeca = new T.SphereGeometry(0.3, 14, 10);
+  const mk = (geo, mat) => { const im = new T.InstancedMesh(geo, mat, MAX); im.instanceMatrix.setUsage(T.DynamicDrawUsage); scene.add(im); return im; };
+  const camas = mk(geoCama, new T.MeshStandardMaterial({color: 0x9fb4c7, roughness: .6, metalness: .2}));
+  const colchoes = mk(geoColchao, new T.MeshStandardMaterial({color: new T.Color(C("monitor")), emissive: new T.Color(C("monitor")), emissiveIntensity: .35}));
+  const fantasmas = mk(geoColchao, new T.MeshStandardMaterial({color: new T.Color(C("ambar")), emissive: new T.Color(C("ambar")), emissiveIntensity: .45, transparent: true, opacity: .55}));
+  const travs = mk(geoTravesseiro, new T.MeshStandardMaterial({color: 0xe8eef4}));
+  const corpos = mk(geoCorpo, new T.MeshStandardMaterial({color: 0x5b7fa6, roughness: .7}));
+  const cabecas = mk(geoCabeca, new T.MeshStandardMaterial({color: 0xd9b89c, roughness: .8}));
+  const marcas = new T.InstancedMesh(new T.PlaneGeometry(1.7, 2.7), new T.MeshBasicMaterial({color: 0x22384d, transparent: true, opacity: .55}), MAX);
+  scene.add(marcas);
+
+  const pos = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++)
+    pos.push(new T.Vector3(-W / 2 + 3 + c * PX, 0, -Dp / 2 + 3 + r * PZ));
+  // ordem de preenchimento: do fundo para a frente, do centro para as bordas
+  const ordem = pos.map((p, i) => i).sort((a, b) => (pos[a].z - pos[b].z) || (Math.abs(pos[a].x) - Math.abs(pos[b].x)));
+  const tam = new Float32Array(MAX), alvoOc = new Float32Array(MAX), alvoFa = new Float32Array(MAX), tamFa = new Float32Array(MAX);
+  const dummy = new T.Object3D();
+  ordem.forEach((k, i) => {
+    dummy.position.copy(pos[k]); dummy.position.y = 0.02; dummy.rotation.set(-Math.PI / 2, 0, 0); dummy.scale.set(1, 1, 1);
+    dummy.updateMatrix(); marcas.setMatrixAt(i, dummy.matrix);
+  });
+  marcas.instanceMatrix.needsUpdate = true;
+
+  let escala = 1;
+  const NICE = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200];
+  function reescalar() {
+    const e = porId[estado.id];
+    let mx = 1;
+    serie(e, estado.modelo).forEach(s => { mx = Math.max(mx, leitosDemanda(e, s.hi ?? s.v, s.mes)); });
+    escala = NICE.find(n => mx / n <= MAX) || Math.ceil(mx / MAX);
+    document.getElementById("escala").textContent = escala === 1
+      ? "1 leito no desenho = 1 leito real"
+      : `1 leito no desenho = ${escala} leitos reais`;
+  }
+  let nOc = 0, nFa = 0;
+  function definir(oc, fa) {
+    nOc = Math.min(MAX, Math.round(oc / escala));
+    nFa = Math.min(MAX - nOc, Math.max(0, Math.round(fa / escala)));
+    for (let i = 0; i < MAX; i++) { alvoOc[i] = i < nOc ? 1 : 0; alvoFa[i] = i >= nOc && i < nOc + nFa ? 1 : 0; }
+  }
+
+  // pacientes chegando pela porta
+  const andantes = [];
+  const geoAnd = new T.CylinderGeometry(0.28, 0.28, 1.1, 10);
+  const matAnd = new T.MeshStandardMaterial({color: new T.Color(C("real")), emissive: new T.Color(C("real")), emissiveIntensity: .3});
+  let acum = 0;
+  function chegadas(dt) {
+    if (reduzir || nOc === 0) return;
+    const e = porId[estado.id], s = serie(e, estado.modelo)[estado.idx];
+    const porDia = s.v / diasNoMes(s.mes);
+    acum += dt * Math.min(3, 0.25 + porDia / 20);
+    while (acum > 1 && andantes.length < 14) {
+      acum -= 1;
+      const alvo = ordem[Math.floor(Math.random() * nOc)];
+      const m = new T.Mesh(geoAnd, matAnd); m.position.copy(porta); m.position.y = 0.55; scene.add(m);
+      andantes.push({m, alvo: pos[alvo].clone(), t: 0});
+    }
+  }
+
+  function redimensionar() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    renderer.setSize(w, h, false);
+    const asp = w / h, vis = Math.max(Dp * 0.95, (W * 0.78) / asp);
+    cam.left = -vis * asp / 2; cam.right = vis * asp / 2; cam.top = vis / 2; cam.bottom = -vis / 2;
+    cam.updateProjectionMatrix();
+  }
+  addEventListener("resize", redimensionar);
+  redimensionar();
+
+  let t0 = performance.now(), ang = 0;
+  function quadro(t) {
+    const dt = Math.min(0.05, (t - t0) / 1000); t0 = t;
+    if (!reduzir) ang += dt * 0.06;
+    const raio = 46, a = Math.PI / 4 + Math.sin(ang) * 0.35;
+    cam.position.set(Math.sin(a) * raio, 34, Math.cos(a) * raio + (innerWidth < 640 ? 0 : 0));
+    cam.lookAt(innerWidth > 1040 ? 6 : 0, 0, 2);
+    const k = reduzir ? 1 : Math.min(1, dt * 7);
+    for (let i = 0; i < MAX; i++) {
+      tam[i] += (Math.max(alvoOc[i], alvoFa[i]) - tam[i]) * k;
+      tamFa[i] += (alvoFa[i] - tamFa[i]) * k;
+      const p = pos[ordem[i]], s = Math.max(0.0001, tam[i]);
+      const so = Math.max(0.0001, Math.min(tam[i], 1 - tamFa[i]));
+      dummy.rotation.set(0, 0, 0);
+      dummy.position.set(p.x, 0.18 * s, p.z); dummy.scale.set(s, s, s); dummy.updateMatrix(); camas.setMatrixAt(i, dummy.matrix);
+      dummy.position.set(p.x, 0.45 * s, p.z); dummy.scale.set(so, so, so); dummy.updateMatrix(); colchoes.setMatrixAt(i, dummy.matrix);
+      const sf = Math.max(0.0001, tamFa[i]);
+      dummy.scale.set(sf, sf, sf); dummy.updateMatrix(); fantasmas.setMatrixAt(i, dummy.matrix);
+      dummy.position.set(p.x, 0.62 * s, p.z - 0.85); dummy.scale.set(s, s, s); dummy.updateMatrix(); travs.setMatrixAt(i, dummy.matrix);
+      dummy.position.set(p.x, 0.78 * so, p.z + 0.25); dummy.scale.set(so, so, so); dummy.updateMatrix(); corpos.setMatrixAt(i, dummy.matrix);
+      dummy.position.set(p.x, 0.86 * so, p.z - 0.72); dummy.updateMatrix(); cabecas.setMatrixAt(i, dummy.matrix);
+    }
+    [camas, colchoes, fantasmas, travs, corpos, cabecas].forEach(m => m.instanceMatrix.needsUpdate = true);
+    chegadas(dt);
+    for (let i = andantes.length - 1; i >= 0; i--) {
+      const a = andantes[i]; a.t += dt / 3.2;
+      const meio = new T.Vector3(a.alvo.x, 0.55, porta.z);
+      if (a.t < 0.45) a.m.position.lerpVectors(new T.Vector3(porta.x, .55, porta.z), meio, a.t / 0.45);
+      else a.m.position.lerpVectors(meio, new T.Vector3(a.alvo.x, .55, a.alvo.z + 1.6), Math.min(1, (a.t - 0.45) / 0.55));
+      a.m.scale.setScalar(a.t > 0.9 ? Math.max(0.01, (1 - a.t) * 10) : 1);
+      if (a.t >= 1) { scene.remove(a.m); andantes.splice(i, 1); }
+    }
+    renderer.render(scene, cam);
+    requestAnimationFrame(quadro);
+  }
+  requestAnimationFrame(quadro);
+  return {reescalar, definir, ok: true};
+})();
+
+/* ------------------------------------------------ linha do tempo (sparkline) */
+const spk = document.getElementById("sparkline");
+function desenharSparkline() {
+  const e = porId[estado.id], s = serie(e, estado.modelo);
+  const dpr = Math.min(devicePixelRatio, 2), w = spk.clientWidth, h = spk.clientHeight;
+  spk.width = w * dpr; spk.height = h * dpr;
+  const g = spk.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  const vals = s.flatMap(p => [p.v, p.hi, p.real].filter(v => v != null));
+  const mx = Math.max(...vals) * 1.05, mn = 0;
+  const x = i => 4 + i * (w - 8) / (s.length - 1), y = v => h - 6 - (v - mn) / (mx - mn) * (h - 12);
+  // zona da previsão
+  g.fillStyle = "rgba(79,209,232,.07)"; g.fillRect(x(NH - 0.5), 0, w - x(NH - 0.5), h);
+  // faixa
+  g.beginPath(); s.slice(NH).forEach((p, i) => g.lineTo(x(NH + i), y(p.hi)));
+  s.slice(NH).reverse().forEach((p, i) => g.lineTo(x(s.length - 1 - i), y(p.lo)));
+  g.closePath(); g.fillStyle = C("ambar-fraco"); g.fill();
+  // histórico
+  g.beginPath(); s.slice(0, NH).forEach((p, i) => i ? g.lineTo(x(i), y(p.v)) : g.moveTo(x(i), y(p.v)));
+  g.strokeStyle = C("texto-2"); g.lineWidth = 1.4; g.stroke();
+  // previsão
+  g.beginPath(); g.moveTo(x(NH - 1), y(s[NH - 1].v)); s.slice(NH).forEach((p, i) => g.lineTo(x(NH + i), y(p.v)));
+  g.strokeStyle = C("monitor"); g.lineWidth = 2; g.setLineDash([4, 3]); g.stroke(); g.setLineDash([]);
+  // real
+  s.slice(NH).forEach((p, i) => { if (p.real == null) return;
+    g.beginPath(); g.arc(x(NH + i), y(p.real), 3.2, 0, 7);
+    if (p.status === "completo") { g.fillStyle = C("real"); g.fill(); } else { g.strokeStyle = C("real"); g.lineWidth = 1.2; g.stroke(); } });
+  // cursor
+  g.strokeStyle = C("texto"); g.lineWidth = 1; g.beginPath(); g.moveTo(x(estado.idx), 0); g.lineTo(x(estado.idx), h); g.stroke();
+  g.beginPath(); g.arc(x(estado.idx), y(s[estado.idx].v), 4.5, 0, 7); g.fillStyle = C("texto"); g.fill();
+}
+spk.addEventListener("pointerdown", ev => {
+  const mover = e2 => { const r = spk.getBoundingClientRect();
+    estado.idx = Math.max(0, Math.min(TODOS_MESES.length - 1, Math.round((e2.clientX - r.left - 4) / (r.width - 8) * (TODOS_MESES.length - 1))));
+    cursor.value = estado.idx; atualizarMes(); };
+  parar(); mover(ev); spk.setPointerCapture(ev.pointerId);
+  spk.onpointermove = mover; spk.onpointerup = () => { spk.onpointermove = null; };
+});
+addEventListener("resize", desenharSparkline);
+
+/* play */
+let timer = null;
+const btnPlay = document.getElementById("play");
+function parar() { clearInterval(timer); timer = null; document.getElementById("ico-play").setAttribute("d", "M5 3l12 7-12 7z"); btnPlay.setAttribute("aria-label", "Reproduzir a linha do tempo"); }
+btnPlay.addEventListener("click", () => {
+  if (timer) return parar();
+  if (estado.idx >= TODOS_MESES.length - 1) estado.idx = Math.max(0, NH - 36);
+  document.getElementById("ico-play").setAttribute("d", "M5 3h4v14H5zM11 3h4v14h-4z");
+  btnPlay.setAttribute("aria-label", "Pausar");
+  timer = setInterval(() => {
+    estado.idx++; cursor.value = estado.idx; atualizarMes();
+    if (estado.idx >= TODOS_MESES.length - 1) parar();
+  }, 420);
+});
+
+function atualizarMes() {
+  const e = porId[estado.id], s = serie(e, estado.modelo)[estado.idx];
+  const oc = leitosDemanda(e, s.v, s.mes);
+  const fa = s.tipo === "prev" ? leitosDemanda(e, s.hi, s.mes) - oc : 0;
+  cena.definir(oc, fa);
+  atualizarHUD(); desenharSparkline();
+}
+
+/* ------------------------------------------------ MAPA */
+const indicadores = {
+  tend: {rot: "Variação prevista (próx. 6 meses vs ano anterior)", fmt: v => (v >= 0 ? "+" : "") + nf1.format(v) + "%"},
+  taxa: {rot: "Internações por 100 mil hab. (últimos 12 meses)", fmt: v => nf1.format(v)},
+  leitos: {rot: "Leitos de saúde mental SUS", fmt: v => fmt(v)},
+};
+let indAtual = "tend";
+const pequena = e => e.id !== "total" && e.y.slice(-12).reduce((a, b) => a + b, 0) / 12 < 5;
+function valorInd(e, ind) {
+  if (ind === "tend") {
+    if (pequena(e)) return null;
+    const p = e.prev[estado.modelo].p.reduce((a, b) => a + b, 0) / NP;
+    const ant = e.y.slice(NH - 12).reduce((a, b) => a + b, 0) / 12;
+    return ant ? (p / ant - 1) * 100 : null;
+  }
+  if (ind === "taxa") { const s = e.y.slice(-12).reduce((a, b) => a + b, 0); return e.pop ? s / e.pop * 1e5 : null; }
+  return e.leitos_sm || 0;
+}
+const mapa = (() => {
+  if (!D.geo || !D.geo.features || !window.d3 || !window.topojson) {
+    document.getElementById("mapa").innerHTML = "<p>Mapa indisponível.</p>"; return {pintar() {}};
+  }
+  const topo = topojson.topology({m: D.geo});
+  const geoms = topo.objects.m.geometries;
+  const regDe = g => D.mun_regiao[g.properties.codarea];
+  const grupos = d3.group(geoms, regDe);
+  const rebobinar = f => {   // IBGE usa o sentido de anel do GeoJSON; o d3 espera o oposto
+    if (d3.geoArea(f) <= 2 * Math.PI) return f;
+    const g = f.geometry;
+    if (g.type === "Polygon") g.coordinates.forEach(r => r.reverse());
+    else g.coordinates.forEach(p => p.forEach(r => r.reverse()));
+    return f;
+  };
+  const feats = [...grupos].filter(([id]) => porId[id]).map(([id, gs]) => rebobinar({type: "Feature", id, geometry: topojson.merge(topo, gs)}));
+  const W = 760, H = 520;
+  const proj = d3.geoMercator().fitSize([W, H], {type: "FeatureCollection", features: feats});
+  const path = d3.geoPath(proj);
+  const svg = d3.select("#mapa").append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Mapa das regiões imediatas de São Paulo");
+  svg.append("path").datum(topojson.mesh(topo, topo.objects.m, (a, b) => a !== b && regDe(a) === regDe(b)))
+    .attr("d", path).attr("fill", "none").attr("stroke", "rgba(10,20,32,.25)").attr("stroke-width", .4).attr("pointer-events", "none").attr("class", "munis");
+  const regs = svg.insert("g", ".munis").selectAll("path").data(feats).join("path")
+    .attr("class", "reg").attr("d", path).attr("data-id", d => d.id)
+    .attr("stroke", C("noite")).attr("stroke-width", .9)
+    .on("click", (ev, d) => { selecionar(d.id); window.scrollTo({top: 0, behavior: reduzir ? "auto" : "smooth"}); });
+  const dica = document.getElementById("dica"), wrap = document.querySelector(".mapa-wrap");
+  regs.on("pointermove", (ev, d) => {
+    const e = porId[d.id], r = wrap.getBoundingClientRect(), v = valorInd(e, indAtual);
+    dica.hidden = false;
+    dica.innerHTML = `<b>${e.nome}</b><br>${indicadores[indAtual].rot}: <b>${v == null ? (indAtual === "tend" && pequena(e) ? "poucos casos para medir" : "—") : indicadores[indAtual].fmt(v)}</b><br><span style="color:var(--texto-2)">Próximo mês: ${fmt(e.prev[estado.modelo].p[0])} internações</span>`;
+    dica.style.left = Math.min(ev.clientX - r.left + 14, r.width - 250) + "px";
+    dica.style.top = (ev.clientY - r.top + 14) + "px";
+  }).on("pointerleave", () => { dica.hidden = true; });
+  function pintar() {
+    const vals = feats.map(f => valorInd(porId[f.id], indAtual)).filter(v => v != null);
+    let cor, grad;
+    if (indAtual === "tend") {
+      const m = Math.max(5, d3.quantile(vals.map(Math.abs).sort(d3.ascending), .92));
+      const sc = d3.scaleDiverging([-m, 0, m], t => d3.interpolateRgbBasis([C("queda"), "#2a3d52", C("alta")])(t)).clamp(true);
+      cor = v => sc(v); grad = `linear-gradient(90deg,${C("queda")},#2a3d52,${C("alta")})`;
+      legenda(`−${nf1.format(m)}%`, `+${nf1.format(m)}%`, grad, "queda ◂ estável ▸ alta");
+    } else {
+      const mx = d3.quantile([...vals].sort(d3.ascending), .95) || 1;
+      const sc = d3.scaleSequential([0, mx], d3.interpolateRgb("#1a3044", indAtual === "taxa" ? C("ambar") : C("monitor"))).clamp(true);
+      cor = v => sc(v); grad = `linear-gradient(90deg,#1a3044,${indAtual === "taxa" ? C("ambar") : C("monitor")})`;
+      legenda("0", indicadores[indAtual].fmt(mx) + "+", grad, indicadores[indAtual].rot);
+    }
+    regs.attr("fill", d => { const v = valorInd(porId[d.id], indAtual); return v == null ? "#1a2a3a" : cor(v); })
+      .classed("sel", d => d.id === estado.id);
+    ranking();
+  }
+  function legenda(a, b, grad, txt) {
+    document.getElementById("leg-mapa").innerHTML = `<span>${a}</span><span class="grad" style="background:${grad}"></span><span>${b}</span><span>· ${txt}</span>`;
+  }
+  return {pintar};
+})();
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+  indAtual = b.dataset.ind;
+  document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  mapa.pintar();
+}));
+function ranking() {
+  const lista = D.regioes.map(e => ({e, v: valorInd(e, indAtual)})).filter(o => o.v != null)
+    .sort((a, b) => b.v - a.v).slice(0, 8);
+  const tit = {tend: "Maior alta prevista", taxa: "Maiores taxas por 100 mil", leitos: "Mais leitos de saúde mental"}[indAtual];
+  document.getElementById("ranking").innerHTML = `<h3>${tit}</h3><ol>${lista.map((o, i) =>
+    `<li data-id="${o.e.id}" tabindex="0"><span>${i + 1}. ${o.e.nome}</span><span class="v">${indicadores[indAtual].fmt(o.v)}</span></li>`).join("")}</ol>
+    <p class="como-ler" style="margin-top:6px">${indAtual === "tend" ? "Média mensal prevista para jan–jun/2026 comparada à média mensal de 2025. Regiões com menos de 5 internações por mês ficam em cinza: com tão poucos casos, a variação percentual engana." : indAtual === "taxa" ? "Internações nos últimos 12 meses divididas pela população da região." : "Leitos SUS de psiquiatria e saúde mental cadastrados no CNES."}</p>`;
+  document.querySelectorAll("#ranking li").forEach(li => {
+    const ir = () => { selecionar(li.dataset.id); window.scrollTo({top: 0, behavior: reduzir ? "auto" : "smooth"}); };
+    li.addEventListener("click", ir); li.addEventListener("keydown", ev => { if (ev.key === "Enter") ir(); });
+  });
+}
+
+/* ------------------------------------------------ DESAFIO */
+const desafio = (() => {
+  const mods = D.meta.modelos_bt.filter(m => ["RandomForest", "XGBoost", "LightGBM"].includes(m));
+  const adversario = () => mods.includes(estado.modelo) ? estado.modelo : (mods.includes(D.meta.melhor) ? D.meta.melhor : mods[0]);
+  const candidatos = D.regioes.filter(e => d3.mean(e.y.slice(-12)) >= 6).concat([D.total]);
+  const pts = {voce: 0, ia: 0, emp: 0};
+  let r = null;
+  const slider = document.getElementById("palpite"), out = document.getElementById("palpite-out");
+  slider.addEventListener("input", () => { out.textContent = fmt(+slider.value); });
+  function nova() {
+    const e = candidatos[Math.floor(Math.random() * candidatos.length)];
+    const k = Math.floor(Math.random() * e.bt25.meses.length);
+    const mes = e.bt25.meses[k], idx = D.meses.indexOf(mes);
+    const hist = e.y.slice(idx - 12, idx).map((v, i) => ({mes: D.meses[idx - 12 + i], v}));
+    r = {e, k, mes, hist, revelado: false};
+    const mx = Math.max(...hist.map(h => h.v));
+    slider.max = Math.max(10, Math.ceil(mx * 1.7)); slider.value = hist[hist.length - 1].v; out.textContent = fmt(+slider.value);
+    document.getElementById("desafio-tit").textContent = `${e.id === "total" ? "Estado de SP" : e.nome} · quanto foi em ${rotMes(mes)}?`;
+    document.getElementById("resultado").innerHTML = "";
+    document.getElementById("revelar").disabled = false;
+    document.getElementById("pt-ia-rot").textContent = NOME_MODELO[adversario()];
+    desenhar();
+  }
+  function desenhar() {
+    const svg = d3.select("#graf-desafio"); svg.selectAll("*").remove();
+    const w = svg.node().clientWidth || 600, h = 260, m = {l: 40, r: 10, t: 14, b: 28};
+    svg.attr("viewBox", `0 0 ${w} ${h}`);
+    const itens = r.hist.map(x => ({rot: rotMes(x.mes).slice(0, 3), v: x.v, cor: C("texto-2")}));
+    const am = r.e.bt25, ia = adversario();
+    itens.push({rot: rotMes(r.mes).slice(0, 3) + " ?", v: r.revelado ? am.y[r.k] : null, cor: C("real"), alvo: true});
+    const mx = Math.max(...r.hist.map(x => x.v), +slider.value, r.revelado ? Math.max(am.y[r.k], am[ia][r.k]) : 0) * 1.12 || 1;
+    const x = d3.scaleBand(itens.map((d, i) => i), [m.l, w - m.r]).padding(.25), y = d3.scaleLinear([0, mx], [h - m.b, m.t]).nice();
+    svg.append("g").selectAll("line").data(y.ticks(4)).join("line").attr("x1", m.l).attr("x2", w - m.r).attr("y1", y).attr("y2", y).attr("stroke", C("linha"));
+    svg.append("g").selectAll("text").data(y.ticks(4)).join("text").attr("x", m.l - 6).attr("y", d => y(d) + 4).attr("text-anchor", "end").attr("fill", C("texto-2")).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(d => nf.format(d));
+    svg.append("g").selectAll("rect").data(itens.filter(d => d.v != null)).join("rect")
+      .attr("x", d => x(itens.indexOf(d))).attr("width", x.bandwidth()).attr("y", d => y(d.v)).attr("height", d => y(0) - y(d.v)).attr("rx", 3)
+      .attr("fill", d => d.alvo ? C("real") : "#3a5570");
+    const alvoX = x(itens.length - 1);
+    if (!r.revelado) svg.append("rect").attr("x", alvoX).attr("width", x.bandwidth()).attr("y", m.t).attr("height", y(0) - m.t).attr("rx", 3).attr("fill", "none").attr("stroke", C("real")).attr("stroke-dasharray", "4 3");
+    const linha = (v, cor, rot) => { const g = svg.append("g");
+      g.append("line").attr("x1", m.l).attr("x2", w - m.r).attr("y1", y(v)).attr("y2", y(v)).attr("stroke", cor).attr("stroke-width", 2).attr("stroke-dasharray", "6 4");
+      g.append("text").attr("x", w - m.r).attr("y", y(v) - 5).attr("text-anchor", "end").attr("fill", cor).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(rot); };
+    linha(+slider.value, C("texto"), `seu palpite: ${fmt(+slider.value)}`);
+    if (r.revelado) linha(am[ia][r.k], C("monitor"), `IA: ${fmt(am[ia][r.k])}`);
+    svg.append("g").selectAll("text").data(itens).join("text").attr("x", (d, i) => x(i) + x.bandwidth() / 2).attr("y", h - 8).attr("text-anchor", "middle").attr("fill", C("texto-2")).attr("font-size", 10.5).attr("font-family", "IBM Plex Mono, monospace").text(d => d.rot);
+  }
+  slider.addEventListener("input", () => r && desenhar());
+  function revelar() {
+    if (!r || r.revelado) return;
+    r.revelado = true; document.getElementById("revelar").disabled = true;
+    const am = r.e.bt25, ia = adversario(), real = am.y[r.k];
+    const linhas = [["Real", real, C("real")], ["Você", +slider.value, C("texto")], [NOME_MODELO[ia], am[ia][r.k], C("monitor")], ["Chute", am.Ingenuo[r.k], C("texto-2")]];
+    const mx = Math.max(...linhas.map(l => l[1])) || 1;
+    const eV = Math.abs(+slider.value - real), eI = Math.abs(am[ia][r.k] - real);
+    let ver;
+    if (Math.abs(eV - eI) < 0.5) { pts.emp++; ver = "Empate técnico."; }
+    else if (eV < eI) { pts.voce++; ver = "Você ganhou desta vez."; }
+    else { pts.ia++; ver = "A IA ganhou esta rodada."; }
+    document.getElementById("resultado").innerHTML = `<div class="veredito">${ver}</div>` + linhas.map(([n, v, c]) =>
+      `<div class="r"><span>${n}</span><i style="width:${Math.max(4, v / mx * 100)}%;background:${c}"></i><b class="num">${fmt(v)}${n === "Real" ? "" : ` <small style="color:var(--texto-2)">(erro ${fmt(Math.abs(v - real))})</small>`}</b></div>`).join("");
+    ["voce", "ia", "emp"].forEach(k => document.getElementById("pt-" + k).textContent = pts[k]);
+    desenhar();
+  }
+  document.getElementById("revelar").addEventListener("click", revelar);
+  document.getElementById("nova").addEventListener("click", nova);
+  addEventListener("resize", () => r && desenhar());
+  return {nova};
+})();
+
+/* ------------------------------------------------ POR DENTRO DA IA */
+function destaques() {
+  const m = estado.modelo;
+  let dentro = 0, n = 0, errs = [];
+  D.regioes.forEach(e => e.status26.forEach((st, i) => {
+    const real = e.real26[i]; if (st !== "completo" || real == null) return;
+    n++; if (real >= e.prev[m].lo[i] && real <= e.prev[m].hi[i]) dentro++;
+  }));
+  const t = D.total; t.status26.forEach((st, i) => { if (st === "completo" && t.real26[i] != null) errs.push(Math.abs(t.prev[m].p[i] - t.real26[i]) / t.real26[i] * 100); });
+  const bt = D.backtest_h.filter(r => r.h === 1);
+  const eM = (bt.find(r => r.modelo === m) || {}).erro_pct_total, eC = (bt.find(r => r.modelo === "Ingenuo") || {}).erro_pct_total;
+  document.getElementById("destaques").innerHTML = `
+    <div class="cartao destaque"><span class="olho">Margem de erro funciona?</span><b style="color:var(--ok)">${n ? Math.round(dentro / n * 100) : "—"}%</b><p>das regiões tiveram o número real de jan–mar/2026 dentro da faixa prevista. A faixa foi desenhada para acertar 80%.</p></div>
+    <div class="cartao destaque"><span class="olho">Erro em 2026 (estado)</span><b style="color:var(--monitor)">${errs.length ? nf1.format(d3.mean(errs)) + "%" : "—"}</b><p>de erro médio da IA nos meses de 2026 já completos, prevendo sem ter visto nenhum dado de 2026.</p></div>
+    <div class="cartao destaque"><span class="olho">IA vs chute</span><b>${eM != null ? nf1.format(eM) + "%" : "—"} <small style="font-size:1rem;color:var(--texto-2)">vs ${eC != null ? nf1.format(eC) + "%" : "—"}</small></b><p>erro médio prevendo 1 mês à frente nos testes de 2024–2025, contra o chute "repetir o mês anterior".</p></div>`;
+}
+function graficoPlacar() {
+  const svg = d3.select("#graf-placar"); svg.selectAll("*").remove();
+  const w = svg.node().clientWidth || 600, h = 280, m = {l: 40, r: 150, t: 12, b: 34};
+  svg.attr("viewBox", `0 0 ${w} ${h}`);
+  const dados = d3.group(D.backtest_h, r => r.modelo);
+  const x = d3.scaleLinear([1, 6], [m.l, w - m.r]), y = d3.scaleLinear([0, d3.max(D.backtest_h, r => r.erro_pct_total) * 1.1], [h - m.b, m.t]).nice();
+  svg.append("g").selectAll("line").data(y.ticks(4)).join("line").attr("x1", m.l).attr("x2", w - m.r).attr("y1", y).attr("y2", y).attr("stroke", C("linha"));
+  svg.append("g").selectAll("text").data(y.ticks(4)).join("text").attr("x", m.l - 6).attr("y", d => y(d) + 4).attr("text-anchor", "end").attr("fill", C("texto-2")).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(d => d + "%");
+  svg.append("g").selectAll("text").data([1, 2, 3, 4, 5, 6]).join("text").attr("x", x).attr("y", h - 14).attr("text-anchor", "middle").attr("fill", C("texto-2")).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(d => d + (d === 1 ? " mês" : " meses"));
+  const cores = {LightGBM: C("monitor"), RandomForest: "#7fa8ff", Ensemble: C("ok"), Ingenuo: C("texto-2"), Sazonal_ingenuo: "#6c8197"};
+  const labels = [];
+  for (const [mod, rows] of dados) {
+    if (!cores[mod]) continue;
+    const pts = rows.sort((a, b) => a.h - b.h);
+    const sel = mod === estado.modelo;
+    svg.append("path").datum(pts).attr("d", d3.line(r => x(r.h), r => y(r.erro_pct_total))).attr("fill", "none")
+      .attr("stroke", cores[mod]).attr("stroke-width", sel ? 3 : 1.6).attr("stroke-dasharray", mod.includes("ngenuo") ? "5 4" : null);
+    const ult = pts[pts.length - 1];
+    const curto = {Ingenuo: "chute: mês anterior", Sazonal_ingenuo: "chute: mesmo mês ano ant.", Ensemble: "Combinação", RandomForest: "Random Forest", LightGBM: "LightGBM"};
+    labels.push({y: y(ult.erro_pct_total), txt: curto[mod] || mod, cor: cores[mod], sel});
+  }
+  labels.sort((a, b) => a.y - b.y).forEach((l, i, arr) => { if (i && l.y - arr[i - 1].y < 14) l.y = arr[i - 1].y + 14; });
+  svg.append("g").selectAll("text").data(labels).join("text").attr("x", w - m.r + 8).attr("y", d => d.y + 4).attr("fill", d => d.cor)
+    .attr("font-size", 11).attr("font-weight", d => d.sel ? 600 : 400).text(d => d.txt);
+}
+const selP = document.getElementById("sel-pistas");
+Object.keys(D.importancias).forEach(m => selP.add(new Option(NOME_MODELO[m], m)));
+selP.value = D.importancias.RandomForest ? "RandomForest" : Object.keys(D.importancias)[0];
+function pistas() {
+  const l = D.importancias[selP.value] || [], mx = Math.max(...l.map(x => x[1]));
+  document.getElementById("pistas").innerHTML = l.map(([n, v]) =>
+    `<div class="pista"><span>${n}</span><span class="t"><i style="width:${v / mx * 100}%"></i></span><span class="mono num" style="text-align:right;color:var(--texto-2)">${Math.round(v * 100)}%</span></div>`).join("");
+}
+selP.addEventListener("change", pistas);
+addEventListener("resize", graficoPlacar);
+
+/* ------------------------------------------------ TABELA */
+let ordemTab = {col: "prox", dir: -1};
+const colunas = [
+  {k: "nome", t: "Região"}, {k: "prox", t: "Próx. mês"}, {k: "faixa", t: "Faixa provável", nosort: true},
+  {k: "tend", t: "6 meses vs ano ant."}, {k: "taxa", t: "Taxa /100 mil"}, {k: "leitos", t: "Leitos SM SUS"}];
+function tabela() {
+  const m = estado.modelo;
+  const linhas = D.regioes.map(e => ({e, nome: e.nome, prox: e.prev[m].p[0], lo: e.prev[m].lo[0], hi: e.prev[m].hi[0],
+    tend: valorInd(e, "tend"), taxa: valorInd(e, "taxa"), leitos: e.leitos_sm || 0}));
+  linhas.sort((a, b) => { const A = a[ordemTab.col], B = b[ordemTab.col];
+    return typeof A === "string" ? A.localeCompare(B, "pt-BR") * ordemTab.dir : ((A ?? -1e9) - (B ?? -1e9)) * ordemTab.dir; });
+  const thead = document.querySelector("#tab thead");
+  thead.innerHTML = "<tr>" + colunas.map(c => `<th scope="col" data-k="${c.k}" ${c.nosort ? 'style="cursor:default"' : 'tabindex="0"'}>${c.t}${ordemTab.col === c.k ? (ordemTab.dir > 0 ? " ▲" : " ▼") : ""}</th>`).join("") + "</tr>";
+  thead.querySelectorAll("th[tabindex]").forEach(th => {
+    const ord = () => { const k = th.dataset.k; ordemTab = {col: k, dir: ordemTab.col === k ? -ordemTab.dir : (k === "nome" ? 1 : -1)}; tabela(); };
+    th.addEventListener("click", ord); th.addEventListener("keydown", ev => { if (ev.key === "Enter") ord(); });
+  });
+  document.querySelector("#tab tbody").innerHTML = linhas.map(l => `<tr data-id="${l.e.id}">
+    <td>${l.nome}</td><td>${fmt(l.prox)}</td><td style="color:var(--ambar)">${fmt(l.lo)}–${fmt(l.hi)}</td>
+    <td>${l.tend == null ? "—" : `<span class="${l.tend >= 0 ? "sobe" : "desce"}">${l.tend >= 0 ? "+" : ""}${nf1.format(l.tend)}%</span>`}</td>
+    <td>${l.taxa == null ? "—" : nf1.format(l.taxa)}</td><td>${fmt(l.leitos)}</td></tr>`).join("");
+  document.querySelectorAll("#tab tbody tr").forEach(tr => tr.addEventListener("click", () => { selecionar(tr.dataset.id); window.scrollTo({top: 0, behavior: reduzir ? "auto" : "smooth"}); }));
+}
+
+/* ------------------------------------------------ rodapé */
+document.getElementById("rodape").innerHTML = `
+  <p><b style="color:var(--texto)">Dados:</b> SIH-SUS (internações por mês da internação e município de residência, só AIHs novas), CNES (leitos SUS de psiquiatria e saúde mental, códigos 47 e 87) e IBGE (população e regiões imediatas). DATASUS/Ministério da Saúde.</p>
+  <p><b style="color:var(--texto)">IA:</b> Random Forest e LightGBM treinados até ${rotMes(D.meta.ultimo_treino.slice(0, 7))}, um modelo para cada distância de previsão (1 a 6 meses). Faixa de 80% calibrada pelos erros de 18 testes em 2024–2025. Leitos ocupados = internações × permanência média dos últimos 12 meses (${nf1.format(losEstado)} dias no estado) ÷ dias do mês.</p>
+  <p><b style="color:var(--texto)">Limites:</b> leitos de saúde mental também atendem outros diagnósticos (como esquizofrenia), então o uso mostrado é só a parte dos transtornos de humor. Meses "parciais" de 2026 ainda vão receber internações lançadas com atraso.</p>
+  <p>TCC · Ciência da Computação · UniAnchieta · gerado em ${D.meta.gerado_em}</p>`;
+
+function atualizarTudo() {
+  atualizarMes(); mapa.pintar(); destaques(); graficoPlacar(); tabela();
+}
+cena.reescalar();
+atualizarTudo(); pistas(); desafio.nova();
+})();
+</script>

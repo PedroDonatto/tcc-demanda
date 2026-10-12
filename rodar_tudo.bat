@@ -10,6 +10,7 @@ python -m src.ingest_ibge   || goto :erro
 python -m src.build_dataset regiao || goto :erro
 python -m src.build_dataset estado || goto :erro
 python -m src.train regiao 12 || goto :erro
+python -m src.prever 6 18    || goto :erro
 python -m src.db            || goto :erro
 
 echo.

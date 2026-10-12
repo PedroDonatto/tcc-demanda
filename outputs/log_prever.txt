@@ -1,0 +1,30 @@
+Treino até 2025-12 | prevendo 6 meses | 18 origens de backtest
+  h=1: backtest com 18 origens (21s)
+  h=2: backtest com 18 origens (22s)
+  h=3: backtest com 18 origens (21s)
+  h=4: backtest com 18 origens (21s)
+  h=5: backtest com 18 origens (21s)
+  h=6: backtest com 18 origens (20s)
+
+=== Erro médio no total do estado por horizonte (%) ===
+h                  1    2    3    4    5    6
+modelo                                       
+Ensemble         4.7  5.3  5.6  5.1  4.9  4.8
+Ingenuo          6.2  7.4  8.2  7.8  6.0  6.2
+LightGBM         4.7  5.2  5.4  4.9  4.8  4.8
+RandomForest     4.9  5.5  5.8  5.9  5.5  5.4
+Sazonal_ingenuo  6.9  6.9  6.9  6.9  6.9  6.9
+
+Melhor modelo: LightGBM
+
+=== Previsão SP – total (faixa de 80%) ===
+    mes  LightGBM  LightGBM_lo  LightGBM_hi  real   status  erro_% dentro_da_faixa
+2026-01    1357.2       1294.0       1484.2  1393 completo    -2.6            True
+2026-02    1344.7       1282.7       1483.3  1282 completo     4.9           False
+2026-03    1295.3       1245.7       1456.4  1494 completo   -13.3           False
+2026-04    1331.8       1285.7       1464.7  1328  parcial     NaN            True
+2026-05    1352.6       1309.4       1475.0  1139  parcial     NaN           False
+2026-06    1297.3       1248.7       1415.0   746  parcial     NaN           False
+
+Modelos salvos em C:\Users\pedro\Downloads\tcc-demanda\tcc-demanda\models
+Arquivos em C:\Users\pedro\Downloads\tcc-demanda\tcc-demanda\outputs

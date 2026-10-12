@@ -1,0 +1,36 @@
+{
+  "ultimo_mes_treino": "2025-12-01",
+  "horizontes": 6,
+  "modelos": [
+    "RandomForest",
+    "LightGBM"
+  ],
+  "atributos": [
+    "y_lag1",
+    "y_lag2",
+    "y_lag3",
+    "y_lag6",
+    "y_lag12",
+    "y_media3",
+    "y_dp3",
+    "y_media6",
+    "y_dp6",
+    "y_media12",
+    "y_dp12",
+    "y_media_exp",
+    "y_diff1",
+    "y_diff12",
+    "int_ansiedade_lag1",
+    "int_ansiedade_lag12",
+    "leitos_sm_sus_lag2",
+    "leitos_tot_sus_lag2",
+    "pop_lag",
+    "mes_sin",
+    "mes_cos",
+    "ano",
+    "pandemia",
+    "unidade_cod"
+  ],
+  "alvo": "internações humor ('F30', 'F39')",
+  "uf": "SP"
+}

@@ -115,6 +115,22 @@ def test_painel_features_treino():
     assert "y" not in cols and "int_humor" not in cols
     print(f"ok sem vazamento ({len(cols)} atributos)")
 
+    # --- mesmo teste para previsão 3 meses à frente (estratégia direta)
+    h = 3
+    a3 = criar_atributos(painel, h=h)
+    b3 = criar_atributos(p2, h=h)
+    lim = corte + pd.DateOffset(months=h - 1)
+    a3 = a3[a3["mes"] <= lim].set_index(["unidade", "mes"])[cols]
+    b3 = b3[b3["mes"] <= lim].set_index(["unidade", "mes"])[cols]
+    pd.testing.assert_frame_equal(a3, b3)
+    # y_lag1 com h=3 deve ser o valor de 3 meses antes
+    u = painel[painel["unidade"] == "A"].set_index("mes")["y"]
+    x = criar_atributos(painel, h=3)
+    x = x[x["unidade"] == "A"].set_index("mes")["y_lag1"]
+    m0 = x.index[5]
+    assert x[m0] == u[m0 - pd.DateOffset(months=3)]
+    print("ok sem vazamento também para h=3")
+
     prev, custos, _ = walk_forward(df1, n_teste=6)
     met = tabela_metricas(prev, custos)
     print(met.round(3).to_string(index=False))
