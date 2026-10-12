@@ -19,8 +19,8 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{height:100%;margin:0;background:#050c14;color:var(--texto);font-family:var(--f-texto);overflow:hidden}
-#tela{position:fixed;inset:0;display:grid;place-items:center;padding-bottom:58px}
-#palco{width:1600px;height:900px;position:relative;transform-origin:center center;background:radial-gradient(120% 100% at 20% 0%,#12263a 0%,var(--noite) 60%);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+#tela{position:fixed;left:0;right:0;top:0;bottom:58px;overflow:hidden}
+#palco{width:1600px;height:900px;position:absolute;left:50%;top:50%;transform-origin:center center;background:radial-gradient(120% 100% at 20% 0%,#12263a 0%,var(--noite) 60%);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
 .slide{position:absolute;inset:0;padding:70px 90px 60px;display:grid;grid-template-rows:auto 1fr;gap:28px;opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease;transform:translateX(30px)}
 .slide.on{opacity:1;pointer-events:auto;transform:none}
 .slide.antes{transform:translateX(-30px)}
@@ -343,7 +343,7 @@ function ir(i) {
 }
 function escalar() {
   const w = innerWidth, h = innerHeight - 58, k = Math.min(w / 1600, h / 900) * .98;
-  palco.style.transform = `scale(${k})`;
+  palco.style.transform = `translate(-50%,-50%) scale(${k})`;
 }
 addEventListener("resize", escalar); escalar();
 document.getElementById("prox").onclick = () => ir(atual + 1);
