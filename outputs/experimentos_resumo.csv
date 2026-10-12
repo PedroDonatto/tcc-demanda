@@ -1,0 +1,8 @@
+,MAE,RMSE,erro_total_pct,vies_pct
+Ingenuo,5.024,8.958,6.43,-0.56
+Sazonal_ingenuo,5.269,9.944,8.6,-8.6
+ETS,3.936,7.353,4.62,-3.08
+RandomForest,4.043,7.595,5.15,-2.68
+LightGBM,4.147,8.448,5.23,-1.02
+LightGBM_ajustado,4.112,8.072,5.26,-2.74
+Combinacao,3.949,7.483,4.55,-2.26

@@ -29,6 +29,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{background:var(--noite);color:var(--texto)}
 body{font-family:var(--f-texto);font-size:15px;line-height:1.55;margin:0}
 .wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
@@ -155,6 +156,109 @@ tbody tr{cursor:pointer}
 tbody tr:hover{background:var(--painel-2)}
 td .sobe{color:var(--alta)} td .desce{color:var(--queda)}
 
+/* ---------- colaboração */
+.online{display:flex;align-items:center;gap:8px;min-height:32px}
+.online .rot{font-family:var(--f-dado);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--texto-2)}
+.avs{display:flex}
+.avs img{width:28px;height:28px;border-radius:50%;border:2px solid var(--noite);margin-left:-8px;background:var(--painel-2)}
+.avs img:first-child{margin-left:0}
+.avs .mais{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;background:var(--painel-2);margin-left:-8px;border:2px solid var(--noite)}
+.btn-tour{display:inline-flex;align-items:center;gap:8px}
+.tour{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:40;width:min(620px,calc(100% - 32px));background:rgba(15,29,44,.97);border:1px solid var(--monitor);border-radius:14px;padding:16px 18px;display:grid;gap:10px;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.tour h3{font-size:1.2rem}
+.tour p{color:var(--texto-2)}
+.tour .nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tour .pontos{display:flex;gap:6px}
+.tour .pontos i{width:8px;height:8px;border-radius:50%;background:var(--linha)}
+.tour .pontos i.on{background:var(--monitor)}
+.sim-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:16px}
+@media (max-width:860px){.sim-grid{grid-template-columns:1fr}}
+.campo{display:grid;gap:4px}
+.campo label{display:flex;justify-content:space-between;gap:8px;font-size:.9rem}
+.campo label b{font-family:var(--f-dado);color:var(--monitor)}
+.campo input[type=range]{width:100%;accent-color:var(--monitor)}
+.campo small{color:var(--texto-2);font-size:.78rem}
+#graf-sim{display:block;width:100%;height:280px}
+.alerta{border-radius:10px;padding:10px 12px;font-size:.92rem;border:1px solid}
+.alerta.ok{border-color:var(--ok);color:var(--ok);background:rgba(95,211,154,.08)}
+.alerta.ruim{border-color:var(--alta);color:var(--alta);background:rgba(255,122,107,.08)}
+.lista{display:grid;gap:8px;max-height:420px;overflow:auto;padding-right:4px}
+.item{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:start;background:var(--painel-2);border-radius:10px;padding:10px}
+.item img{width:30px;height:30px;border-radius:50%}
+.item .meta{font-size:.76rem;color:var(--texto-2);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.item .txt{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:2px}
+.item.feito .txt{text-decoration:line-through;color:var(--texto-2)}
+.item .acoes{display:flex;gap:4px}
+.icone{background:transparent;border:1px solid var(--linha);border-radius:7px;padding:3px 7px;cursor:pointer;color:var(--texto-2);font-size:.8rem}
+.icone:hover{color:var(--texto);border-color:var(--texto-2)}
+.ir{background:none;border:0;padding:0;color:var(--monitor);cursor:pointer;font:inherit;text-decoration:underline dotted}
+.tipo{font-family:var(--f-dado);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:1px 8px;border:1px solid currentColor}
+.tipo.insight{color:var(--monitor)} .tipo.duvida{color:var(--ambar)} .tipo.tarefa{color:var(--ok)}
+textarea,input[type=text]{width:100%;background:var(--painel-2);border:1px solid var(--linha);border-radius:9px;padding:9px 11px;color:var(--texto);font:inherit;resize:vertical}
+.form-linha{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.aviso{color:var(--texto-2);font-size:.86rem}
+.lider{display:grid;gap:6px}
+.lider .l{display:grid;grid-template-columns:22px 26px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:.9rem}
+.lider .l img{width:26px;height:26px;border-radius:50%}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{background:var(--painel-2);border:1px solid var(--linha);border-radius:99px;padding:6px 12px;cursor:pointer;color:var(--texto);font-size:.86rem}
+.chips button:hover{border-color:var(--monitor)}
+.resposta{background:var(--painel-2);border-radius:10px;padding:14px 16px;white-space:pre-wrap;line-height:1.6;min-height:60px}
+/* apontamentos */
+.feed{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px}
+@media (max-width:900px){.feed{grid-template-columns:1fr}}
+.filtros{display:flex;gap:6px;flex-wrap:wrap}
+.filtros button{background:transparent;border:1px solid var(--linha);border-radius:99px;padding:5px 12px;cursor:pointer;color:var(--texto-2);font-size:.82rem}
+.filtros button[aria-pressed="true"]{border-color:var(--monitor);color:var(--texto);background:var(--monitor-fraco)}
+.filtros b{font-family:var(--f-dado);margin-left:4px}
+.cards{display:grid;gap:8px;max-height:560px;overflow:auto;padding-right:4px}
+.ap{display:grid;grid-template-columns:6px 1fr auto;gap:12px;align-items:start;background:var(--painel);border:1px solid var(--linha);border-radius:10px;padding:12px 12px 12px 0;cursor:pointer;transition:transform .15s,border-color .15s}
+.ap:hover{transform:translateX(3px);border-color:var(--texto-2)}
+.ap .sev{border-radius:0 4px 4px 0;align-self:stretch}
+.ap.critico .sev{background:var(--alta)} .ap.atencao .sev{background:var(--ambar)} .ap.info .sev{background:var(--queda)} .ap.equipe .sev{background:var(--real)}
+.ap h4{margin:0;font-size:.95rem;font-weight:600}
+.ap p{color:var(--texto-2);font-size:.86rem;margin-top:2px}
+.ap .tag{font-family:var(--f-dado);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--texto-2);white-space:nowrap}
+.contador{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.contador div{background:var(--painel-2);border-radius:9px;padding:10px;text-align:center}
+.contador b{display:block;font-family:var(--f-display);font-size:1.9rem;line-height:1.1}
+.contador span{font-family:var(--f-dado);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-2)}
+
+/* porquê */
+#graf-porque{display:block;width:100%;height:auto}
+.porque-frase{font-size:1.02rem;max-width:75ch}
+.porque-frase b{color:var(--monitor)}
+
+/* laboratório */
+.hipoteses{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.hip{display:grid;gap:8px}
+.hip .ver{font-family:var(--f-display);font-size:1.15rem}
+.hip .ver.sim{color:var(--ok)} .hip .ver.parcial{color:var(--ambar)} .hip .ver.nao{color:var(--alta)}
+.hip p{color:var(--texto-2);font-size:.88rem}
+.badge{font-family:var(--f-dado);font-size:.68rem;border-radius:99px;padding:2px 8px;border:1px solid currentColor;white-space:nowrap}
+.badge.sig{color:var(--ok)} .badge.emp{color:var(--texto-2)} .badge.best{color:var(--monitor)}
+#graf-ablacao,#graf-porte{display:block;width:100%;height:240px}
+
+/* parecer */
+.parecer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:760px){.parecer{grid-template-columns:1fr}}
+.crit{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--linha);border-radius:10px;background:var(--painel);cursor:pointer;text-align:left;color:inherit;font:inherit}
+.crit:hover{border-color:var(--texto-2)}
+.crit .st{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:700}
+.crit .st.ok{background:rgba(95,211,154,.18);color:var(--ok)} .crit .st.prox{background:var(--ambar-fraco);color:var(--ambar)}
+.crit b{display:block;font-size:.92rem} .crit span{color:var(--texto-2);font-size:.84rem}
+.progresso{height:10px;border-radius:99px;background:var(--painel-2);overflow:hidden}
+.progresso i{display:block;height:100%;background:linear-gradient(90deg,var(--monitor),var(--ok));border-radius:99px}
+
+/* placar global, conquistas, confete */
+.conquistas{display:flex;gap:6px;flex-wrap:wrap}
+.conq{font-size:.74rem;border:1px dashed var(--linha);border-radius:99px;padding:3px 10px;color:var(--texto-2)}
+.conq.on{border-style:solid;border-color:var(--ambar);color:var(--ambar)}
+#confete{position:fixed;inset:0;pointer-events:none;z-index:50}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--painel-2);border:1px solid var(--ambar);color:var(--texto);padding:10px 16px;border-radius:10px;z-index:60;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.pulsa{animation:pulsaReg 1.2s ease-out 2}
+@keyframes pulsaReg{0%{filter:brightness(1)}40%{filter:brightness(1.9)}100%{filter:brightness(1)}}
+
 footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:var(--texto-2);font-size:.85rem;display:grid;gap:8px;max-width:90ch}
 @media (max-width:1040px){
   .hud{position:static;width:auto;margin:0 12px 12px}
@@ -171,6 +275,7 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
       <svg class="pulso" viewBox="0 0 30 18" aria-hidden="true"><polyline points="0,10 8,10 11,3 15,16 18,7 21,10 30,10" fill="none" stroke="var(--monitor)" stroke-width="2" stroke-linejoin="round"/></svg>
       <div><b>SALA DE SITUAÇÃO</b><span>SAÚDE MENTAL · SP · SUS</span></div>
     </div>
+    <div class="online" id="online" hidden><span class="rot">Na sala</span><div class="avs" id="avs"></div></div>
     <div class="ctrl"><label for="sel-territorio">Território</label><select id="sel-territorio"></select></div>
     <div class="ctrl"><label for="sel-modelo">Modelo de IA</label><select id="sel-modelo"></select></div>
   </div>
@@ -181,6 +286,7 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
     <div class="hero-tit">
       <h1 id="t-hero">Quantas pessoas vão precisar de <em>internação por depressão e bipolaridade</em> no SUS de São Paulo?</h1>
       <p>Arraste a linha do tempo. Cada leito aceso na ala virtual é ocupado por pacientes com transtornos de humor (CID F30–F39). Os leitos âmbar são a margem de segurança da previsão.</p>
+      <button class="btn btn-tour" id="btn-tour"><svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M5 3l12 7-12 7z" fill="currentColor"/></svg>Modo apresentação</button>
     </div>
     <div class="palco">
       <canvas id="cena" aria-label="Ala hospitalar virtual: leitos ocupados conforme a demanda do mês"></canvas>
@@ -201,6 +307,60 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
       </div>
     </div>
     <p class="como-ler"><b>Como ler:</b> até dez/2025 os números são o que aconteceu. De jan/2026 em diante, é o que a IA previu usando só dados até dez/2025. Depois comparamos com o real que o SUS já publicou: as bolinhas lilás no gráfico.</p>
+  </section>
+
+  <section class="bloco" id="simulador" aria-labelledby="t-sim">
+    <div class="cab">
+      <span class="olho">Planejamento · e se?</span>
+      <h2 id="t-sim">Simulador de cenários</h2>
+      <p>Use a previsão da IA como ponto de partida e teste situações. Por exemplo: uma crise que aumenta a procura em 20%, internações mais longas ou menos leitos reservados. O simulador mostra se os leitos dariam conta nos próximos 6 meses da região escolhida no topo.</p>
+    </div>
+    <div class="sim-grid">
+      <div class="cartao" style="display:grid;gap:14px">
+        <div class="campo"><label for="sim-surto">Mudança na procura <b id="sim-surto-v"></b></label><input type="range" id="sim-surto" min="-30" max="60" step="5" value="0"><small>0% = exatamente a previsão da IA</small></div>
+        <div class="campo"><label for="sim-los">Tempo médio de internação <b id="sim-los-v"></b></label><input type="range" id="sim-los" min="4" max="40" step="1"><small id="sim-los-ref"></small></div>
+        <div class="campo"><label for="sim-res">Leitos reservados para estes pacientes <b id="sim-res-v"></b></label><input type="range" id="sim-res" min="0" max="100" step="1"><small id="sim-res-ref"></small></div>
+        <label style="display:flex;gap:8px;align-items:center;font-size:.9rem"><input type="checkbox" id="sim-pior"> Planejar pelo pior caso (limite alto da faixa)</label>
+        <div id="sim-alerta" class="alerta ok" aria-live="polite"></div>
+        <div id="sim-salvar" hidden style="display:grid;gap:8px">
+          <label for="sim-nome" class="olho">Salvar este cenário para o time</label>
+          <div class="form-linha"><input type="text" id="sim-nome" maxlength="80" placeholder="Ex.: crise de inverno em Bauru" style="flex:1 1 200px"><button class="btn" id="sim-btn-salvar">Salvar</button></div>
+        </div>
+      </div>
+      <div class="cartao" style="display:grid;gap:10px">
+        <h3>Leitos necessários × reservados</h3>
+        <p class="como-ler"><b>Como ler:</b> cada barra é um mês. A linha tracejada é quanto há de leito reservado. Barra vermelha passa da linha: faltaria leito naquele mês.</p>
+        <svg id="graf-sim" role="img" aria-label="Leitos necessários por mês no cenário simulado"></svg>
+        <div id="sim-lista-wrap" hidden><h3 style="margin-top:6px">Cenários salvos pelo time</h3><div class="lista" id="sim-lista" style="max-height:220px;margin-top:8px"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="apontamentos" aria-labelledby="t-ap">
+    <div class="cab">
+      <span class="olho">Apontamentos</span>
+      <h2 id="t-ap">O que merece atenção agora</h2>
+      <p>A IA varre as 53 regiões e aponta altas previstas, picos, pressão sobre leitos e lugares onde ela mesma errou. Clique num apontamento para abrir a região e o mês na ala virtual.</p>
+    </div>
+    <div class="feed">
+      <div style="display:grid;gap:10px;min-width:0">
+        <div class="filtros" id="filtros-ap" role="group" aria-label="Filtrar apontamentos"></div>
+        <div class="cards" id="cards-ap"></div>
+      </div>
+      <div class="cartao" style="display:grid;gap:14px;align-content:start" id="ap-resumo"></div>
+    </div>
+  </section>
+
+  <section class="bloco" id="porque" aria-labelledby="t-porque">
+    <div class="cab">
+      <span class="olho">Explicação da previsão</span>
+      <h2 id="t-porque">Por que a IA prevê esse número?</h2>
+      <p>Cada barra mostra quanto uma pista empurrou a previsão para cima (vermelho) ou para baixo (azul), partindo da média geral. Muda com a região e o mês escolhidos na linha do tempo.</p>
+    </div>
+    <div class="cartao" style="display:grid;gap:12px">
+      <p class="porque-frase" id="porque-frase"></p>
+      <svg id="graf-porque" role="img" aria-label="Contribuição de cada pista para a previsão"></svg>
+    </div>
   </section>
 
   <section class="bloco" id="mapa-sec" aria-labelledby="t-mapa">
@@ -241,6 +401,34 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
         </div>
         <div class="resultado" id="resultado" aria-live="polite"></div>
         <div class="placar"><div><span class="olho">Você</span><b id="pt-voce">0</b></div><div><span class="olho" id="pt-ia-rot">IA</span><b id="pt-ia">0</b></div><div><span class="olho">Empates</span><b id="pt-emp">0</b></div></div>
+        <div class="conquistas" id="conquistas"></div>
+        <div id="lider" style="display:grid;gap:8px;margin-top:6px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloco" id="mural" aria-labelledby="t-mural">
+    <div class="cab">
+      <span class="olho">Espaço do time</span>
+      <h2 id="t-mural">Mural de descobertas</h2>
+      <p>Fixe uma observação no mês e na região que você está vendo lá em cima: um insight pro texto do TCC, uma dúvida pro orientador ou uma tarefa pro grupo. Todo mundo com acesso vê e pode marcar tarefas como feitas.</p>
+    </div>
+    <div class="dois">
+      <div class="cartao" style="display:grid;gap:10px">
+        <div class="form-linha" style="justify-content:space-between"><h3>Mural</h3>
+          <div class="seg" role="group" aria-label="Filtro do mural"><button data-filtro="todas" aria-pressed="true">Todas</button><button data-filtro="regiao" aria-pressed="false">Só desta região</button><button data-filtro="tarefa" aria-pressed="false">Tarefas</button></div></div>
+        <div class="lista" id="mural-lista"><p class="aviso">Carregando o mural…</p></div>
+      </div>
+      <div class="cartao" style="display:grid;gap:10px;align-content:start">
+        <h3>Nova anotação</h3>
+        <p class="aviso" id="mural-ancora"></p>
+        <div id="mural-form" hidden style="display:grid;gap:10px">
+          <div class="seg" role="group" aria-label="Tipo da anotação"><button data-tipo="insight" aria-pressed="true">💡 Insight</button><button data-tipo="duvida" aria-pressed="false">❓ Dúvida</button><button data-tipo="tarefa" aria-pressed="false">✅ Tarefa</button></div>
+          <label for="mural-txt" style="position:absolute;left:-9999px">Texto da anotação</label>
+          <textarea id="mural-txt" rows="4" maxlength="600" placeholder="Ex.: o pico de out/2025 coincide com o Setembro Amarelo? Vale citar no texto."></textarea>
+          <div class="form-linha"><button class="btn" id="mural-add">Fixar no mural</button><span class="aviso" id="mural-msg"></span></div>
+        </div>
+        <p class="aviso" id="mural-sem" hidden>Para escrever no mural, abra esta página logado no Claude com permissão de edição. Peça acesso ao dono da página.</p>
       </div>
     </div>
   </section>
@@ -268,6 +456,60 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
     </div>
   </section>
 
+  <section class="bloco" id="pergunte" aria-labelledby="t-perg">
+    <div class="cab">
+      <span class="olho">Converse com os dados</span>
+      <h2 id="t-perg">Pergunte à IA</h2>
+      <p>Faça uma pergunta em português sobre as internações, as regiões ou os modelos. O Claude responde usando só os números desta página e diz quando não dá para concluir algo.</p>
+    </div>
+    <div class="cartao" style="display:grid;gap:12px">
+      <div class="chips" id="perg-chips">
+        <button>Quais regiões merecem mais atenção no 1º semestre de 2026?</button>
+        <button>Explique para a banca, em 4 frases, como o modelo foi validado.</button>
+        <button>A pandemia mudou o padrão de internações? Como?</button>
+        <button>Quais as limitações deste estudo?</button>
+      </div>
+      <div class="form-linha"><label for="perg-txt" style="position:absolute;left:-9999px">Sua pergunta</label><input type="text" id="perg-txt" maxlength="400" placeholder="Escreva sua pergunta…" style="flex:1 1 260px"><button class="btn" id="perg-btn">Perguntar</button></div>
+      <div class="resposta" id="perg-resp" aria-live="polite">A resposta aparece aqui.</div>
+    </div>
+  </section>
+
+  <section class="bloco" id="lab" aria-labelledby="t-lab" hidden>
+    <div class="cab">
+      <span class="olho">Laboratório da banca</span>
+      <h2 id="t-lab">As perguntas que a banca vai fazer, respondidas com dados</h2>
+      <p id="lab-sub"></p>
+    </div>
+    <div class="hipoteses" id="hipoteses"></div>
+    <div class="dois">
+      <div class="cartao">
+        <h3>Engenharia de atributos, degrau por degrau</h3>
+        <p class="como-ler" style="margin:8px 0 6px"><b>Como ler:</b> cada barra treina o mesmo modelo com mais pistas. Barra mais baixa = menos erro. É o teste do título do TCC.</p>
+        <svg id="graf-ablacao" role="img" aria-label="Erro por grupo de atributos"></svg>
+      </div>
+      <div class="cartao">
+        <h3>Onde a IA erra mais</h3>
+        <p class="como-ler" style="margin:8px 0 6px"><b>Como ler:</b> erro percentual mensal por porte da região. Regiões pequenas oscilam mais, então erram mais em %.</p>
+        <svg id="graf-porte" role="img" aria-label="Erro por porte da região"></svg>
+      </div>
+    </div>
+    <div class="cartao" style="display:grid;gap:10px">
+      <h3>Placar completo, com teste estatístico</h3>
+      <div class="tab-wrap"><table id="tab-lab"><thead></thead><tbody></tbody></table></div>
+      <p class="como-ler" id="lab-nota"></p>
+    </div>
+  </section>
+
+  <section class="bloco" id="parecer-sec" aria-labelledby="t-parecer">
+    <div class="cab">
+      <span class="olho">Parecer · visão do professor</span>
+      <h2 id="t-parecer">O que a banca procura, e onde está a prova</h2>
+      <p>Clique num item para ir até a evidência na página.</p>
+    </div>
+    <div style="display:grid;gap:8px;max-width:520px"><div class="progresso"><i id="parecer-barra"></i></div><span class="olho" id="parecer-txt"></span></div>
+    <div class="parecer" id="parecer"></div>
+  </section>
+
   <section class="bloco" id="tabela" aria-labelledby="t-tab">
     <div class="cab">
       <span class="olho">Todas as regiões</span>
@@ -278,11 +520,19 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
   </section>
 
   <footer id="rodape"></footer>
+  <div class="tour" id="tour" hidden role="dialog" aria-labelledby="tour-tit">
+    <div class="olho" id="tour-passo"></div>
+    <h3 id="tour-tit"></h3>
+    <p id="tour-txt"></p>
+    <div class="nav"><div class="pontos" id="tour-pontos"></div>
+      <div style="display:flex;gap:8px"><button class="btn sec" id="tour-ant">Voltar</button><button class="btn" id="tour-prox">Próximo</button><button class="btn sec" id="tour-sair" aria-label="Sair da apresentação">✕</button></div></div>
+  </div>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<canvas id="confete" aria-hidden="true"></canvas>
 <script type="application/json" id="dados">__DADOS__</script>
 <script>
 (() => {
@@ -302,12 +552,14 @@ const TODOS_MESES = D.meses.concat(D.meses_prev);
 const NH = D.meses.length, NP = D.meses_prev.length;
 const NOME_MODELO = {RandomForest: "Random Forest", LightGBM: "LightGBM", XGBoost: "XGBoost",
   Ensemble: "Combinação (RF + LightGBM)", Ingenuo: "Chute: repetir o mês anterior",
-  Sazonal_ingenuo: "Chute: repetir o mesmo mês do ano anterior", Media_historica: "Chute: média histórica"};
+  Sazonal_ingenuo: "Chute: repetir o mesmo mês do ano anterior", Media_historica: "Chute: média histórica",
+  ETS: "ETS (Holt-Winters)", LightGBM_ajustado: "LightGBM ajustado", Combinacao: "Combinação ETS + IA"};
 const losEstado = D.total.los || 11;
 const entidades = [D.total].concat([...D.regioes].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
 const porId = Object.fromEntries(entidades.map(e => [e.id, e]));
 
 const estado = {id: "total", modelo: D.meta.melhor, idx: NH, tocando: false};
+const ouvintes = {mudou: [], revelou: [], trocouRegiao: []};
 
 /* ------------------------------------------------ séries por entidade */
 function serie(e, modelo) {
@@ -327,7 +579,7 @@ const selM = document.getElementById("sel-modelo");
 D.meta.modelos.forEach(m => selM.add(new Option(NOME_MODELO[m] + (m === D.meta.melhor ? " ★" : ""), m)));
 selM.value = estado.modelo;
 selT.addEventListener("change", () => selecionar(selT.value));
-selM.addEventListener("change", () => { estado.modelo = selM.value; cena.reescalar(); atualizarTudo(); });
+selM.addEventListener("change", () => { estado.modelo = selM.value; cena.reescalar(); atualizarTudo(); ouvintes.trocouRegiao.forEach(f => f()); });
 const cursor = document.getElementById("cursor-mes");
 cursor.max = TODOS_MESES.length - 1;
 cursor.value = estado.idx;
@@ -337,6 +589,7 @@ function selecionar(id) {
   estado.id = id; selT.value = id;
   cena.reescalar(); atualizarTudo();
   document.querySelectorAll(".reg").forEach(p => p.classList.toggle("sel", p.dataset.id === id));
+  ouvintes.trocouRegiao.forEach(f => f());
 }
 
 /* ------------------------------------------------ HUD */
@@ -552,6 +805,7 @@ function desenharSparkline() {
   s.slice(NH).forEach((p, i) => { if (p.real == null) return;
     g.beginPath(); g.arc(x(NH + i), y(p.real), 3.2, 0, 7);
     if (p.status === "completo") { g.fillStyle = C("real"); g.fill(); } else { g.strokeStyle = C("real"); g.lineWidth = 1.2; g.stroke(); } });
+  marcasNotas(g, x, h);
   // cursor
   g.strokeStyle = C("texto"); g.lineWidth = 1; g.beginPath(); g.moveTo(x(estado.idx), 0); g.lineTo(x(estado.idx), h); g.stroke();
   g.beginPath(); g.arc(x(estado.idx), y(s[estado.idx].v), 4.5, 0, 7); g.fillStyle = C("texto"); g.fill();
@@ -586,6 +840,7 @@ function atualizarMes() {
   const fa = s.tipo === "prev" ? leitosDemanda(e, s.hi, s.mes) - oc : 0;
   cena.definir(oc, fa);
   atualizarHUD(); desenharSparkline();
+  ouvintes.mudou.forEach(f => f());
 }
 
 /* ------------------------------------------------ MAPA */
@@ -735,10 +990,11 @@ const desafio = (() => {
     const linhas = [["Real", real, C("real")], ["Você", +slider.value, C("texto")], [NOME_MODELO[ia], am[ia][r.k], C("monitor")], ["Chute", am.Ingenuo[r.k], C("texto-2")]];
     const mx = Math.max(...linhas.map(l => l[1])) || 1;
     const eV = Math.abs(+slider.value - real), eI = Math.abs(am[ia][r.k] - real);
-    let ver;
-    if (Math.abs(eV - eI) < 0.5) { pts.emp++; ver = "Empate técnico."; }
-    else if (eV < eI) { pts.voce++; ver = "Você ganhou desta vez."; }
-    else { pts.ia++; ver = "A IA ganhou esta rodada."; }
+    let ver, res;
+    if (Math.abs(eV - eI) < 0.5) { pts.emp++; ver = "Empate técnico."; res = "empate"; }
+    else if (eV < eI) { pts.voce++; ver = "Você ganhou desta vez."; res = "voce"; }
+    else { pts.ia++; ver = "A IA ganhou esta rodada."; res = "ia"; }
+    ouvintes.revelou.forEach(f => f(res, {eV, eI, real}));
     document.getElementById("resultado").innerHTML = `<div class="veredito">${ver}</div>` + linhas.map(([n, v, c]) =>
       `<div class="r"><span>${n}</span><i style="width:${Math.max(4, v / mx * 100)}%;background:${c}"></i><b class="num">${fmt(v)}${n === "Real" ? "" : ` <small style="color:var(--texto-2)">(erro ${fmt(Math.abs(v - real))})</small>`}</b></div>`).join("");
     ["voce", "ia", "emp"].forEach(k => document.getElementById("pt-" + k).textContent = pts[k]);
@@ -833,10 +1089,632 @@ document.getElementById("rodape").innerHTML = `
   <p><b style="color:var(--texto)">Limites:</b> leitos de saúde mental também atendem outros diagnósticos (como esquizofrenia), então o uso mostrado é só a parte dos transtornos de humor. Meses "parciais" de 2026 ainda vão receber internações lançadas com atraso.</p>
   <p>TCC · Ciência da Computação · UniAnchieta · gerado em ${D.meta.gerado_em}</p>`;
 
+/* ================================================ COLABORAÇÃO E EXTRAS */
+const el = (tag, attrs = {}, ...filhos) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v; else if (k === "text") n.textContent = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v);
+  }
+  filhos.flat().forEach(f => f != null && n.append(f));
+  return n;
+};
+const nomeEnt = id => id === "total" ? "Estado de SP" : (porId[id] ? porId[id].nome : "região");
+const irPara = (id, idx) => {
+  if (porId[id]) { if (id !== estado.id) selecionar(id); }
+  if (idx != null && idx >= 0 && idx < TODOS_MESES.length) { parar(); estado.idx = idx; cursor.value = idx; atualizarMes(); }
+  window.scrollTo({top: 0, behavior: reduzir ? "auto" : "smooth"});
+};
+const cap = {db: null, user: null, room: null, sample: null, eu: null, podeEscrever: false};
+const usar = n => (window.claude && typeof window.claude.use === "function")
+  ? Promise.resolve(window.claude.use(n)).catch(() => null) : Promise.resolve(null);
+
+/* ---------- SIMULADOR */
+const sim = (() => {
+  const $ = id => document.getElementById(id);
+  const sSurto = $("sim-surto"), sLos = $("sim-los"), sRes = $("sim-res"), cPior = $("sim-pior");
+  let entAtual = null;
+  function baseLeitos(e) {
+    const p = e.prev[estado.modelo];
+    return D.meses_prev.map((m, i) => p.p[i] * los(e) / diasNoMes(m));
+  }
+  function prepararRegiao() {
+    const e = porId[estado.id];
+    if (entAtual === e.id) return;
+    entAtual = e.id;
+    sLos.value = Math.round(los(e));
+    const med = d3.mean(baseLeitos(e));
+    sRes.max = Math.max(10, Math.ceil(med * 2.5));
+    sRes.value = Math.ceil(med * 1.1);
+    sSurto.value = 0; cPior.checked = false;
+    $("sim-los-ref").textContent = `Hoje na região: ${nf1.format(los(e))} dias em média (últimos 12 meses)`;
+    $("sim-res-ref").textContent = `Começa com a média prevista + 10% de folga. A região tem ${fmt(e.leitos_sm || 0)} leitos de saúde mental SUS no total (todos os diagnósticos).`;
+  }
+  function estadoSim() {
+    return {surto: +sSurto.value, los: +sLos.value, reserva: +sRes.value, pior: cPior.checked};
+  }
+  function calcular(e, s) {
+    const p = e.prev[estado.modelo];
+    return D.meses_prev.map((m, i) => {
+      const base = s.pior ? p.hi[i] : p.p[i];
+      const internacoes = base * (1 + s.surto / 100);
+      return {mes: m, internacoes, leitos: internacoes * s.los / diasNoMes(m)};
+    });
+  }
+  function desenhar() {
+    prepararRegiao();
+    const e = porId[estado.id], s = estadoSim(), r = calcular(e, s);
+    $("sim-surto-v").textContent = (s.surto > 0 ? "+" : "") + s.surto + "%";
+    $("sim-los-v").textContent = s.los + " dias";
+    $("sim-res-v").textContent = fmt(s.reserva) + " leitos";
+    const falta = r.filter(x => x.leitos > s.reserva);
+    const pico = r.reduce((a, b) => b.leitos > a.leitos ? b : a);
+    const al = $("sim-alerta");
+    if (falta.length) {
+      al.className = "alerta ruim";
+      al.textContent = `Faltariam leitos em ${falta.length} de 6 meses. No pior mês (${rotMes(pico.mes)}) seriam necessários ≈ ${fmt(pico.leitos)} leitos, ${fmt(pico.leitos - s.reserva)} além dos reservados.`;
+    } else {
+      al.className = "alerta ok";
+      al.textContent = `Os ${fmt(s.reserva)} leitos dão conta nos 6 meses. Pico de ≈ ${fmt(pico.leitos)} leitos em ${rotMes(pico.mes)} (folga de ${fmt(s.reserva - pico.leitos)}).`;
+    }
+    const svg = d3.select("#graf-sim"); svg.selectAll("*").remove();
+    const w = svg.node().clientWidth || 600, h = 280, m = {l: 44, r: 12, t: 16, b: 30};
+    svg.attr("viewBox", `0 0 ${w} ${h}`);
+    const x = d3.scaleBand(r.map(d => d.mes), [m.l, w - m.r]).padding(.3);
+    const y = d3.scaleLinear([0, Math.max(s.reserva, d3.max(r, d => d.leitos)) * 1.15 || 1], [h - m.b, m.t]).nice();
+    svg.append("g").selectAll("line").data(y.ticks(4)).join("line").attr("x1", m.l).attr("x2", w - m.r).attr("y1", y).attr("y2", y).attr("stroke", C("linha"));
+    svg.append("g").selectAll("text").data(y.ticks(4)).join("text").attr("x", m.l - 6).attr("y", d => y(d) + 4).attr("text-anchor", "end").attr("fill", C("texto-2")).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(d => nf.format(d));
+    svg.append("g").selectAll("rect").data(r).join("rect").attr("x", d => x(d.mes)).attr("width", x.bandwidth())
+      .attr("y", d => y(d.leitos)).attr("height", d => y(0) - y(d.leitos)).attr("rx", 4)
+      .attr("fill", d => d.leitos > s.reserva ? C("alta") : C("monitor"));
+    svg.append("g").selectAll("text").data(r).join("text").attr("x", d => x(d.mes) + x.bandwidth() / 2).attr("y", d => y(d.leitos) - 6)
+      .attr("text-anchor", "middle").attr("fill", C("texto")).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(d => fmt(d.leitos));
+    svg.append("g").selectAll("text").data(r).join("text").attr("x", d => x(d.mes) + x.bandwidth() / 2).attr("y", h - 10)
+      .attr("text-anchor", "middle").attr("fill", C("texto-2")).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(d => rotMes(d.mes));
+    svg.append("line").attr("x1", m.l).attr("x2", w - m.r).attr("y1", y(s.reserva)).attr("y2", y(s.reserva)).attr("stroke", C("ambar")).attr("stroke-width", 2).attr("stroke-dasharray", "7 5");
+    svg.append("text").attr("x", w - m.r).attr("y", y(s.reserva) - 6).attr("text-anchor", "end").attr("fill", C("ambar")).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(`reservados: ${fmt(s.reserva)}`);
+  }
+  [sSurto, sLos, sRes, cPior].forEach(i => i.addEventListener("input", desenhar));
+  addEventListener("resize", desenhar);
+  function aplicar(c) {
+    if (porId[c.regiao] && c.regiao !== estado.id) selecionar(c.regiao);
+    entAtual = estado.id;
+    sSurto.value = c.surto; sLos.value = c.los; sRes.max = Math.max(+sRes.max, c.reserva); sRes.value = c.reserva; cPior.checked = !!c.pior;
+    desenhar();
+    document.getElementById("simulador").scrollIntoView({behavior: reduzir ? "auto" : "smooth"});
+  }
+  return {desenhar, estadoSim, aplicar};
+})();
+
+/* ---------- MODO APRESENTAÇÃO */
+const tour = (() => {
+  const idxDe = m => TODOS_MESES.indexOf(m);
+  const t = D.total, mb = D.meta.melhor;
+  const r26 = t.real26, p26 = t.prev[mb].p;
+  const passos = [
+    {tit: "O problema", txt: `Em 2025, o SUS de São Paulo registrou ${fmt(t.y.slice(-12).reduce((a, b) => a + b, 0))} internações por depressão e transtorno bipolar, cerca de ${fmt(t.y.slice(-12).reduce((a, b) => a + b, 0) / 365)} por dia. Planejar leitos para essa demanda é o ponto de partida do nosso trabalho.`, reg: "total", mes: "2025-10", sec: null},
+    {tit: "A pandemia", txt: "Em 2020 as internações despencaram: muita gente evitou o hospital. Depois a demanda voltou e passou do nível de antes. Por isso o modelo tem um indicador do período da pandemia.", reg: "total", mes: "2020-05", sec: null},
+    {tit: "A previsão", txt: `Com dados só até dez/2025, a IA previu ${fmt(p26[0])} internações para jan/2026, com faixa provável entre ${fmt(t.prev[mb].lo[0])} e ${fmt(t.prev[mb].hi[0])}. Os leitos âmbar na ala são essa margem de segurança.`, reg: "total", mes: "2026-01", sec: null},
+    {tit: "O teste da realidade", txt: `O SUS já publicou os dados reais: ${fmt(r26[0])} em janeiro (dentro da faixa) e ${fmt(r26[2])} em março, um pico acima do previsto. Mostramos acertos e erros com a mesma transparência.`, reg: "total", mes: "2026-03", sec: null},
+    {tit: "Cada região é uma história", txt: "O mapa mostra onde a IA espera crescimento. Clicando numa região, a ala, os números e a previsão passam a ser daquela região.", reg: "total", mes: "2026-01", sec: "mapa-sec"},
+    {tit: "E se?", txt: "No simulador, gestores testam cenários: uma crise que aumenta a procura, internações mais longas ou menos leitos. O resultado mostra em quais meses faltaria leito.", reg: "350001", mes: "2026-01", sec: "simulador"},
+    {tit: "Teste você mesmo", txt: "No desafio, qualquer pessoa tenta prever um mês que a IA nunca viu e compara seu palpite com a IA. É assim que os modelos foram validados.", reg: "total", mes: "2026-01", sec: "desafio"},
+  ];
+  const $ = id => document.getElementById(id);
+  let i = 0;
+  function mostrar() {
+    const p = passos[i];
+    $("tour-passo").textContent = `Passo ${i + 1} de ${passos.length}`;
+    $("tour-tit").textContent = p.tit; $("tour-txt").textContent = p.txt;
+    $("tour-pontos").replaceChildren(...passos.map((_, k) => el("i", {class: k === i ? "on" : ""})));
+    $("tour-ant").disabled = i === 0;
+    $("tour-prox").textContent = i === passos.length - 1 ? "Concluir" : "Próximo";
+    if (porId[p.reg] && p.reg !== estado.id) selecionar(p.reg);
+    const k = idxDe(p.mes); if (k >= 0) { parar(); estado.idx = k; cursor.value = k; atualizarMes(); }
+    if (p.sec) document.getElementById(p.sec).scrollIntoView({behavior: reduzir ? "auto" : "smooth", block: "start"});
+    else window.scrollTo({top: 0, behavior: reduzir ? "auto" : "smooth"});
+  }
+  function abrir() { i = 0; $("tour").hidden = false; mostrar(); $("tour-prox").focus(); }
+  function fechar() { $("tour").hidden = true; }
+  $("tour-prox").addEventListener("click", () => { if (i < passos.length - 1) { i++; mostrar(); } else fechar(); });
+  $("tour-ant").addEventListener("click", () => { if (i > 0) { i--; mostrar(); } });
+  $("tour-sair").addEventListener("click", fechar);
+  addEventListener("keydown", ev => {
+    if ($("tour").hidden) return;
+    if (ev.key === "Escape") fechar();
+    if (ev.key === "ArrowRight") $("tour-prox").click();
+    if (ev.key === "ArrowLeft") $("tour-ant").click();
+  });
+  $("btn-tour").addEventListener("click", abrir);
+  return {abrir};
+})();
+
+/* ---------- MURAL */
+const mural = (() => {
+  const $ = id => document.getElementById(id);
+  let notas = [], filtro = "todas", tipo = "insight";
+  const TIPOS = {insight: "💡 Insight", duvida: "❓ Dúvida", tarefa: "✅ Tarefa"};
+  function ancora() {
+    $("mural-ancora").textContent = `Será fixada em: ${nomeEnt(estado.id)} · ${rotMes(TODOS_MESES[estado.idx])} (mude a região ou o mês lá em cima para fixar em outro ponto).`;
+  }
+  document.querySelectorAll("#mural [data-filtro]").forEach(b => b.addEventListener("click", () => {
+    filtro = b.dataset.filtro;
+    document.querySelectorAll("#mural [data-filtro]").forEach(x => x.setAttribute("aria-pressed", x === b));
+    render();
+  }));
+  document.querySelectorAll("#mural [data-tipo]").forEach(b => b.addEventListener("click", () => {
+    tipo = b.dataset.tipo;
+    document.querySelectorAll("#mural [data-tipo]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  }));
+  async function render() {
+    const lista = $("mural-lista");
+    if (!cap.db) { lista.replaceChildren(el("p", {class: "aviso", text: "O mural fica disponível quando a página é aberta no Claude, com login."})); return; }
+    let vis = notas;
+    if (filtro === "regiao") vis = vis.filter(n => n.regiao === estado.id);
+    if (filtro === "tarefa") vis = vis.filter(n => n.tipo === "tarefa");
+    if (!vis.length) { lista.replaceChildren(el("p", {class: "aviso", text: filtro === "todas" ? "Ainda não há anotações. Seja o primeiro a fixar uma descoberta." : "Nada aqui com este filtro."})); return; }
+    const ids = [...new Set(vis.map(n => n.autor).filter(Boolean))];
+    const ps = cap.user && ids.length ? await cap.user.profiles(ids) : {};
+    lista.replaceChildren(...vis.map(n => {
+      const p = ps[n.autor] || {name: "", avatarUrl: ""};
+      const meu = cap.eu && n.autor === cap.eu;
+      const acoes = el("div", {class: "acoes"});
+      if (cap.podeEscrever && n.tipo === "tarefa") acoes.append(el("button", {class: "icone", title: n.feito ? "Reabrir" : "Marcar como feita", "aria-label": n.feito ? "Reabrir tarefa" : "Marcar tarefa como feita", text: n.feito ? "↺" : "✓", onclick: () => alternar(n)}));
+      if (meu) acoes.append(el("button", {class: "icone", title: "Apagar", "aria-label": "Apagar anotação", text: "🗑", onclick: () => apagar(n)}));
+      const img = el("img", {alt: ""}); if (p.avatarUrl) img.src = p.avatarUrl;
+      return el("div", {class: "item" + (n.feito ? " feito" : "")}, img,
+        el("div", {}, el("div", {class: "meta"},
+            el("span", {class: "tipo " + n.tipo, text: TIPOS[n.tipo] || n.tipo}),
+            el("b", {text: (p.name || "Alguém") + (meu ? " (você)" : "")}),
+            el("button", {class: "ir", text: `${nomeEnt(n.regiao)} · ${rotMes(TODOS_MESES[n.idx] || D.meses[0])}`, onclick: () => irPara(n.regiao, n.idx)})),
+          el("div", {class: "txt", text: n.texto})),
+        acoes);
+    }));
+  }
+  async function adicionar() {
+    const txt = $("mural-txt").value.trim();
+    if (!txt) { $("mural-msg").textContent = "Escreva algo antes de fixar."; return; }
+    $("mural-add").disabled = true; $("mural-msg").textContent = "Salvando…";
+    try {
+      await cap.db.collection("notas").add({texto: txt.slice(0, 600), tipo, regiao: estado.id, idx: estado.idx, autor: cap.eu, criado: Date.now(), feito: false});
+      $("mural-txt").value = ""; $("mural-msg").textContent = "Fixado no mural.";
+    } catch (e) {
+      $("mural-msg").textContent = e && e.code === "invalid_argument" ? "Você não tem permissão de edição nesta página." : "Não deu para salvar agora. Tente de novo em instantes.";
+    } finally { $("mural-add").disabled = false; }
+  }
+  async function alternar(n) { try { await cap.db.doc("notas/" + n.id).update({feito: !n.feito}); } catch (e) { /* lista volta ao estado real pelo snapshot */ } }
+  async function apagar(n) { try { await cap.db.doc("notas/" + n.id).delete(); } catch (e) { /* idem */ } }
+  $("mural-add").addEventListener("click", adicionar);
+  function iniciar() {
+    if (!cap.db) { render(); return; }
+    $("mural-form").hidden = !cap.podeEscrever; $("mural-sem").hidden = cap.podeEscrever;
+    cap.db.collection("notas").orderBy("criado", "desc").limit(300).onSnapshot(s => {
+      notas = s.docs.map(d => ({id: d.id, ...d.data()}));
+      render(); desenharSparkline();
+    }, () => { $("mural-lista").replaceChildren(el("p", {class: "aviso", text: "O mural não está disponível nesta visualização."})); });
+  }
+  return {iniciar, render, ancora, notasDe: id => notas.filter(n => n.regiao === id)};
+})();
+
+/* marcadores do mural na linha do tempo */
+function marcasNotas(g, x, h) {
+  mural.notasDe(estado.id).forEach(n => {
+    const cx = x(n.idx), cor = n.tipo === "duvida" ? C("ambar") : n.tipo === "tarefa" ? C("ok") : C("monitor");
+    g.beginPath(); g.moveTo(cx, 2); g.lineTo(cx + 4, 7); g.lineTo(cx, 12); g.lineTo(cx - 4, 7); g.closePath();
+    g.fillStyle = cor; g.fill();
+  });
+}
+
+/* ---------- PLACAR COMPARTILHADO DO DESAFIO */
+const placar = (() => {
+  let meu = {vitorias: 0, derrotas: 0, empates: 0}, todos = [];
+  async function render() {
+    const box = document.getElementById("lider");
+    if (!cap.db) { box.replaceChildren(); return; }
+    const lista = todos.filter(p => (p.vitorias + p.derrotas + p.empates) > 0)
+      .map(p => ({...p, n: p.vitorias + p.derrotas + p.empates}))
+      .sort((a, b) => (b.vitorias / b.n) - (a.vitorias / a.n) || b.n - a.n).slice(0, 8);
+    const humanos = todos.reduce((a, p) => a + (p.vitorias || 0), 0), ia = todos.reduce((a, p) => a + (p.derrotas || 0), 0);
+    const ps = cap.user && lista.length ? await cap.user.profiles(lista.map(p => p.id)) : {};
+    box.replaceChildren(
+      el("h3", {text: "Ranking do time"}),
+      el("p", {class: "aviso", text: lista.length ? `Placar geral: pessoas ${humanos} × ${ia} IA` : "Ninguém jogou ainda. Jogue uma rodada para entrar no ranking."}),
+      el("div", {class: "lider"}, ...lista.map((p, k) => {
+        const pr = ps[p.id] || {name: "", avatarUrl: ""}; const img = el("img", {alt: ""}); if (pr.avatarUrl) img.src = pr.avatarUrl;
+        return el("div", {class: "l"}, el("span", {class: "mono", text: k + 1 + "."}), img,
+          el("span", {text: (pr.name || "Alguém") + (p.id === cap.eu ? " (você)" : "")}),
+          el("span", {class: "mono num", text: `${p.vitorias}V ${p.derrotas}D · ${Math.round(p.vitorias / p.n * 100)}%`}));
+      })));
+  }
+  async function registrar(resultado) {
+    if (!cap.db || !cap.eu || !cap.podeEscrever) return;
+    meu = {...meu, [resultado]: (meu[resultado] || 0) + 1};
+    try { await cap.db.doc("placar/" + cap.eu).set({...meu, atualizado: Date.now()}); } catch (e) { /* segue só local */ }
+  }
+  async function iniciar() {
+    if (!cap.db) return;
+    if (cap.eu) {
+      try { const s = await cap.db.doc("placar/" + cap.eu).get(); if (s.exists) { const d = s.data(); meu = {vitorias: d.vitorias || 0, derrotas: d.derrotas || 0, empates: d.empates || 0}; } } catch (e) { /* começa do zero */ }
+    }
+    cap.db.collection("placar").onSnapshot(s => { todos = s.docs.map(d => ({id: d.id, vitorias: 0, derrotas: 0, empates: 0, ...d.data()})); render(); }, () => {});
+  }
+  ouvintes.revelou.push(r => registrar(r === "voce" ? "vitorias" : r === "ia" ? "derrotas" : "empates"));
+  return {iniciar};
+})();
+
+/* ---------- CENÁRIOS SALVOS */
+const cenarios = (() => {
+  let lista = [];
+  async function render() {
+    const box = document.getElementById("sim-lista");
+    if (!lista.length) { box.replaceChildren(el("p", {class: "aviso", text: "Nenhum cenário salvo ainda."})); return; }
+    const ids = [...new Set(lista.map(c => c.autor).filter(Boolean))];
+    const ps = cap.user && ids.length ? await cap.user.profiles(ids) : {};
+    box.replaceChildren(...lista.map(c => {
+      const p = ps[c.autor] || {name: "", avatarUrl: ""}; const img = el("img", {alt: ""}); if (p.avatarUrl) img.src = p.avatarUrl;
+      const acoes = el("div", {class: "acoes"}, el("button", {class: "icone", text: "Abrir", onclick: () => sim.aplicar(c)}));
+      if (cap.eu && c.autor === cap.eu) acoes.append(el("button", {class: "icone", "aria-label": "Apagar cenário", text: "🗑", onclick: () => cap.db.doc("cenarios/" + c.id).delete().catch(() => {})}));
+      return el("div", {class: "item"}, img, el("div", {},
+        el("div", {class: "meta"}, el("b", {text: p.name || "Alguém"}), el("span", {text: nomeEnt(c.regiao)})),
+        el("div", {class: "txt", text: `${c.nome} · procura ${c.surto > 0 ? "+" : ""}${c.surto}%, ${c.los} dias, ${fmt(c.reserva)} leitos${c.pior ? ", pior caso" : ""}`})), acoes);
+    }));
+  }
+  async function salvar() {
+    const nome = document.getElementById("sim-nome").value.trim() || "Cenário sem nome";
+    const b = document.getElementById("sim-btn-salvar"); b.disabled = true;
+    try { await cap.db.collection("cenarios").add({nome: nome.slice(0, 80), regiao: estado.id, ...sim.estadoSim(), autor: cap.eu, criado: Date.now()}); document.getElementById("sim-nome").value = ""; }
+    catch (e) { /* sem permissão: o botão some na próxima carga */ }
+    finally { b.disabled = false; }
+  }
+  document.getElementById("sim-btn-salvar").addEventListener("click", salvar);
+  function iniciar() {
+    if (!cap.db) return;
+    document.getElementById("sim-lista-wrap").hidden = false;
+    document.getElementById("sim-salvar").hidden = !cap.podeEscrever;
+    cap.db.collection("cenarios").orderBy("criado", "desc").limit(50).onSnapshot(s => { lista = s.docs.map(d => ({id: d.id, ...d.data()})); render(); }, () => {});
+  }
+  return {iniciar};
+})();
+
+/* ---------- QUEM ESTÁ NA SALA */
+const presenca = (() => {
+  let ultimo = "";
+  function publicar() {
+    if (!cap.room) return;
+    const v = estado.id + "|" + estado.idx;
+    if (v === ultimo) return; ultimo = v;
+    cap.room.presence({regiao: estado.id, idx: estado.idx}).catch(() => {});
+  }
+  async function render(peers) {
+    const box = document.getElementById("online"), avs = document.getElementById("avs");
+    const pessoas = peers.filter(p => p.kind === "viewer");
+    const vistos = new Map(); pessoas.forEach(p => { const k = p.by || p.peer; if (!vistos.has(k)) vistos.set(k, p); });
+    const lista = [...vistos.values()];
+    if (lista.length < 1) { box.hidden = true; return; }
+    box.hidden = false;
+    const ids = lista.map(p => p.by).filter(Boolean);
+    const ps = cap.user && ids.length ? await cap.user.profiles(ids) : {};
+    const mostrar = lista.slice(0, 5);
+    avs.replaceChildren(...mostrar.map(p => {
+      const pr = (p.by && ps[p.by]) || {name: "", avatarUrl: ""};
+      const reg = p.presence && typeof p.presence.regiao === "string" ? nomeEnt(p.presence.regiao) : "";
+      const img = el("img", {alt: (pr.name || "Alguém") + (p.isMe ? " (você)" : ""), title: `${pr.name || "Alguém"}${p.isMe ? " (você)" : ""}${reg ? " · vendo " + reg : ""}`});
+      if (pr.avatarUrl) img.src = pr.avatarUrl;
+      return img;
+    }), ...(lista.length > 5 ? [el("span", {class: "mais", text: "+" + (lista.length - 5)})] : []));
+    document.querySelector("#online .rot").textContent = lista.length === 1 ? "Só você aqui" : `${lista.length} na sala`;
+  }
+  function iniciar() {
+    if (!cap.room) return;
+    publicar();
+    cap.room.onPeers(ch => render(ch.peers), () => { document.getElementById("online").hidden = true; });
+  }
+  return {iniciar, publicar};
+})();
+
+/* ---------- PERGUNTE À IA */
+const pergunte = (() => {
+  const $ = id => document.getElementById(id);
+  let ctl = null;
+  function contexto() {
+    const m = D.meta.melhor, soma = a => a.reduce((x, y) => x + y, 0);
+    const linha = e => {
+      const p = e.prev[m];
+      return `${e.nome} | 2025: ${fmt(soma(e.y.slice(-12)))} | média mensal 2025: ${nf1.format(soma(e.y.slice(-12)) / 12)} | previsão jan-jun/2026: ${p.p.map(v => fmt(v)).join(", ")} | faixa jan/2026: ${fmt(p.lo[0])}-${fmt(p.hi[0])} | real 2026: ${e.real26.map((v, i) => v == null ? "-" : fmt(v) + (e.status26[i] === "parcial" ? "(parcial)" : "")).join(", ")} | leitos saúde mental SUS: ${fmt(e.leitos_sm || 0)} | permanência média: ${nf1.format(los(e))} dias | população: ${fmt(e.pop)}`;
+    };
+    const anual = {}; D.meses.forEach((mm, i) => { const a = mm.slice(0, 4); anual[a] = (anual[a] || 0) + D.total.y[i]; });
+    const bt = D.backtest_h.map(r => `${r.modelo} h=${r.h}: erro ${nf1.format(r.erro_pct_total)}%`).join("; ");
+    return [
+      "CONTEXTO DO ESTUDO: TCC de Ciência da Computação. Previsão mensal de internações SUS por transtornos de humor (CID F30-F39) de residentes do estado de São Paulo, por região imediata do IBGE. Dados: SIH-SUS, CNES e IBGE. Modelos: Random Forest e LightGBM, um por horizonte (1 a 6 meses), treinados até dez/2025. Faixa de 80% calibrada com erros de 18 testes em 2024-2025. Meses de 2026 'parciais' ainda recebem internações atrasadas.",
+      `Total do estado por ano: ${Object.entries(anual).map(([a, v]) => a + ": " + fmt(v)).join(", ")}.`,
+      `Erro médio no total do estado (backtest), por modelo e horizonte: ${bt}.`,
+      `Melhor modelo: ${m}.`,
+      "Por região (nome | total 2025 | média mensal | previsão | faixa | real 2026 | leitos | permanência | população):",
+      linha(D.total), ...D.regioes.map(linha),
+    ].join("\n");
+  }
+  async function perguntar(q) {
+    q = (q || "").trim(); if (!q || !cap.sample) return;
+    if (ctl) ctl.abort(); ctl = new AbortController();
+    $("perg-resp").textContent = "Pensando…"; $("perg-btn").disabled = true;
+    try {
+      await cap.sample([{role: "user", content:
+        "Você ajuda um grupo de TCC a explicar seus resultados. Responda em português do Brasil, em linguagem simples, em no máximo 8 frases ou tópicos curtos. Use apenas os dados abaixo; cite números; quando os dados não permitirem concluir algo, diga isso. Não use markdown com # ou tabelas.\n\nDADOS:\n" + contexto() + "\n\nPERGUNTA: " + q}],
+        {onText: ({text}) => { $("perg-resp").textContent = text; }, signal: ctl.signal, modelTier: "default", cache: false});
+    } catch (e) {
+      if (e && e.code === "not_granted") { $("perg-resp").textContent = "Sem permissão para consultar o Claude nesta visualização."; }
+      else if (e && e.code === "rate_limited") { $("perg-resp").textContent = "Muitas perguntas seguidas. Espere um pouco e tente de novo."; }
+      else if (!(e && e.name === "AbortError")) { $("perg-resp").textContent = (e && e.text) ? e.text : "Não consegui responder agora. Tente novamente."; }
+    } finally { $("perg-btn").disabled = false; }
+  }
+  $("perg-btn").addEventListener("click", () => perguntar($("perg-txt").value));
+  $("perg-txt").addEventListener("keydown", ev => { if (ev.key === "Enter") perguntar($("perg-txt").value); });
+  document.querySelectorAll("#perg-chips button").forEach(b => b.addEventListener("click", () => { $("perg-txt").value = b.textContent; perguntar(b.textContent); }));
+  function iniciar() { document.getElementById("pergunte").hidden = !cap.sample; }
+  return {iniciar};
+})();
+
+/* ---------- APONTAMENTOS AUTOMÁTICOS */
+const pct = v => (v >= 0 ? "+" : "") + nf1.format(v) + "%";
+const apontamentos = (() => {
+  const SEV = {critico: {rot: "Crítico", o: 0}, atencao: {rot: "Atenção", o: 1}, info: {rot: "Acompanhar", o: 2}};
+  let filtro = "todos";
+  function gerar() {
+    const m = estado.modelo, out = [];
+    D.regioes.concat([D.total]).forEach(e => {
+      const p = e.prev[m], nome = nomeEnt(e.id), media = e.y.slice(-12).reduce((a, b) => a + b, 0) / 12;
+      const peq = pequena(e), tend = valorInd(e, "tend");
+      const add = (sev, idx, tit, txt) => out.push({sev, id: e.id, idx, tit, txt});
+      if (tend != null && tend >= 15) add("critico", NH, `${nome}: alta prevista de ${pct(tend)}`, `A IA espera ${nf1.format(d3.mean(p.p))} internações por mês no 1º semestre de 2026, contra ${nf1.format(media)} de média em 2025.`);
+      else if (tend != null && tend >= 7) add("atencao", NH, `${nome}: tendência de alta (${pct(tend)})`, `Previsão de ${nf1.format(d3.mean(p.p))} internações/mês contra ${nf1.format(media)} em 2025.`);
+      else if (tend != null && tend <= -10) add("info", NH, `${nome}: queda prevista (${pct(tend)})`, `A IA espera menos internações que em 2025. Vale checar se houve mudança na rede de atendimento.`);
+      if (!peq) {
+        const k = p.p.indexOf(Math.max(...p.p));
+        if (p.p[k] > media * 1.15) add("atencao", NH + k, `${nome}: pico previsto em ${rotMes(D.meses_prev[k])}`, `${fmt(p.p[k])} internações previstas, ${pct((p.p[k] / media - 1) * 100)} acima da média de 2025.`);
+        if ((p.hi[0] - p.lo[0]) / Math.max(1, p.p[0]) >= .6) add("info", NH, `${nome}: previsão com muita incerteza`, `A faixa provável de jan/2026 vai de ${fmt(p.lo[0])} a ${fmt(p.hi[0])}.`);
+      }
+      if (e.id !== "total" && !e.leitos_sm && media >= 5) add("atencao", NH, `${nome}: sem leitos de saúde mental SUS`, `Cerca de ${fmt(media)} moradores por mês são internados fora da região.`);
+      if (e.leitos_sm) {
+        const lb = p.p[0] * los(e) / diasNoMes(D.meses_prev[0]), u = lb / e.leitos_sm;
+        if (u >= .3) add(u >= .6 ? "critico" : "atencao", NH, `${nome}: humor ocuparia ${Math.round(u * 100)}% dos leitos de saúde mental`, `≈ ${fmt(lb)} dos ${fmt(e.leitos_sm)} leitos SUS da região só com transtornos de humor em jan/2026.`);
+      }
+      e.status26.forEach((st, i) => {
+        const r = e.real26[i];
+        if (st === "completo" && r != null && !peq && (r < p.lo[i] || r > p.hi[i]))
+          add("info", NH + i, `${nome}: real de ${rotMes(D.meses_prev[i])} fora da faixa`, `Previsto ${fmt(p.p[i])} (entre ${fmt(p.lo[i])} e ${fmt(p.hi[i])}), real ${fmt(r)}. Bom caso para discutir no texto.`);
+      });
+    });
+    return out.sort((a, b) => SEV[a.sev].o - SEV[b.sev].o);
+  }
+  function render() {
+    const lista = gerar(), cont = {critico: 0, atencao: 0, info: 0};
+    lista.forEach(a => cont[a.sev]++);
+    const fb = document.getElementById("filtros-ap");
+    fb.replaceChildren(...[["todos", "Todos", lista.length], ["critico", "Críticos", cont.critico], ["atencao", "Atenção", cont.atencao], ["info", "Acompanhar", cont.info]].map(([k, r, n]) =>
+      el("button", {"aria-pressed": String(filtro === k), onclick: () => { filtro = k; render(); }}, r, el("b", {text: String(n)}))));
+    const vis = filtro === "todos" ? lista : lista.filter(a => a.sev === filtro);
+    document.getElementById("cards-ap").replaceChildren(...(vis.length ? vis : []).map(a => {
+      const c = el("div", {class: "ap " + a.sev, tabindex: "0", role: "button"},
+        el("span", {class: "sev"}), el("div", {}, el("h4", {text: a.tit}), el("p", {text: a.txt})),
+        el("span", {class: "tag", text: SEV[a.sev].rot}));
+      const ir = () => { irPara(a.id, a.idx); const r = document.querySelector(`.reg[data-id="${a.id}"]`); if (r) { r.classList.remove("pulsa"); void r.getBBox(); r.classList.add("pulsa"); } };
+      c.addEventListener("click", ir); c.addEventListener("keydown", ev => { if (ev.key === "Enter") ir(); });
+      return c;
+    }));
+    if (!vis.length) document.getElementById("cards-ap").replaceChildren(el("p", {class: "como-ler", text: "Nada nesta categoria."}));
+    const res = document.getElementById("ap-resumo");
+    res.replaceChildren(
+      el("span", {class: "olho", text: `Varredura com ${NOME_MODELO[estado.modelo]}`}),
+      el("div", {class: "contador"},
+        el("div", {}, el("b", {text: String(cont.critico), style: "color:var(--alta)"}), el("span", {text: "críticos"})),
+        el("div", {}, el("b", {text: String(cont.atencao), style: "color:var(--ambar)"}), el("span", {text: "atenção"})),
+        el("div", {}, el("b", {text: String(cont.info), style: "color:var(--queda)"}), el("span", {text: "acompanhar"}))),
+      el("p", {class: "como-ler", text: "Regras: alta ≥ 7% (crítico ≥ 15%) frente à média de 2025; pico 15% acima da média; humor ocupando ≥ 30% dos leitos de saúde mental; real de 2026 fora da faixa. Regiões com menos de 5 internações por mês ficam de fora das variações."}),
+      el("button", {class: "btn sec", text: "Fixar uma descoberta no mural do time", onclick: () => document.getElementById("mural").scrollIntoView({behavior: reduzir ? "auto" : "smooth"})}));
+  }
+  return {render};
+})();
+
+/* ---------- POR QUE ESSA PREVISÃO (SHAP) */
+function porque() {
+  const fr = document.getElementById("porque-frase"), svg = d3.select("#graf-porque");
+  svg.selectAll("*").remove();
+  const sh = D.experimentos && D.experimentos.shap;
+  const s = serie(porId[estado.id], estado.modelo)[estado.idx];
+  if (!sh || !sh.entidades) { fr.textContent = "A explicação aparece depois de rodar o laboratório de experimentos (experimentos.bat)."; svg.attr("height", 0); return; }
+  if (s.tipo !== "prev") { fr.textContent = `Você está vendo ${rotMes(s.mes)}, que já aconteceu. Escolha um mês de 2026 na linha do tempo para ver como a IA montou a previsão.`; svg.attr("height", 0); return; }
+  const h = estado.idx - NH, c = (sh.entidades[estado.id] || [])[h];
+  if (!c) { fr.textContent = "Sem explicação disponível para esta combinação."; return; }
+  const n = estado.id === "total" ? (sh.n_regioes || 1) : 1, base = sh.base[h] * n;
+  const itens = sh.grupos.map((g, i) => ({g, v: c[i]})).filter(d => Math.abs(d.v) >= 0.05 * n).sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+  const final = base + c.reduce((a, b) => a + b, 0);
+  const sobe = itens.filter(d => d.v > 0)[0], desce = itens.filter(d => d.v < 0)[0];
+  fr.innerHTML = "";
+  fr.append(`Para ${nomeEnt(estado.id)} em ${rotMes(s.mes)}, o LightGBM chega a `, el("b", {text: fmt(final)}), " internações. ",
+    sobe ? `O que mais empurrou para cima foi “${sobe.g}” (+${nf1.format(sobe.v)}). ` : "",
+    desce ? `Para baixo, “${desce.g}” (${nf1.format(desce.v)}).` : "");
+  const linhas = [{g: "Ponto de partida (média geral)", ini: 0, fim: base, tipo: "base"}];
+  let acc = base;
+  itens.forEach(d => { linhas.push({g: d.g, ini: acc, fim: acc + d.v, tipo: d.v >= 0 ? "sobe" : "desce", v: d.v}); acc += d.v; });
+  linhas.push({g: "Previsão final", ini: 0, fim: acc, tipo: "base"});
+  const w = svg.node().clientWidth || 700, rh = 30, m = {l: 230, r: 70, t: 6, b: 6}, H = linhas.length * rh + m.t + m.b;
+  const estreito = w < 560; if (estreito) m.l = 140;
+  svg.attr("viewBox", `0 0 ${w} ${H}`).attr("height", H);
+  const lo = Math.min(0, d3.min(linhas, d => Math.min(d.ini, d.fim))), hi = d3.max(linhas, d => Math.max(d.ini, d.fim));
+  const x = d3.scaleLinear([lo, hi * 1.04], [m.l, w - m.r]);
+  const g = svg.append("g").selectAll("g").data(linhas).join("g").attr("transform", (d, i) => `translate(0,${m.t + i * rh})`);
+  g.append("text").attr("x", m.l - 8).attr("y", rh / 2 + 4).attr("text-anchor", "end").attr("fill", C("texto-2")).attr("font-size", estreito ? 10.5 : 12)
+    .text(d => estreito && d.g.length > 22 ? d.g.slice(0, 21) + "…" : d.g);
+  g.append("rect").attr("x", d => x(Math.min(d.ini, d.fim))).attr("width", d => Math.max(2, Math.abs(x(d.fim) - x(d.ini)))).attr("y", 6).attr("height", rh - 12).attr("rx", 3)
+    .attr("fill", d => d.tipo === "base" ? C("monitor") : d.tipo === "sobe" ? C("alta") : C("queda")).attr("opacity", d => d.tipo === "base" ? .9 : .85);
+  g.append("text").attr("x", d => x(Math.max(d.ini, d.fim)) + 6).attr("y", rh / 2 + 4).attr("fill", C("texto")).attr("font-size", 11.5).attr("font-family", "IBM Plex Mono, monospace")
+    .text(d => d.tipo === "base" ? fmt(d.fim) : (d.v > 0 ? "+" : "") + nf1.format(d.v));
+}
+
+/* ---------- LABORATÓRIO DA BANCA */
+function laboratorio() {
+  const E = D.experimentos; if (!E || !E.modelos) return;
+  document.getElementById("lab").hidden = false;
+  const M = E.modelos, best = E.melhor, nm = k => NOME_MODELO[k] || k;
+  const sig = Object.fromEntries((E.significancia || []).map(x => [x.modelo, x]));
+  document.getElementById("lab-sub").textContent = `Mesmo protocolo para todos: os 12 meses de ${E.teste_meses[0].slice(0, 4)}, prevendo 1 mês à frente e treinando do zero a cada mês, só com o passado. O ajuste de hiperparâmetros testou ${E.tuning.n_configs} configurações usando só dados de ${(+E.teste_meses[0].slice(0, 4)) - 1}.`;
+  const par = (a, b) => (E.pares || []).find(x => x.modelo === a && x.contra === b);
+  const menor = ks => ks.reduce((a, b) => M[b].MAE < M[a].MAE ? b : a);
+  const ML = ["RandomForest", "LightGBM", "LightGBM_ajustado"].filter(k => M[k]), mlBest = menor(ML);
+  const chutes = ["Ingenuo", "Sazonal_ingenuo"].filter(k => M[k]), chBest = menor(chutes);
+  const g1 = (1 - M[mlBest].MAE / M[chBest].MAE) * 100, s1 = chutes.every(k => (par(k, mlBest) || {}).significativo_5pct);
+  const ab = Object.fromEntries(E.ablacao.map(a => [a.grupo, a]));
+  const minBCD = Math.min(ab.B.MAE, ab.C.MAE, ab.D.MAE), ganho2 = (1 - minBCD / ab.A.MAE) * 100;
+  const ganho3 = (1 - ab.D.MAE / ab.C.MAE) * 100;
+  const g4 = M.ETS ? (1 - M[mlBest].MAE / M.ETS.MAE) * 100 : null;
+  const iaGanhaEts = M.ETS && (par("ETS", mlBest) || {}).significativo_5pct, etsGanhaIa = M.ETS && (par(mlBest, "ETS") || {}).significativo_5pct;
+  const combo = M.Combinacao ? (1 - M.Combinacao.MAE / Math.min(M[mlBest].MAE, M.ETS ? M.ETS.MAE : Infinity)) * 100 : null;
+  const H = [
+    {n: "H1", q: "A IA prevê melhor que os chutes simples?", v: g1 > 0 ? (s1 ? "sim" : "parcial") : "nao",
+     t: `${nm(mlBest)} erra ${nf1.format(Math.abs(g1))}% ${g1 > 0 ? "menos" : "mais"} que o melhor chute (${nm(chBest)}). ${s1 ? "Diferença estatisticamente significativa." : "Parte da diferença ainda pode ser acaso."}`},
+    {n: "H2", q: "A engenharia de atributos melhora a previsão?", v: ganho2 >= 5 ? "sim" : ganho2 > 0 ? "parcial" : "nao",
+     t: `Só com os meses recentes o erro médio é ${nf1.format(ab.A.MAE)}. Com sazonalidade e médias cai para ${nf1.format(minBCD)}: ${nf1.format(ganho2)}% a menos.`},
+    {n: "H3", q: "Variáveis externas (ansiedade, leitos, população) ajudam?", v: ganho3 >= 1 ? "sim" : ganho3 > -1 ? "parcial" : "nao",
+     t: ganho3 >= 1 ? `Sim: somá-las reduziu o erro em mais ${nf1.format(ganho3)}%.` : ganho3 > -1 ? `Praticamente empate (${pct(-ganho3)} no erro): o próprio histórico já carrega quase toda a informação.` : `Não: com elas o erro subiu ${nf1.format(-ganho3)}%. O histórico já carrega a informação.`},
+  ];
+  if (g4 != null) H.push({n: "H4", q: "A IA supera um método estatístico clássico (ETS)?", v: iaGanhaEts ? "sim" : etsGanhaIa ? "nao" : "parcial",
+    t: `${iaGanhaEts ? "Sim" : etsGanhaIa ? "Não" : "Empate estatístico"}: ${nm(mlBest)} ${g4 >= 0 ? "erra " + nf1.format(g4) + "% menos" : "erra " + nf1.format(-g4) + "% mais"} que o ETS. ` +
+      (combo != null ? (combo > 0 ? `Combinando ETS e IA, o erro cai mais ${nf1.format(combo)}%: a melhor opção do estudo.` : `A combinação ETS + IA empata no erro por região${M.Combinacao.erro_total_pct <= Math.min(...Object.values(M).map(z => z.erro_total_pct)) ? `, mas tem o menor erro no total do estado (${nf1.format(M.Combinacao.erro_total_pct)}%) e menos viés` : ""}.`) : "")});
+  const ROT = {sim: "Confirmada", parcial: "Em parte", nao: "Não confirmada"};
+  document.getElementById("hipoteses").replaceChildren(...H.map(h => el("div", {class: "cartao hip"},
+    el("span", {class: "olho", text: h.n}), el("h3", {text: h.q}), el("div", {class: "ver " + h.v, text: ROT[h.v]}), el("p", {text: h.t}))));
+  // ablação
+  (() => {
+    const svg = d3.select("#graf-ablacao"); svg.selectAll("*").remove();
+    const w = svg.node().clientWidth || 500, hh = 240, m = {l: 40, r: 10, t: 22, b: 46}; svg.attr("viewBox", `0 0 ${w} ${hh}`);
+    const d = E.ablacao, x = d3.scaleBand(d.map(a => a.grupo), [m.l, w - m.r]).padding(.3), y = d3.scaleLinear([0, d3.max(d, a => a.MAE) * 1.15], [hh - m.b, m.t]);
+    svg.append("g").selectAll("rect").data(d).join("rect").attr("x", a => x(a.grupo)).attr("width", x.bandwidth()).attr("y", a => y(a.MAE)).attr("height", a => y(0) - y(a.MAE)).attr("rx", 4)
+      .attr("fill", a => a.MAE === d3.min(d, z => z.MAE) ? C("ok") : C("monitor"));
+    svg.append("g").selectAll("text").data(d).join("text").attr("x", a => x(a.grupo) + x.bandwidth() / 2).attr("y", a => y(a.MAE) - 6).attr("text-anchor", "middle").attr("fill", C("texto")).attr("font-size", 12).attr("font-family", "IBM Plex Mono, monospace").text(a => nf1.format(a.MAE));
+    svg.append("g").selectAll("text").data(d).join("text").attr("x", a => x(a.grupo) + x.bandwidth() / 2).attr("y", hh - 28).attr("text-anchor", "middle").attr("fill", C("texto")).attr("font-size", 11).text(a => a.grupo);
+    svg.append("g").selectAll("text").data(d).join("text").attr("x", a => x(a.grupo) + x.bandwidth() / 2).attr("y", hh - 12).attr("text-anchor", "middle").attr("fill", C("texto-2")).attr("font-size", 10).text(a => a.rotulo.length > 18 && w < 520 ? a.rotulo.slice(0, 17) + "…" : a.rotulo);
+  })();
+  // porte
+  (() => {
+    const svg = d3.select("#graf-porte"); svg.selectAll("*").remove();
+    const w = svg.node().clientWidth || 500, hh = 240, m = {l: 40, r: 10, t: 22, b: 34}; svg.attr("viewBox", `0 0 ${w} ${hh}`);
+    const d = E.erro_por_porte, x0 = d3.scaleBand(d.map(a => a.porte), [m.l, w - m.r]).padding(.25), x1 = d3.scaleBand(["m", "c"], [0, x0.bandwidth()]).padding(.12);
+    const y = d3.scaleLinear([0, d3.max(d, a => Math.max(a.erro_pct_modelo, a.erro_pct_chute)) * 1.18], [hh - m.b, m.t]);
+    const g = svg.append("g").selectAll("g").data(d).join("g").attr("transform", a => `translate(${x0(a.porte)},0)`);
+    [["m", "erro_pct_modelo", C("monitor")], ["c", "erro_pct_chute", "#53687c"]].forEach(([k, f, cor]) => {
+      g.append("rect").attr("x", x1(k)).attr("width", x1.bandwidth()).attr("y", a => y(a[f])).attr("height", a => y(0) - y(a[f])).attr("rx", 3).attr("fill", cor);
+      g.append("text").attr("x", x1(k) + x1.bandwidth() / 2).attr("y", a => y(a[f]) - 5).attr("text-anchor", "middle").attr("fill", C("texto")).attr("font-size", 11).attr("font-family", "IBM Plex Mono, monospace").text(a => nf1.format(a[f]) + "%");
+    });
+    g.append("text").attr("x", x0.bandwidth() / 2).attr("y", hh - 12).attr("text-anchor", "middle").attr("fill", C("texto-2")).attr("font-size", 11).text(a => `${a.porte} (~${fmt(a.media_mensal)}/mês)`);
+    svg.append("text").attr("x", w - m.r).attr("y", 12).attr("text-anchor", "end").attr("font-size", 11).attr("fill", C("texto-2")).text("■ IA   ■ chute");
+  })();
+  // tabela
+  const ordem = Object.keys(M).sort((a, b) => M[a].MAE - M[b].MAE);
+  document.querySelector("#tab-lab thead").innerHTML = "<tr><th>Modelo</th><th>Erro médio (MAE)</th><th>RMSE</th><th>Erro no total</th><th>Viés</th><th>Contra o melhor</th></tr>";
+  document.querySelector("#tab-lab tbody").replaceChildren(...ordem.map(k => {
+    const sg = sig[k], badge = k === best ? el("span", {class: "badge best", text: "melhor"})
+      : sg ? el("span", {class: "badge " + (sg.significativo_5pct ? "sig" : "emp"), text: sg.significativo_5pct ? `diferença real (p=${nf1.format(Math.min(sg.p_dm, sg.p_wilcoxon) * 100)}%)` : `empate estatístico (p=${nf1.format(Math.min(sg.p_dm, sg.p_wilcoxon) * 100)}%)`}) : "—";
+    return el("tr", {style: "cursor:default"}, el("td", {text: nm(k)}), el("td", {text: nf1.format(M[k].MAE)}), el("td", {text: nf1.format(M[k].RMSE)}),
+      el("td", {text: nf1.format(M[k].erro_total_pct) + "%"}), el("td", {text: pct(M[k].vies_pct)}), el("td", {}, badge));
+  }));
+  const cfg = E.tuning.melhor_config, cfgTxt = cfg.config ? "a configuração padrão continuou a melhor" : `a melhor configuração usa ${cfg.objective === "poisson" ? "perda de Poisson (própria para contagens), " : ""}${cfg.n_estimators} árvores, taxa ${cfg.learning_rate} e ${cfg.num_leaves} folhas`;
+  document.getElementById("lab-nota").textContent = `Teste de Diebold-Mariano (com correção para amostras pequenas) e Wilcoxon pareado comparam os erros de cada modelo com os do melhor; p abaixo de 5% indica diferença que dificilmente é acaso. Viés positivo = a IA prevê acima do real. No ajuste, ${cfgTxt}.`;
+}
+
+/* ---------- PARECER DO PROFESSOR */
+function parecer() {
+  const E = !!(D.experimentos && D.experimentos.modelos), S = !!(D.experimentos && D.experimentos.shap && D.experimentos.shap.entidades);
+  const itens = [
+    ["Pergunta de pesquisa e hipóteses claras", "Três hipóteses testadas com dados, com veredito.", E, "lab"],
+    ["Dados públicos, recorte e limites documentados", "SIH-SUS, CNES e IBGE; AIHs novas, por residência e data de internação.", true, "rodape"],
+    ["Sem vazamento de dados", "Teste automático prova que mudar o futuro não altera atributos do passado.", true, "ia"],
+    ["Comparação com método estatístico clássico", "ETS (Holt-Winters) além dos chutes simples.", E, "lab"],
+    ["Ajuste de hiperparâmetros sem tocar no teste", "Busca aleatória validada só no ano anterior ao teste.", E, "lab"],
+    ["Ablação da engenharia de atributos", "O ganho de cada grupo de pistas, degrau por degrau.", E, "lab"],
+    ["Significância estatística", "Diebold-Mariano e Wilcoxon contra o melhor modelo.", E, "lab"],
+    ["Margem de erro verificada fora da amostra", "Faixa de 80% conferida com o real de 2026.", true, "ia"],
+    ["Explicação de cada previsão", "Contribuição de cada pista (valores SHAP do LightGBM).", S, "porque"],
+    ["Análise de erro", "Erro por porte de região, viés e meses fora da faixa.", E, "lab"],
+    ["Aplicação prática para gestores", "Simulador de leitos e apontamentos automáticos por região.", true, "simulador"],
+    ["Reprodutível", "Pipeline em um clique, testes automáticos e código no GitHub.", true, "rodape"],
+    ["Próximo passo: SARIMA e previsão hierárquica", "Comparar com SARIMA e reconciliar região × estado.", false, null],
+    ["Próximo passo: intervalos conformais", "Garantia formal de cobertura da faixa de erro.", false, null],
+    ["Próximo passo: atualização mensal automática", "Rodar o pipeline todo mês via GitHub Actions.", false, null],
+    ["Próximo passo: validação com gestores", "Mostrar a sala a quem planeja leitos e colher feedback.", false, null],
+  ];
+  const ok = itens.filter(i => i[2]).length;
+  document.getElementById("parecer-barra").style.width = (ok / itens.length * 100) + "%";
+  document.getElementById("parecer-txt").textContent = `${ok} de ${itens.length} critérios atendidos · ${itens.length - ok} próximos passos`;
+  document.getElementById("parecer").replaceChildren(...itens.map(([t, d, st, alvo]) => {
+    const b = el("button", {class: "crit", type: "button"}, el("span", {class: "st " + (st ? "ok" : "prox"), text: st ? "✓" : "→"}), el("div", {}, el("b", {text: t}), el("span", {text: d})));
+    if (alvo) b.addEventListener("click", () => document.getElementById(alvo).scrollIntoView({behavior: reduzir ? "auto" : "smooth", block: "start"}));
+    else b.style.cursor = "default";
+    return b;
+  }));
+}
+
+/* ---------- CONQUISTAS, CONFETE E AVISOS */
+const festa = (() => {
+  const cv = document.getElementById("confete"), g = cv.getContext("2d");
+  let parts = [], rodando = false;
+  function soltar() {
+    if (reduzir) return;
+    cv.width = innerWidth; cv.height = innerHeight;
+    const cores = [C("monitor"), C("ambar"), C("real"), C("ok"), C("alta")];
+    for (let i = 0; i < 140; i++) parts.push({x: innerWidth / 2, y: innerHeight * .35, vx: (Math.random() - .5) * 14, vy: -Math.random() * 12 - 4, r: Math.random() * 5 + 3, c: cores[i % cores.length], a: Math.random() * 6, t: 0});
+    if (!rodando) { rodando = true; requestAnimationFrame(passo); }
+  }
+  function passo() {
+    g.clearRect(0, 0, cv.width, cv.height);
+    parts.forEach(p => { p.vy += .35; p.x += p.vx; p.y += p.vy; p.a += .2; p.t++; g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.fillStyle = p.c; g.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * .6); g.restore(); });
+    parts = parts.filter(p => p.y < cv.height + 20 && p.t < 160);
+    if (parts.length) requestAnimationFrame(passo); else { rodando = false; g.clearRect(0, 0, cv.width, cv.height); }
+  }
+  let tId = null;
+  function aviso(txt) {
+    let t = document.querySelector(".toast"); if (!t) { t = el("div", {class: "toast", role: "status"}); document.body.append(t); }
+    t.textContent = txt; t.hidden = false; clearTimeout(tId); tId = setTimeout(() => { t.hidden = true; }, 3200);
+  }
+  const C_ = [["primeira", "🎯 Primeira rodada"], ["vitoria", "🏆 Venceu a IA"], ["vidente", "🔮 Vidente (errou ≤ 2)"], ["seq3", "🔥 3 vitórias seguidas"], ["dez", "📈 10 rodadas"]];
+  const tem = new Set(); let seq = 0, rodadas = 0;
+  function render() { document.getElementById("conquistas").replaceChildren(...C_.map(([k, r]) => el("span", {class: "conq" + (tem.has(k) ? " on" : ""), text: r}))); }
+  function ganhar(k) { if (tem.has(k)) return; tem.add(k); const r = C_.find(c => c[0] === k)[1]; aviso("Conquista: " + r); render(); }
+  ouvintes.revelou.push((res, info) => {
+    rodadas++; ganhar("primeira");
+    if (res === "voce") { seq++; soltar(); ganhar("vitoria"); if (seq >= 3) ganhar("seq3"); } else seq = 0;
+    if (info && info.eV <= 2) ganhar("vidente");
+    if (rodadas >= 10) ganhar("dez");
+  });
+  render();
+  return {soltar, aviso};
+})();
+
+ouvintes.mudou.push(porque);
+ouvintes.trocouRegiao.push(() => apontamentos.render());
+addEventListener("resize", () => { porque(); laboratorio(); });
+
+ouvintes.mudou.push(() => { mural.ancora(); presenca.publicar(); });
+ouvintes.trocouRegiao.push(() => { sim.desenhar(); if (filtroRegiaoAtivo()) mural.render(); });
+function filtroRegiaoAtivo() { const b = document.querySelector('#mural [data-filtro="regiao"]'); return b && b.getAttribute("aria-pressed") === "true"; }
+
+/* liga as capacidades quando o visualizador responder */
+(async () => {
+  document.getElementById("pergunte").hidden = true;
+  const [db, user, room, sample] = await Promise.all(["db", "user", "room", "sample"].map(usar));
+  Object.assign(cap, {db, user, room, sample});
+  if (user) {
+    cap.eu = await user.id();
+    const pode = await user.can("data.write");
+    cap.podeEscrever = !!db && !!cap.eu && pode !== false;
+  }
+  mural.iniciar(); placar.iniciar(); cenarios.iniciar(); presenca.iniciar(); pergunte.iniciar();
+})();
+
 function atualizarTudo() {
-  atualizarMes(); mapa.pintar(); destaques(); graficoPlacar(); tabela();
+  atualizarMes(); mapa.pintar(); destaques(); graficoPlacar(); tabela(); sim.desenhar();
 }
 cena.reescalar();
 atualizarTudo(); pistas(); desafio.nova();
+apontamentos.render(); laboratorio(); parecer(); porque();
 })();
 </script>

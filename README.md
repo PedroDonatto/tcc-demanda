@@ -35,6 +35,8 @@ Ou etapa por etapa:
 | 5. Modelos | `python -m src.train regiao 12` | `outputs/metricas_regiao.csv` + gráfico |
 | 6. Previsão 2026 | `python -m src.prever 6 18` | `previsao_total.csv`, `previsao_regiao.csv`, `grafico_previsao.png`, modelos em `models/` |
 | Dashboard | dois cliques em `abrir_dashboard.bat` (ou `streamlit run app/dashboard.py`) | abre no navegador |
+| 7. Laboratório da banca | dois cliques em `experimentos.bat` (ou `python -m src.experimentos`) | ETS, ajuste, ablação, testes estatísticos, SHAP em `outputs/experimentos.json` |
+| Sala de Situação | dois cliques em `ver_sala.bat` (gerada por `python -m src.exportar_web`) | página interativa em `app/web/index.html` |
 | Banco SQL | `python -m src.db "SELECT * FROM painel_regiao LIMIT 5"` | `data/tcc.duckdb` |
 
 Testes (sem internet): `python -m tests.test_pipeline`
@@ -80,3 +82,18 @@ Testes (sem internet): `python -m tests.test_pipeline`
 ## Configurar
 
 Recorte, período, CIDs e códigos de leito ficam em `src/config.py`.
+
+## Laboratório (o que a banca vai perguntar)
+
+- **Comparação justa:** chutes simples, ETS (Holt-Winters), Random Forest, LightGBM
+  padrão, LightGBM ajustado e a combinação ETS + IA, todos no mesmo walk-forward
+  de 12 meses (2025, 1 mês à frente).
+- **Ajuste de hiperparâmetros:** busca aleatória (15 configurações, inclui perda de
+  Poisson) validada só em 2024, sem tocar no teste.
+- **Ablação:** A) meses recentes → B) + sazonalidade → C) + médias → D) + variáveis
+  externas. Mede o efeito de cada grupo de atributos.
+- **Significância:** Diebold-Mariano (correção HLN) e Wilcoxon pareado.
+- **Explicabilidade:** valores SHAP (`pred_contrib` do LightGBM) para cada previsão
+  de 2026, agrupados em pistas compreensíveis.
+- **Resultado honesto:** a IA bate os chutes com significância; contra o ETS há
+  empate estatístico, e a combinação ETS + IA tem o menor erro no total do estado.

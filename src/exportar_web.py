@@ -125,6 +125,8 @@ def main() -> None:
         "total": total, "regioes": regioes,
         "backtest_h": bth.round(2).to_dict(orient="records"),
         "importancias": imp_top, "geo": geo,
+        "experimentos": (json.loads((O / "experimentos.json").read_text(encoding="utf-8"))
+                         if (O / "experimentos.json").exists() else None),
         "mun_regiao": dict(zip(mun["cod_ibge7"].astype(str),
                                mun["reg_imediata_id"].astype(str))),
     }
