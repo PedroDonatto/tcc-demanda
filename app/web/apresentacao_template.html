@@ -1,0 +1,366 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Defesa · Sala de Situação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: palco 16:9 (1600×900) escalado para caber na tela; um slide por vez,
+   barra de controle embaixo. Mesma identidade escura da Sala (monitores de UTI). */
+:root{
+  --noite:#0a1420; --painel:#0f1d2c; --painel-2:#14273a; --linha:#22384d;
+  --texto:#e4edf5; --texto-2:#93a8bb; --monitor:#4fd1e8; --monitor-fraco:rgba(79,209,232,.16);
+  --ambar:#f2b04c; --ambar-fraco:rgba(242,176,76,.22); --real:#c9a7ff; --alta:#ff7a6b; --queda:#5aa9ff; --ok:#5fd39a;
+  --f-display:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+  --f-texto:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --f-dado:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;background:#050c14;color:var(--texto);font-family:var(--f-texto);overflow:hidden}
+#tela{position:fixed;inset:0;display:grid;place-items:center;padding-bottom:58px}
+#palco{width:1600px;height:900px;position:relative;transform-origin:center center;background:radial-gradient(120% 100% at 20% 0%,#12263a 0%,var(--noite) 60%);border-radius:18px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.slide{position:absolute;inset:0;padding:70px 90px 60px;display:grid;grid-template-rows:auto 1fr;gap:28px;opacity:0;pointer-events:none;transition:opacity .45s ease, transform .45s ease;transform:translateX(30px)}
+.slide.on{opacity:1;pointer-events:auto;transform:none}
+.slide.antes{transform:translateX(-30px)}
+.olho{font-family:var(--f-dado);font-size:20px;letter-spacing:.16em;text-transform:uppercase;color:var(--monitor)}
+h1,h2{font-family:var(--f-display);margin:0;text-wrap:balance;line-height:1.08}
+h1{font-size:68px}
+h2{font-size:56px}
+.sub{font-size:28px;color:var(--texto-2);line-height:1.45;max-width:1200px;margin:0}
+.cab{display:grid;gap:12px}
+.corpo{min-height:0;display:grid}
+.duas{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.duas.l{grid-template-columns:1.25fr 1fr}
+.card{background:var(--painel);border:1px solid var(--linha);border-radius:18px;padding:28px}
+.big{font-family:var(--f-display);font-size:96px;font-weight:700;line-height:1;color:var(--monitor)}
+.big.ok{color:var(--ok)} .big.real{color:var(--real)} .big.ambar{color:var(--ambar)}
+.lista{display:grid;gap:18px;margin:0;padding:0;list-style:none;font-size:30px;line-height:1.35}
+.lista li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+.lista li i{font-style:normal;font-family:var(--f-dado);color:var(--monitor);font-size:24px;padding-top:4px}
+.cards{display:grid;gap:22px}
+.c3{grid-template-columns:repeat(3,1fr)} .c4{grid-template-columns:repeat(4,1fr)} .c2{grid-template-columns:repeat(2,1fr)}
+.card h3{font-family:var(--f-display);font-size:32px;margin:12px 0 8px}
+.card p{font-size:23px;color:var(--texto-2);margin:0;line-height:1.4}
+.ver{font-family:var(--f-display);font-size:34px;font-weight:600}
+.ver.sim{color:var(--ok)} .ver.parcial{color:var(--ambar)} .ver.nao{color:var(--alta)}
+svg text{font-family:var(--f-texto)}
+.fluxo{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-content:center}
+.passo{background:var(--painel);border:1px solid var(--linha);border-radius:16px;padding:22px;position:relative}
+.passo b{display:block;font-family:var(--f-display);font-size:30px;margin-bottom:6px}
+.passo span{font-size:21px;color:var(--texto-2)}
+.passo em{position:absolute;top:14px;right:16px;font-style:normal;font-family:var(--f-dado);color:var(--monitor);font-size:20px}
+.capa{align-content:center}
+.capa h1{font-size:62px;max-width:1300px}
+.autores{font-size:24px;color:var(--texto-2);line-height:1.6}
+.fala{position:absolute;top:26px;right:34px;font-family:var(--f-dado);font-size:18px;color:var(--texto-2);border:1px solid var(--linha);border-radius:99px;padding:6px 14px}
+.notas{position:absolute;left:90px;right:90px;bottom:24px;background:rgba(5,12,20,.92);border:1px solid var(--ambar);border-radius:14px;padding:16px 20px;font-size:22px;line-height:1.45;color:var(--texto)}
+.notas b{color:var(--ambar);font-family:var(--f-dado);font-size:16px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px}
+/* barra */
+#barra{position:fixed;left:0;right:0;bottom:0;height:58px;display:flex;align-items:center;gap:10px;padding:0 14px calc(env(safe-area-inset-bottom,0px)) 14px;background:#06101a;border-top:1px solid var(--linha);z-index:5}
+#barra button,#barra a{background:var(--painel-2);border:1px solid var(--linha);color:var(--texto);border-radius:10px;height:40px;padding:0 14px;font:inherit;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+#barra a.painel{border-color:var(--monitor);background:var(--monitor-fraco)}
+#barra .prog{flex:1;height:6px;background:var(--painel-2);border-radius:99px;overflow:hidden;min-width:40px}
+#barra .prog i{display:block;height:100%;background:var(--monitor);transition:width .3s}
+#cont{font-family:var(--f-dado);font-size:14px;color:var(--texto-2);min-width:52px;text-align:center}
+:focus-visible{outline:2px solid var(--monitor);outline-offset:2px}
+#gire{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:var(--painel-2);border:1px solid var(--linha);border-radius:99px;padding:6px 14px;font-size:13px;color:var(--texto-2);z-index:6}
+@media (max-width:640px){#barra .rot{display:none}#barra button,#barra a{padding:0 11px}}
+@media (orientation:landscape),(min-width:700px){#gire{display:none}}
+@media (prefers-reduced-motion:reduce){.slide{transition:none}}
+</style>
+
+<div id="tela"><div id="palco" role="region" aria-roledescription="apresentação" aria-label="Apresentação da defesa"></div></div>
+<div id="gire">Gire o celular para ver maior ↻</div>
+<nav id="barra" aria-label="Controles da apresentação">
+  <button id="ant" aria-label="Slide anterior">◀</button>
+  <button id="prox" aria-label="Próximo slide">▶</button>
+  <span id="cont"></span>
+  <div class="prog"><i id="prog"></i></div>
+  <button id="b-notas" aria-pressed="false" title="Roteiro de fala (N)">🗒<span class="rot"> Roteiro</span></button>
+  <button id="b-tela" title="Tela cheia (F)">⛶<span class="rot"> Tela cheia</span></button>
+  <a class="painel" id="b-painel" href="./">↗<span class="rot"> Ver no painel</span></a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script type="application/json" id="dados">__DADOS__</script>
+<script>
+(() => {
+"use strict";
+const D = JSON.parse(document.getElementById("dados").textContent);
+const E = D.experimentos || {}, M = E.modelos || {};
+const css = getComputedStyle(document.documentElement), C = n => css.getPropertyValue("--" + n).trim();
+const nf = new Intl.NumberFormat("pt-BR", {maximumFractionDigits: 0}), nf1 = new Intl.NumberFormat("pt-BR", {maximumFractionDigits: 1, minimumFractionDigits: 1});
+const fmt = v => v == null || isNaN(v) ? "—" : nf.format(Math.round(v));
+const MESES = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const rotMes = s => { const [a, m] = s.split("-"); return `${MESES[+m - 1]}/${a}`; };
+const reduzir = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const NOME = {Ingenuo: "Chute: mês anterior", Sazonal_ingenuo: "Chute: mesmo mês ano ant.", ETS: "ETS (estatístico)", SARIMA: "SARIMA (estatístico)",
+  RandomForest: "Random Forest", LightGBM: "LightGBM", LightGBM_ajustado: "LightGBM ajustado", Combinacao: "Combinação ETS + IA"};
+const SITE = "https://pedrodonatto.github.io/tcc-demanda/";
+const t = D.total, mb = D.meta.melhor, soma = a => a.reduce((x, y) => x + y, 0);
+const tot25 = soma(t.y.slice(-12));
+const ab = Object.fromEntries((E.ablacao || []).map(a => [a.grupo, a]));
+const menor = ks => ks.filter(k => M[k]).reduce((a, b) => (!a || M[b].MAE < M[a].MAE) ? b : a, null);
+const ml = menor(["RandomForest", "LightGBM", "LightGBM_ajustado"]), ch = menor(["Ingenuo", "Sazonal_ingenuo"]), est = menor(["ETS", "SARIMA"]);
+const par = (a, b) => (E.pares || []).find(x => x.modelo === a && x.contra === b);
+const ganhoChute = ml && ch ? (1 - M[ml].MAE / M[ch].MAE) * 100 : null;
+const ganhoAtrib = ab.A ? (1 - Math.min(ab.B.MAE, ab.C.MAE, ab.D.MAE) / ab.A.MAE) * 100 : null;
+const errs = []; t.status26.forEach((st, i) => { if (st === "completo" && t.real26[i] != null) errs.push(Math.abs(t.prev[mb].p[i] - t.real26[i]) / t.real26[i] * 100); });
+const erro26 = errs.length ? d3.mean(errs) : null;
+let dentro = 0, nCov = 0; D.regioes.forEach(e => e.status26.forEach((st, i) => { const r = e.real26[i]; if (st !== "completo" || r == null) return; nCov++; if (r >= e.prev[mb].lo[i] && r <= e.prev[mb].hi[i]) dentro++; }));
+const cob26 = nCov ? dentro / nCov * 100 : null, conf = E.conformal && E.conformal.cobertura_regiao_pct;
+
+/* ---------- utilidades de gráfico (coordenadas do palco 1600×900) */
+const svgEm = (host, w, h) => d3.select(host).append("svg").attr("viewBox", `0 0 ${w} ${h}`).attr("width", "100%").attr("height", "100%").attr("preserveAspectRatio", "xMidYMid meet");
+const eixoY = (g, y, x0, x1, fmtT) => { g.append("g").selectAll("line").data(y.ticks(4)).join("line").attr("x1", x0).attr("x2", x1).attr("y1", y).attr("y2", y).attr("stroke", C("linha"));
+  g.append("g").selectAll("text").data(y.ticks(4)).join("text").attr("x", x0 - 10).attr("y", d => y(d) + 6).attr("text-anchor", "end").attr("fill", C("texto-2")).attr("font-size", 18).text(fmtT || (d => nf.format(d))); };
+
+/* ---------- slides */
+const S = [];
+const add = (id, painel, fala, html, desenhar, notas) => S.push({id, painel, fala, html, desenhar, notas});
+
+add("capa", "ala", "Adrian", `
+  <div class="cab capa" style="grid-row:1/3;align-content:center;gap:26px">
+    <span class="olho">TCC · Ciência da Computação · UniAnchieta</span>
+    <h1>Pipeline algorítmico para previsão de séries temporais multivariadas</h1>
+    <p class="sub">Aplicação: demanda de internações por transtornos de humor no SUS de São Paulo</p>
+    <div style="display:flex;gap:60px;align-items:end;flex-wrap:wrap">
+      <div><div class="big" id="cont-capa">0</div><p class="sub" style="font-size:24px">internações por depressão e bipolaridade no SUS de SP em 2025</p></div>
+      <p class="autores">Adrian Almeida da Silva · Guilherme Augusto de Oliveira<br>Pedro Donato Ramos · João Paulo de Moraes Felisardo · Clayton Augusto Valdo</p>
+    </div>
+  </div>`, host => contar(host.querySelector("#cont-capa"), tot25),
+  `Boa noite. Nosso trabalho mostra que dá para prever, região por região, quantas pessoas vão precisar de internação por transtornos de humor no SUS, com margem de erro confiável. Só em 2025 foram ${fmt(tot25)} internações.`);
+
+add("problema", "ala", "Adrian", `
+  <div class="cab"><span class="olho">O problema</span><h2>A demanda cresce, e o planejamento olha para trás</h2></div>
+  <div class="duas l"><div id="g-serie" style="height:520px"></div>
+  <ul class="lista"><li><i>01</i>Internações por humor no SUS de SP subiram ${fmt((tot25 / soma(t.y.slice(0, 12)) - 1) * 100)}% de 2015 a 2025.</li>
+  <li><i>02</i>A pandemia derrubou e depois acelerou a procura.</li>
+  <li><i>03</i>Superlotação em emergências de SP em 2026: falta antecipação.</li></ul></div>`,
+  host => {
+    const w = 900, h = 520, m = {l: 70, r: 20, t: 20, b: 40}, svg = svgEm(host.querySelector("#g-serie"), w, h);
+    const anos = d3.rollups(D.meses.map((mm, i) => [mm.slice(0, 4), t.y[i]]), v => d3.sum(v, d => d[1]), d => d[0]);
+    const x = d3.scaleBand(anos.map(a => a[0]), [m.l, w - m.r]).padding(.25), y = d3.scaleLinear([0, d3.max(anos, a => a[1]) * 1.12], [h - m.b, m.t]);
+    eixoY(svg, y, m.l, w - m.r);
+    svg.append("g").selectAll("rect").data(anos).join("rect").attr("x", a => x(a[0])).attr("width", x.bandwidth()).attr("rx", 6)
+      .attr("fill", a => a[0] === "2020" || a[0] === "2021" ? C("ambar") : C("monitor")).attr("y", y(0)).attr("height", 0)
+      .transition().duration(reduzir ? 0 : 900).delay((a, i) => i * 60).attr("y", a => y(a[1])).attr("height", a => y(0) - y(a[1]));
+    svg.append("g").selectAll("text").data(anos).join("text").attr("x", a => x(a[0]) + x.bandwidth() / 2).attr("y", h - 10).attr("text-anchor", "middle").attr("fill", C("texto-2")).attr("font-size", 18).text(a => "'" + a[0].slice(2));
+    svg.append("text").attr("x", x("2020") + x.bandwidth()).attr("y", y(d3.max(anos, a => a[1])) - 4).attr("text-anchor", "middle").attr("fill", C("ambar")).attr("font-size", 20).text("pandemia");
+  }, "Mostrem a curva: cresce até 2019, cai na pandemia e volta mais forte. Planejamento de leitos hoje usa o ano anterior; a pergunta é se dá para antecipar.");
+
+add("pergunta", "lab", "Adrian", `
+  <div class="cab"><span class="olho">Pergunta de pesquisa</span><h2>Dá para prever, por região e com margem de erro confiável, as internações dos próximos meses?</h2></div>
+  <div class="cards c4">${[["H1", "A IA prevê melhor que chutes simples?"], ["H2", "A engenharia de atributos melhora a previsão?"], ["H3", "Variáveis externas ajudam?"], ["H4", "A IA supera métodos estatísticos clássicos?"]]
+    .map(([h, q]) => `<div class="card"><span class="olho">${h}</span><h3>${q}</h3></div>`).join("")}</div>`, null,
+  "Quatro hipóteses. Vamos responder cada uma com teste estatístico no final.");
+
+add("dados", "mapa-sec", "Guilherme", `
+  <div class="cab"><span class="olho">Os dados</span><h2>Três bases públicas, 11 anos, 53 regiões</h2></div>
+  <div class="cards c3">
+    <div class="card"><span class="olho">SIH-SUS</span><div class="big">${fmt(soma(t.y))}</div><p>internações por humor (F30–F39) de 2015 a 2025, contadas pela data da internação e residência do paciente.</p></div>
+    <div class="card"><span class="olho">CNES</span><div class="big ambar">${fmt(t.leitos_sm)}</div><p>leitos SUS de psiquiatria e saúde mental hoje em SP, usados como variável de capacidade.</p></div>
+    <div class="card"><span class="olho">IBGE</span><div class="big real">645 → ${D.regioes.length}</div><p>municípios agrupados em regiões imediatas, com população anual para calcular taxas.</p></div>
+  </div>`, null, "Dados abertos do DATASUS e do IBGE, sem identificação de pacientes. Agrupamos por região porque município pequeno tem quase sempre zero internações.");
+
+add("pipeline", "ia", "Guilherme", `
+  <div class="cab"><span class="olho">O pipeline</span><h2>Do arquivo bruto do SUS ao painel, em um clique</h2></div>
+  <div class="fluxo">${[["Coleta", "FTP do DATASUS, 270 arquivos mensais"], ["Limpeza", "só AIHs novas, por data de internação"], ["Painel", "53 regiões × 132 meses"], ["Atributos", "24 pistas, todas do passado"],
+    ["Modelos", "RF, LightGBM, ETS, SARIMA"], ["Validação", "walk-forward + testes estatísticos"], ["Previsão", "6 meses com faixa de 80%"], ["Sala", "site público, atualiza todo mês"]]
+    .map(([b, s], i) => `<div class="passo"><em>${String(i + 1).padStart(2, "0")}</em><b>${b}</b><span>${s}</span></div>`).join("")}</div>`, null,
+  "Tudo automatizado e público no GitHub. Todo dia 20 o próprio GitHub baixa os dados novos, treina de novo e atualiza o site.");
+
+add("vazamento", "ia", "João Paulo", `
+  <div class="cab"><span class="olho">Rigor</span><h2>Sem vazamento: o modelo nunca vê o futuro</h2></div>
+  <div class="duas"><div id="g-wf" style="height:480px"></div>
+  <ul class="lista"><li><i>01</i>Toda pista usa só meses anteriores à previsão.</li><li><i>02</i>Walk-forward: treina com o passado, prevê o mês seguinte, avança.</li><li><i>03</i>Teste automático: mexer no futuro não muda nada do passado.</li></ul></div>`,
+  host => {
+    const w = 760, h = 480, svg = svgEm(host.querySelector("#g-wf"), w, h), n = 14, cw = (w - 40) / n, rh = 56;
+    for (let r = 0; r < 6; r++) for (let c = 0; c < n; c++) {
+      const tr = c < 7 + r, te = c === 7 + r;
+      svg.append("rect").attr("x", 20 + c * cw + 3).attr("y", 20 + r * (rh + 18)).attr("width", cw - 6).attr("height", rh).attr("rx", 6)
+        .attr("fill", te ? C("monitor") : tr ? "#2c4a66" : C("painel-2")).attr("opacity", 0).transition().delay(reduzir ? 0 : r * 220 + c * 12).duration(reduzir ? 0 : 300).attr("opacity", 1);
+    }
+    svg.append("text").attr("x", 20).attr("y", h - 6).attr("fill", C("texto-2")).attr("font-size", 18).text("■ treino (passado)   ■ mês previsto");
+  }, "Esse é o ponto que mais derruba TCC de previsão. Nós provamos com teste automático que não houve vazamento.");
+
+add("atributos", "lab", "João Paulo", `
+  <div class="cab"><span class="olho">Engenharia de atributos · H2</span><h2>Cada degrau de pistas, menos erro</h2></div>
+  <div class="duas l"><div id="g-abl" style="height:520px"></div>
+  <div class="card"><div class="big ok">${ganhoAtrib != null ? "−" + nf1.format(ganhoAtrib) + "%" : "—"}</div><p style="font-size:26px">de erro ao somar sazonalidade e médias móveis às pistas básicas. Variáveis externas praticamente empataram: o histórico já carrega a informação.</p></div></div>`,
+  host => {
+    if (!E.ablacao) return;
+    const w = 860, h = 520, m = {l: 60, r: 10, t: 40, b: 80}, svg = svgEm(host.querySelector("#g-abl"), w, h), d = E.ablacao;
+    const x = d3.scaleBand(d.map(a => a.grupo), [m.l, w - m.r]).padding(.3), y = d3.scaleLinear([0, d3.max(d, a => a.MAE) * 1.15], [h - m.b, m.t]);
+    const best = d3.min(d, a => a.MAE);
+    svg.append("g").selectAll("rect").data(d).join("rect").attr("x", a => x(a.grupo)).attr("width", x.bandwidth()).attr("rx", 8).attr("fill", a => a.MAE === best ? C("ok") : C("monitor"))
+      .attr("y", y(0)).attr("height", 0).transition().duration(reduzir ? 0 : 800).delay((a, i) => i * 150).attr("y", a => y(a.MAE)).attr("height", a => y(0) - y(a.MAE));
+    svg.append("g").selectAll("text").data(d).join("text").attr("x", a => x(a.grupo) + x.bandwidth() / 2).attr("y", a => y(a.MAE) - 12).attr("text-anchor", "middle").attr("fill", C("texto")).attr("font-size", 26).attr("font-family", "IBM Plex Mono").text(a => nf1.format(a.MAE));
+    svg.append("g").selectAll("text").data(d).join("text").attr("x", a => x(a.grupo) + x.bandwidth() / 2).attr("y", h - 44).attr("text-anchor", "middle").attr("fill", C("texto")).attr("font-size", 24).text(a => a.grupo);
+    svg.append("g").selectAll("text").data(d).join("text").attr("x", a => x(a.grupo) + x.bandwidth() / 2).attr("y", h - 14).attr("text-anchor", "middle").attr("fill", C("texto-2")).attr("font-size", 17).text(a => a.rotulo);
+  }, "Esse é o coração do título do trabalho: um estudo comparativo de engenharia de atributos. Mesmo modelo, mais pistas, menos erro.");
+
+add("placar", "lab", "Pedro", `
+  <div class="cab"><span class="olho">Resultados · H1 e H4</span><h2>Placar: erro médio por região, 12 meses de teste</h2></div>
+  <div id="g-placar" style="height:560px"></div>`,
+  host => {
+    const ks = Object.keys(M).sort((a, b) => M[a].MAE - M[b].MAE), w = 1420, h = 560, m = {l: 360, r: 260, t: 10, b: 10};
+    const svg = svgEm(host.querySelector("#g-placar"), w, h), rh = (h - m.t - m.b) / ks.length;
+    const x = d3.scaleLinear([0, d3.max(ks, k => M[k].MAE) * 1.05], [m.l, w - m.r]);
+    const cor = k => k.includes("ngenuo") ? "#53687c" : (k === "ETS" || k === "SARIMA") ? C("ambar") : k === "Combinacao" ? C("ok") : C("monitor");
+    const g = svg.append("g").selectAll("g").data(ks).join("g").attr("transform", (k, i) => `translate(0,${m.t + i * rh})`);
+    g.append("text").attr("x", m.l - 16).attr("y", rh / 2 + 8).attr("text-anchor", "end").attr("fill", C("texto")).attr("font-size", 24).text(k => NOME[k] || k);
+    g.append("rect").attr("x", m.l).attr("y", 8).attr("height", rh - 16).attr("rx", 6).attr("fill", cor).attr("width", 0)
+      .transition().duration(reduzir ? 0 : 900).delay((k, i) => i * 90).attr("width", k => x(M[k].MAE) - m.l);
+    g.append("text").attr("x", k => x(M[k].MAE) + 12).attr("y", rh / 2 + 8).attr("fill", C("texto")).attr("font-size", 24).attr("font-family", "IBM Plex Mono").text(k => nf1.format(M[k].MAE));
+    const best = ks[0];
+    g.append("text").attr("x", w - 10).attr("y", rh / 2 + 8).attr("text-anchor", "end").attr("font-size", 18).attr("font-family", "IBM Plex Mono")
+      .attr("fill", k => k === best ? C("monitor") : ((par(k, best) || {}).significativo_5pct ? C("ok") : C("texto-2")))
+      .text(k => k === best ? "melhor" : ((par(k, best) || {}).significativo_5pct ? "pior, com certeza" : "empate estatístico"));
+  }, `A IA (${NOME[ml]}) erra ${ganhoChute != null ? nf1.format(ganhoChute) : "—"}% menos que o chute, com significância. Contra o estatístico ${NOME[est]} dá empate estatístico, e combinar os dois dá o menor erro no total do estado. Isso é honestidade científica, não fraqueza.`);
+
+add("hipoteses", "lab", "Pedro", `
+  <div class="cab"><span class="olho">Veredito</span><h2>As quatro hipóteses, testadas</h2></div>
+  <div class="cards c4" id="hip"></div>`,
+  host => {
+    const s1 = ["Ingenuo", "Sazonal_ingenuo"].every(k => (par(k, ml) || {}).significativo_5pct);
+    const g3 = ab.C ? (1 - ab.D.MAE / ab.C.MAE) * 100 : 0;
+    const g4ia = est && (par(est, ml) || {}).significativo_5pct, g4est = est && (par(ml, est) || {}).significativo_5pct;
+    const H = [["H1", "IA melhor que chutes", ganhoChute > 0 && s1 ? "sim" : "parcial", `${nf1.format(ganhoChute || 0)}% menos erro, significativo.`],
+      ["H2", "Atributos melhoram", ganhoAtrib >= 5 ? "sim" : "parcial", `${nf1.format(ganhoAtrib || 0)}% menos erro com sazonalidade e médias.`],
+      ["H3", "Variáveis externas ajudam", g3 >= 1 ? "sim" : g3 > -1 ? "parcial" : "nao", "Praticamente empate: o histórico já carrega a informação."],
+      ["H4", "IA supera o estatístico", g4ia ? "sim" : g4est ? "nao" : "parcial", `Empate estatístico com ${NOME[est]}; combinados, menor erro no total.`]];
+    const R = {sim: "Confirmada", parcial: "Em parte", nao: "Não confirmada"};
+    host.querySelector("#hip").innerHTML = H.map(([n, q, v, tx]) => `<div class="card"><span class="olho">${n}</span><h3>${q}</h3><div class="ver ${v}">${R[v]}</div><p style="margin-top:10px">${tx}</p></div>`).join("");
+  }, "Duas confirmadas e duas em parte. Um resultado misto e honesto é mais forte numa banca do que um 'tudo perfeito'.");
+
+add("prova", "ala", "Pedro", `
+  <div class="cab"><span class="olho">A prova real</span><h2>Previmos 2026 sem ver 2026. E conferimos.</h2></div>
+  <div class="duas l"><div id="g-prova" style="height:540px"></div>
+  <div class="cards" style="gap:18px">
+    <div class="card"><div class="big">${erro26 != null ? nf1.format(erro26) + "%" : "—"}</div><p>de erro médio no estado em jan–mar/2026</p></div>
+    <div class="card"><div class="big ok">${conf != null ? nf1.format(conf) + "%" : "—"}</div><p>cobertura da faixa de 80% na validação conformal${cob26 != null ? ` · ${Math.round(cob26)}% com o real de 2026` : ""}</p></div></div></div>`,
+  host => {
+    const w = 900, h = 540, m = {l: 80, r: 20, t: 20, b: 46}, svg = svgEm(host.querySelector("#g-prova"), w, h);
+    const hist = D.meses.map((mm, i) => ({m: mm, v: t.y[i]})).slice(-24), p = t.prev[mb];
+    const prev = D.meses_prev.map((mm, i) => ({m: mm, v: p.p[i], lo: p.lo[i], hi: p.hi[i], r: t.real26[i], st: t.status26[i]}));
+    const todos = hist.map(d => d.m).concat(prev.map(d => d.m));
+    const x = d3.scalePoint(todos, [m.l, w - m.r]), y = d3.scaleLinear([d3.min(hist, d => d.v) * .85, d3.max(prev, d => d.hi) * 1.05], [h - m.b, m.t]);
+    eixoY(svg, y, m.l, w - m.r);
+    svg.append("path").datum(prev).attr("d", d3.area().x(d => x(d.m)).y0(d => y(d.lo)).y1(d => y(d.hi))).attr("fill", C("ambar-fraco"));
+    svg.append("path").datum(hist).attr("d", d3.line().x(d => x(d.m)).y(d => y(d.v))).attr("fill", "none").attr("stroke", C("texto-2")).attr("stroke-width", 3);
+    svg.append("path").datum([hist[hist.length - 1]].concat(prev)).attr("d", d3.line().x(d => x(d.m)).y(d => y(d.v))).attr("fill", "none").attr("stroke", C("monitor")).attr("stroke-width", 4).attr("stroke-dasharray", "8 6");
+    svg.append("g").selectAll("circle").data(prev.filter(d => d.st === "completo")).join("circle").attr("cx", d => x(d.m)).attr("cy", d => y(d.r)).attr("r", 0).attr("fill", C("real"))
+      .transition().delay((d, i) => reduzir ? 0 : 600 + i * 300).duration(reduzir ? 0 : 400).attr("r", 11);
+    svg.append("g").selectAll("text").data(todos.filter((d, i) => i % 3 === 0)).join("text").attr("x", x).attr("y", h - 12).attr("text-anchor", "middle").attr("fill", C("texto-2")).attr("font-size", 16).text(rotMes);
+    svg.append("text").attr("x", w - m.r).attr("y", m.t + 18).attr("text-anchor", "end").attr("font-size", 18).attr("fill", C("texto-2")).text("— real  ⋯ previsão  ▒ faixa 80%  ● real de 2026");
+  }, "Esse é o slide mais forte: a IA treinou só até dezembro de 2025, previu 2026, e o SUS já publicou o real. As bolinhas lilás são o que aconteceu.");
+
+add("porque", "porque", "João Paulo", `
+  <div class="cab"><span class="olho">Explicabilidade</span><h2>Nada de caixa-preta: cada previsão se explica</h2></div>
+  <div id="g-shap" style="height:560px"></div>`,
+  host => {
+    const sh = E.shap; if (!sh || !sh.entidades) return;
+    const c = sh.entidades.total[0], base = sh.base[0] * (sh.n_regioes || 1);
+    const it = sh.grupos.map((g, i) => ({g, v: c[i]})).filter(d => Math.abs(d.v) >= 3).sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+    const L = [{g: "Ponto de partida (média geral)", a: 0, b: base, tp: "b"}]; let acc = base;
+    it.forEach(d => { L.push({g: d.g, a: acc, b: acc + d.v, tp: d.v >= 0 ? "s" : "d", v: d.v}); acc += d.v; });
+    L.push({g: `Previsão para ${rotMes(D.meses_prev[0])}`, a: 0, b: acc, tp: "b"});
+    const w = 1420, h = 560, m = {l: 420, r: 120}, rh = h / L.length, svg = svgEm(host.querySelector("#g-shap"), w, h);
+    const x = d3.scaleLinear([0, d3.max(L, d => Math.max(d.a, d.b)) * 1.03], [m.l, w - m.r]);
+    const g = svg.append("g").selectAll("g").data(L).join("g").attr("transform", (d, i) => `translate(0,${i * rh})`);
+    g.append("text").attr("x", m.l - 16).attr("y", rh / 2 + 8).attr("text-anchor", "end").attr("fill", C("texto")).attr("font-size", 24).text(d => d.g);
+    g.append("rect").attr("y", 8).attr("height", rh - 16).attr("rx", 6).attr("x", d => x(Math.min(d.a, d.b))).attr("width", 0)
+      .attr("fill", d => d.tp === "b" ? C("monitor") : d.tp === "s" ? C("alta") : C("queda"))
+      .transition().duration(reduzir ? 0 : 700).delay((d, i) => i * 160).attr("width", d => Math.max(3, Math.abs(x(d.b) - x(d.a))));
+    g.append("text").attr("x", d => x(Math.max(d.a, d.b)) + 12).attr("y", rh / 2 + 8).attr("fill", C("texto")).attr("font-size", 22).attr("font-family", "IBM Plex Mono")
+      .text(d => d.tp === "b" ? fmt(d.b) : (d.v > 0 ? "+" : "") + nf1.format(d.v));
+  }, "Com valores SHAP, a previsão do estado é decomposta em pistas. A soma bate exatamente com o número previsto.");
+
+add("aplicacao", "apontamentos", "Clayton", `
+  <div class="cab"><span class="olho">Aplicação</span><h2>Uma Sala de Situação para quem planeja leitos</h2></div>
+  <div class="duas"><div id="g-mapa" style="height:540px"></div>
+  <ul class="lista"><li><i>01</i><span><b>Mapa de tendência</b>: onde a demanda deve subir nos próximos 6 meses.</span></li>
+  <li><i>02</i><span><b>Apontamentos</b>: alertas automáticos por região, com prioridade.</span></li>
+  <li><i>03</i><span><b>Simulador</b>: quantos leitos reservar e quando faltaria.</span></li>
+  <li><i>04</i><span><b>Público e automático</b>: abre no celular e atualiza todo mês.</span></li></ul></div>`,
+  host => {
+    if (!D.geo || !window.topojson) return;
+    const topo = topojson.topology({m: D.geo}), regDe = g => D.mun_regiao[g.properties.codarea], porId = Object.fromEntries(D.regioes.map(r => [r.id, r]));
+    const feats = [...d3.group(topo.objects.m.geometries, regDe)].filter(([id]) => porId[id]).map(([id, gs]) => {
+      const f = {type: "Feature", id, geometry: topojson.merge(topo, gs)};
+      if (d3.geoArea(f) > 2 * Math.PI) { const g = f.geometry; (g.type === "Polygon" ? [g.coordinates] : g.coordinates).forEach(p => p.forEach(r => r.reverse())); }
+      return f; });
+    const tend = e => { const med = soma(e.y.slice(-12)) / 12; if (med < 5) return null; return (d3.mean(e.prev[mb].p) / med - 1) * 100; };
+    const w = 760, h = 540, svg = svgEm(host.querySelector("#g-mapa"), w, h), path = d3.geoPath(d3.geoMercator().fitSize([w, h - 20], {type: "FeatureCollection", features: feats}));
+    const sc = d3.scaleDiverging([-15, 0, 15], t2 => d3.interpolateRgbBasis([C("queda"), "#2a3d52", C("alta")])(t2)).clamp(true);
+    svg.append("g").selectAll("path").data(feats).join("path").attr("d", path).attr("stroke", C("noite")).attr("stroke-width", 1)
+      .attr("fill", f => { const v = tend(porId[f.id]); return v == null ? "#1a2a3a" : sc(v); }).attr("opacity", 0)
+      .transition().duration(reduzir ? 0 : 600).delay((f, i) => reduzir ? 0 : i * 15).attr("opacity", 1);
+  }, "O resultado vira ferramenta: vermelho é onde a IA espera mais internações que em 2025. Gestores podem simular leitos e ver alertas por região.");
+
+add("limites", "banca", "Clayton", `
+  <div class="cab"><span class="olho">Limitações e próximos passos</span><h2>O que o trabalho não cobre, e para onde vai</h2></div>
+  <div class="duas"><div class="card"><h3 style="margin-top:0">Limitações</h3><ul class="lista" style="font-size:24px"><li><i>·</i>Só internações SUS (sem rede privada e CAPS).</li><li><i>·</i>Depende do CID principal informado.</li><li><i>·</i>Últimos meses chegam incompletos.</li><li><i>·</i>Regiões muito pequenas oscilam mais.</li></ul></div>
+  <div class="card"><h3 style="margin-top:0">Trabalhos futuros</h3><ul class="lista" style="font-size:24px"><li><i>→</i>Incluir CAPS e atenção psicossocial.</li><li><i>→</i>Replicar em outros estados.</li><li><i>→</i>Ocupação diária nos hospitais de referência.</li><li><i>→</i>Acompanhar o uso real por gestores.</li></ul></div></div>`,
+  null, "Mostrar limitações é obrigatório. Nós listamos as nossas e o que faríamos com mais tempo.");
+
+add("fim", "desafio", "Clayton", `
+  <div class="cab"><span class="olho">Conclusão</span><h2>Previsão confiável, explicável e pronta para uso</h2></div>
+  <div class="duas l"><ul class="lista">
+    <li><i>✓</i>A IA bate os chutes com ${nf1.format(ganhoChute || 0)}% menos erro (significativo).</li>
+    <li><i>✓</i>Engenharia de atributos reduz o erro em ${nf1.format(ganhoAtrib || 0)}%.</li>
+    <li><i>✓</i>A margem de erro cumpre o prometido: ${conf != null ? nf1.format(conf) : "—"}% (meta 80%).</li>
+    <li><i>✓</i>Ferramenta pública que se atualiza sozinha.</li></ul>
+  <div class="card" style="display:grid;justify-items:center;gap:12px"><div id="qr" style="width:300px;height:300px;background:#fff;border-radius:12px;padding:14px"></div><p style="text-align:center">Aponte a câmera e teste: <b style="color:var(--texto)">Você contra a IA</b></p><p style="font-family:var(--f-dado);font-size:18px">${SITE.replace("https://", "")}</p></div></div>`,
+  host => { if (window.qrcode) { const q = qrcode(0, "M"); q.addData(SITE); q.make(); host.querySelector("#qr").innerHTML = q.createSvgTag({cellSize: 6, margin: 0}); const s = host.querySelector("#qr svg"); if (s) { s.setAttribute("width", "100%"); s.setAttribute("height", "100%"); } } },
+  "Encerramos convidando a banca a testar no celular: o desafio Você contra a IA usa os mesmos meses em que os modelos foram testados. Obrigado.");
+
+/* ---------- motor da apresentação */
+const palco = document.getElementById("palco");
+S.forEach((s, i) => {
+  const sec = document.createElement("section"); sec.className = "slide"; sec.id = "s" + (i + 1);
+  sec.setAttribute("aria-roledescription", "slide"); sec.setAttribute("aria-label", `${i + 1} de ${S.length}`);
+  sec.innerHTML = `<span class="fala">fala: ${s.fala}</span>` + s.html + `<div class="notas" hidden><b>Roteiro</b>${s.notas || ""}</div>`;
+  palco.append(sec); s.el = sec; s.feito = false;
+});
+function contar(elm, alvo) { if (!elm) return; if (reduzir) { elm.textContent = fmt(alvo); return; } const t0 = performance.now(), dur = 1400;
+  const f = tt => { const k = Math.min(1, (tt - t0) / dur), e = 1 - Math.pow(1 - k, 3); elm.textContent = fmt(alvo * e); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
+let atual = 0, notas = false;
+function ir(i) {
+  atual = Math.max(0, Math.min(S.length - 1, i));
+  S.forEach((s, k) => { s.el.classList.toggle("on", k === atual); s.el.classList.toggle("antes", k < atual); s.el.querySelector(".notas").hidden = !notas; });
+  const s = S[atual];
+  if (!s.feito && s.desenhar) { try { s.desenhar(s.el); } catch (e) { console.error(e); } s.feito = true; }
+  document.getElementById("cont").textContent = `${atual + 1}/${S.length}`;
+  document.getElementById("prog").style.width = ((atual + 1) / S.length * 100) + "%";
+  document.getElementById("b-painel").href = "./#" + s.painel;
+  try { history.replaceState(null, "", "#s" + (atual + 1)); } catch (e) { /* sem histórico */ }
+}
+function escalar() {
+  const w = innerWidth, h = innerHeight - 58, k = Math.min(w / 1600, h / 900) * .98;
+  palco.style.transform = `scale(${k})`;
+}
+addEventListener("resize", escalar); escalar();
+document.getElementById("prox").onclick = () => ir(atual + 1);
+document.getElementById("ant").onclick = () => ir(atual - 1);
+document.getElementById("b-notas").onclick = e => { notas = !notas; e.currentTarget.setAttribute("aria-pressed", String(notas)); ir(atual); };
+document.getElementById("b-tela").onclick = () => { try { const d = document.documentElement; Promise.resolve(document.fullscreenElement ? document.exitFullscreen() : (d.requestFullscreen ? d.requestFullscreen() : null)).catch(() => {}); } catch (e) { /* tela cheia indisponível */ } };
+addEventListener("keydown", e => {
+  if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); ir(atual + 1); }
+  else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); ir(atual - 1); }
+  else if (e.key === "n" || e.key === "N") document.getElementById("b-notas").click();
+  else if (e.key === "f" || e.key === "F") document.getElementById("b-tela").click();
+  else if (e.key === "Home") ir(0); else if (e.key === "End") ir(S.length - 1);
+});
+let x0 = null;
+document.getElementById("tela").addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, {passive: true});
+document.getElementById("tela").addEventListener("touchend", e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) ir(atual + (dx < 0 ? 1 : -1)); x0 = null; });
+document.getElementById("tela").addEventListener("click", e => { if (e.target.closest("a,button")) return; const r = innerWidth; ir(atual + (e.clientX > r / 3 ? 1 : -1)); });
+const m0 = /^#s(\d+)$/.exec(location.hash || ""); ir(m0 ? +m0[1] - 1 : 0);
+})();
+</script>

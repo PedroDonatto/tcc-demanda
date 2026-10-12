@@ -109,6 +109,58 @@ def ets_previsao(serie: np.ndarray) -> float:
         return float(s[-12:].mean())
 
 
+def sarima_previsao(serie: np.ndarray) -> float:
+    """SARIMA(1,0,1)(0,1,1)12: o clássico de séries com sazonalidade anual."""
+    from statsmodels.tsa.statespace.sarimax import SARIMAX
+    s = np.asarray(serie, dtype=float)
+    if s.sum() == 0 or len(s) < 36:
+        return float(s[-12:].mean()) if len(s) else 0.0
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            m = SARIMAX(s, order=(1, 0, 1), seasonal_order=(0, 1, 1, 12),
+                        enforce_stationarity=False, enforce_invertibility=False
+                        ).fit(disp=False, maxiter=60)
+            return float(max(0.0, m.forecast(1)[0]))
+    except Exception:  # noqa: BLE001
+        return float(s[-12:].mean())
+
+
+def validar_faixa(modelo: str = "LightGBM", alvo: float = 0.8) -> dict:
+    """Validação conformal da faixa de 80% (deixa-uma-origem-de-fora).
+
+    Para cada origem do backtest, calibra os quantis com as OUTRAS origens e
+    confere se o real daquela origem caiu dentro. Mede a cobertura real da
+    faixa sem usar o próprio dado para calibrá-la."""
+    arq = config.OUTPUTS / "backtest_previsoes.csv"
+    if not arq.exists():
+        return {}
+    bt = pd.read_csv(arq)
+    if modelo not in bt:
+        return {}
+    bt["e"] = (bt["y"] - bt[modelo]) / np.sqrt(bt[modelo].clip(lower=1))
+    tot = bt.groupby(["h", "origem"], as_index=False)[["y", modelo]].sum()
+    tot["e"] = tot["y"] - tot[modelo]
+    q_lo, q_hi = (1 - alvo) / 2, 1 - (1 - alvo) / 2
+    dentro_r, dentro_t, por_h = [], [], {}
+    for o in bt["origem"].unique():
+        cal, tes = bt[bt["origem"] != o], bt[bt["origem"] == o]
+        qs = cal.groupby("h")["e"].quantile([q_lo, q_hi]).unstack()
+        lo = tes["h"].map(qs[q_lo]); hi = tes["h"].map(qs[q_hi])
+        ok = ((tes["e"] >= lo) & (tes["e"] <= hi)).to_numpy()
+        dentro_r += list(ok)
+        for h, v in zip(tes["h"], ok):
+            por_h.setdefault(int(h), []).append(bool(v))
+        ct, tt = tot[tot["origem"] != o], tot[tot["origem"] == o]
+        qt = ct.groupby("h")["e"].quantile([q_lo, q_hi]).unstack()
+        dentro_t += list(((tt["e"] >= tt["h"].map(qt[q_lo])) & (tt["e"] <= tt["h"].map(qt[q_hi]))).to_numpy())
+    return {"modelo": modelo, "alvo_pct": round(alvo * 100),
+            "cobertura_regiao_pct": round(float(np.mean(dentro_r)) * 100, 1),
+            "cobertura_total_pct": round(float(np.mean(dentro_t)) * 100, 1),
+            "por_h": {h: round(float(np.mean(v)) * 100, 1) for h, v in sorted(por_h.items())},
+            "n_origens": int(bt["origem"].nunique())}
+
+
 # ------------------------------------------------------------------ tuning
 def buscar_hiperparametros(df: pd.DataFrame, X: list[str], meses_val) -> dict:
     rnd = random.Random(SEMENTE)
@@ -223,6 +275,8 @@ def main() -> None:
         out["Sazonal_ingenuo"] = te["y_lag12"].to_numpy()
         out["ETS"] = [ets_previsao(serie_reg[u][serie_reg[u].index < T].to_numpy())
                       for u in te["unidade"]]
+        out["SARIMA"] = [sarima_previsao(serie_reg[u][serie_reg[u].index < T].to_numpy())
+                         for u in te["unidade"]]
         out["RandomForest"] = np.clip(rf().fit(tr[X], tr["y"]).predict(te[X]), 0, None)
         out["LightGBM"] = np.clip(lgbm().fit(tr[X], tr["y"]).predict(te[X]), 0, None)
         out["LightGBM_ajustado"] = np.clip(
@@ -238,7 +292,7 @@ def main() -> None:
     wf = pd.concat(linhas, ignore_index=True)
     wf.to_csv(config.OUTPUTS / "experimentos_previsoes.csv", index=False)
 
-    principais = ["Ingenuo", "Sazonal_ingenuo", "ETS", "RandomForest",
+    principais = ["Ingenuo", "Sazonal_ingenuo", "ETS", "SARIMA", "RandomForest",
                   "LightGBM", "LightGBM_ajustado", "Combinacao"]
     tot = wf.groupby("mes")[["y"] + principais + [f"Ablacao_{g}" for g, _, _ in GRUPOS_ABLACAO]].sum()
 
@@ -251,7 +305,7 @@ def main() -> None:
                 "vies_pct": round(float((et / tot["y"]).mean() * 100), 2)}
 
     modelos = {m: resumo(m) for m in principais}
-    melhor = min(["ETS", "RandomForest", "LightGBM", "LightGBM_ajustado", "Combinacao"],
+    melhor = min(["ETS", "SARIMA", "RandomForest", "LightGBM", "LightGBM_ajustado", "Combinacao"],
                  key=lambda m: modelos[m]["MAE"])
 
     print("\n[3/5] Ablação e significância...")
@@ -301,7 +355,11 @@ def main() -> None:
         print(f"    AVISO: SHAP não gerado ({e})")
         shap = {}
 
-    res = {"teste_meses": [pd.Timestamp(m).strftime("%Y-%m") for m in teste],
+    print("\nValidando a faixa de 80% (conformal, deixa-uma-origem-de-fora)...")
+    faixa = validar_faixa()
+    print(f"    {faixa}")
+
+    res = {"conformal": faixa, "teste_meses": [pd.Timestamp(m).strftime("%Y-%m") for m in teste],
            "modelos": modelos, "melhor": melhor, "ablacao": ablacao,
            "tuning": {"melhor_config": cfg_melhor or {"config": "padrão"},
                       "historico": tun["historico"], "n_configs": len(tun["historico"])},

@@ -146,6 +146,14 @@ def main() -> None:
         destino.write_text(html, encoding="utf-8")
         print(f"Sala de Situação: {destino} (abra com ver_sala.bat)")
 
+    # apresentação (modo defesa) com os mesmos dados
+    modelo_apr = config.ROOT / "app" / "web" / "apresentacao_template.html"
+    if modelo_html.exists() and modelo_apr.exists():
+        html = modelo_apr.read_text(encoding="utf-8").replace(
+            "__DADOS__", js.replace("</", "<\\/"))
+        (config.ROOT / "app" / "web" / "apresentacao.html").write_text(html, encoding="utf-8")
+        print("Apresentação: app/web/apresentacao.html")
+
 
 if __name__ == "__main__":
     main()

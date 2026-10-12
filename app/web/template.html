@@ -267,6 +267,43 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
   .escala{top:10px;left:10px}
 }
 @media (max-width:640px){.hud .grande{font-size:2.2rem}}
+/* tese em 1 minuto */
+.tese{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:960px){.tese{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.tese{grid-template-columns:1fr}}
+.claim{background:var(--painel);border:1px solid var(--linha);border-radius:14px;padding:18px;display:grid;gap:6px;align-content:start;position:relative;overflow:hidden}
+.claim::after{content:"";position:absolute;inset:auto -30% -60% auto;width:160px;height:160px;border-radius:50%;background:radial-gradient(var(--monitor-fraco),transparent 70%);pointer-events:none}
+.claim b{font-family:var(--f-display);font-size:2.4rem;line-height:1;color:var(--monitor)}
+.claim h3{font-size:1rem}
+.claim p{color:var(--texto-2);font-size:.88rem}
+.acoes-tese{display:flex;gap:10px;flex-wrap:wrap}
+.btn.grande{font-size:1.05rem;padding:13px 20px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center}
+.faq{display:grid;gap:8px}
+.faq details{background:var(--painel);border:1px solid var(--linha);border-radius:12px;padding:0 16px}
+.faq details[open]{border-color:var(--monitor)}
+.faq summary{cursor:pointer;padding:14px 0;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--f-dado);color:var(--monitor)}
+.faq details[open] summary::after{content:"−"}
+.faq .resp{padding:0 0 16px;color:var(--texto-2);display:grid;gap:8px;max-width:80ch}
+.faq .resp b{color:var(--texto)}
+.faq .prova{background:none;border:0;color:var(--monitor);cursor:pointer;padding:0;font:inherit;text-align:left;text-decoration:underline;width:fit-content}
+.crit .st.and{background:rgba(201,167,255,.18);color:var(--real)}
+.crit .det{display:none;margin-top:6px;font-size:.84rem;color:var(--texto-2)}
+.crit[aria-expanded="true"] .det{display:block}
+.futuro{display:grid;gap:6px;margin:8px 0 0;padding-left:18px}
+.futuro li{color:var(--texto-2)}
+.estrelas{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.estrelas button{width:42px;height:42px;border-radius:10px;border:1px solid var(--linha);background:var(--painel-2);color:var(--texto-2);cursor:pointer;font-weight:700}
+.estrelas button[aria-pressed="true"]{background:var(--monitor-fraco);border-color:var(--monitor);color:var(--texto)}
+.medias{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.medias div{background:var(--painel-2);border-radius:10px;padding:10px;text-align:center}
+.medias b{display:block;font-family:var(--f-display);font-size:1.7rem}
+.medias span{font-size:.72rem;color:var(--texto-2);font-family:var(--f-dado);text-transform:uppercase;letter-spacing:.06em}
+.glossario dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0}
+.glossario dt{font-weight:600;color:var(--texto)}
+.glossario dd{margin:0;color:var(--texto-2)}
+@media (max-width:560px){.glossario dl{grid-template-columns:1fr}.glossario dd{margin-bottom:6px}}
 /* navegação por seções */
 .secoes{max-width:1180px;margin:0 auto;padding:0 20px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .secoes::-webkit-scrollbar{display:none}
@@ -342,6 +379,19 @@ input[type=range]{min-height:28px}
       </div>
     </div>
     <p class="como-ler"><b>Como ler:</b> até dez/2025 os números são o que aconteceu. De jan/2026 em diante, é o que a IA previu usando só dados até dez/2025. Depois comparamos com o real que o SUS já publicou: as bolinhas lilás no gráfico.</p>
+  </section>
+
+  <section class="bloco" id="tese" aria-labelledby="t-tese">
+    <div class="cab">
+      <span class="olho">A tese em 1 minuto</span>
+      <h2 id="t-tese">O que este trabalho prova</h2>
+      <p>Quatro números que resumem a defesa. A prova de cada um está mais abaixo e na apresentação.</p>
+    </div>
+    <div class="tese" id="tese-cards"></div>
+    <div class="acoes-tese">
+      <a class="btn grande" href="apresentacao.html" id="btn-defesa">▶ Abrir a apresentação da defesa</a>
+      <button class="btn sec grande" type="button" id="btn-ir-banca">Perguntas da banca, já respondidas</button>
+    </div>
   </section>
 
   <section class="bloco" id="simulador" aria-labelledby="t-sim">
@@ -535,14 +585,45 @@ input[type=range]{min-height:28px}
     </div>
   </section>
 
+  <section class="bloco" id="banca" aria-labelledby="t-banca">
+    <div class="cab">
+      <span class="olho">Preparação para a defesa</span>
+      <h2 id="t-banca">Perguntas que a banca vai fazer</h2>
+      <p>Respostas curtas, com os números do estudo. Toque numa pergunta para abrir.</p>
+    </div>
+    <div class="faq" id="faq"></div>
+  </section>
+
+  <section class="bloco" id="avaliacao" aria-labelledby="t-av" hidden>
+    <div class="cab">
+      <span class="olho">Validação com quem usa</span>
+      <h2 id="t-av">Avalie a Sala de Situação</h2>
+      <p>Gestores, profissionais de saúde, professores e colegas: três notas rápidas e um comentário. As respostas entram na validação do TCC.</p>
+    </div>
+    <div class="dois">
+      <form class="cartao" id="av-form" style="display:grid;gap:14px">
+        <label class="olho" for="av-perfil">Você é</label>
+        <select id="av-perfil" style="max-width:none"><option value="gestor">Gestor(a) de saúde</option><option value="profissional">Profissional de saúde</option><option value="professor">Professor(a)</option><option value="estudante">Estudante</option><option value="outro">Outro</option></select>
+        <div><span class="olho">A ferramenta seria útil no planejamento?</span><div class="estrelas" data-campo="utilidade"></div></div>
+        <div><span class="olho">Deu para entender sem explicação?</span><div class="estrelas" data-campo="clareza"></div></div>
+        <div><span class="olho">Você confiaria nas previsões?</span><div class="estrelas" data-campo="confianca"></div></div>
+        <label class="olho" for="av-com">Comentário (opcional)</label>
+        <textarea id="av-com" maxlength="500" rows="3" style="background:var(--painel-2);border:1px solid var(--linha);border-radius:8px;padding:10px;color:var(--texto);font:inherit"></textarea>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn" type="submit">Enviar avaliação</button><span id="av-msg" style="color:var(--texto-2);font-size:.88rem"></span></div>
+      </form>
+      <div class="cartao" style="display:grid;gap:12px;align-content:start" id="av-res"></div>
+    </div>
+  </section>
+
   <section class="bloco" id="parecer-sec" aria-labelledby="t-parecer">
     <div class="cab">
       <span class="olho">Parecer · visão do professor</span>
       <h2 id="t-parecer">O que a banca procura, e onde está a prova</h2>
-      <p>Clique num item para ir até a evidência na página.</p>
+      <p>Toque num item para ver a pergunta da banca e a nossa resposta. O link leva até a prova na página.</p>
     </div>
     <div style="display:grid;gap:8px;max-width:520px"><div class="progresso"><i id="parecer-barra"></i></div><span class="olho" id="parecer-txt"></span></div>
     <div class="parecer" id="parecer"></div>
+    <div class="cartao"><h3>Trabalhos futuros</h3><ul class="futuro" id="futuro"></ul></div>
   </section>
 
   <section class="bloco" id="tabela" aria-labelledby="t-tab">
@@ -552,6 +633,11 @@ input[type=range]{min-height:28px}
       <p>Clique no título de uma coluna para ordenar e numa linha para abrir a região no topo.</p>
     </div>
     <div class="tab-wrap"><table id="tab"><thead></thead><tbody></tbody></table></div>
+  </section>
+
+  <section class="bloco glossario" id="glossario" aria-labelledby="t-glo">
+    <div class="cab"><span class="olho">Glossário</span><h2 id="t-glo">Os termos técnicos em uma linha</h2></div>
+    <div class="cartao"><dl id="glo"></dl></div>
   </section>
 
   <footer id="rodape"></footer>
@@ -588,7 +674,7 @@ const NH = D.meses.length, NP = D.meses_prev.length;
 const NOME_MODELO = {RandomForest: "Random Forest", LightGBM: "LightGBM", XGBoost: "XGBoost",
   Ensemble: "Combinação (RF + LightGBM)", Ingenuo: "Chute: repetir o mês anterior",
   Sazonal_ingenuo: "Chute: repetir o mesmo mês do ano anterior", Media_historica: "Chute: média histórica",
-  ETS: "ETS (Holt-Winters)", LightGBM_ajustado: "LightGBM ajustado", Combinacao: "Combinação ETS + IA"};
+  ETS: "ETS (Holt-Winters)", SARIMA: "SARIMA", LightGBM_ajustado: "LightGBM ajustado", Combinacao: "Combinação ETS + IA"};
 const losEstado = D.total.los || 11;
 const entidades = [D.total].concat([...D.regioes].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
 const porId = Object.fromEntries(entidades.map(e => [e.id, e]));
@@ -1601,9 +1687,10 @@ function laboratorio() {
   const ab = Object.fromEntries(E.ablacao.map(a => [a.grupo, a]));
   const minBCD = Math.min(ab.B.MAE, ab.C.MAE, ab.D.MAE), ganho2 = (1 - minBCD / ab.A.MAE) * 100;
   const ganho3 = (1 - ab.D.MAE / ab.C.MAE) * 100;
-  const g4 = M.ETS ? (1 - M[mlBest].MAE / M.ETS.MAE) * 100 : null;
-  const iaGanhaEts = M.ETS && (par("ETS", mlBest) || {}).significativo_5pct, etsGanhaIa = M.ETS && (par(mlBest, "ETS") || {}).significativo_5pct;
-  const combo = M.Combinacao ? (1 - M.Combinacao.MAE / Math.min(M[mlBest].MAE, M.ETS ? M.ETS.MAE : Infinity)) * 100 : null;
+  const estB = ["ETS", "SARIMA"].filter(k => M[k]).reduce((a, b) => (!a || M[b].MAE < M[a].MAE) ? b : a, null);
+  const g4 = estB ? (1 - M[mlBest].MAE / M[estB].MAE) * 100 : null;
+  const iaGanhaEts = estB && (par(estB, mlBest) || {}).significativo_5pct, etsGanhaIa = estB && (par(mlBest, estB) || {}).significativo_5pct;
+  const combo = M.Combinacao ? (1 - M.Combinacao.MAE / Math.min(M[mlBest].MAE, estB ? M[estB].MAE : Infinity)) * 100 : null;
   const H = [
     {n: "H1", q: "A IA prevê melhor que os chutes simples?", v: g1 > 0 ? (s1 ? "sim" : "parcial") : "nao",
      t: `${nm(mlBest)} erra ${nf1.format(Math.abs(g1))}% ${g1 > 0 ? "menos" : "mais"} que o melhor chute (${nm(chBest)}). ${s1 ? "Diferença estatisticamente significativa." : "Parte da diferença ainda pode ser acaso."}`},
@@ -1612,8 +1699,8 @@ function laboratorio() {
     {n: "H3", q: "Variáveis externas (ansiedade, leitos, população) ajudam?", v: ganho3 >= 1 ? "sim" : ganho3 > -1 ? "parcial" : "nao",
      t: ganho3 >= 1 ? `Sim: somá-las reduziu o erro em mais ${nf1.format(ganho3)}%.` : ganho3 > -1 ? `Praticamente empate (${pct(-ganho3)} no erro): o próprio histórico já carrega quase toda a informação.` : `Não: com elas o erro subiu ${nf1.format(-ganho3)}%. O histórico já carrega a informação.`},
   ];
-  if (g4 != null) H.push({n: "H4", q: "A IA supera um método estatístico clássico (ETS)?", v: iaGanhaEts ? "sim" : etsGanhaIa ? "nao" : "parcial",
-    t: `${iaGanhaEts ? "Sim" : etsGanhaIa ? "Não" : "Empate estatístico"}: ${nm(mlBest)} ${g4 >= 0 ? "erra " + nf1.format(g4) + "% menos" : "erra " + nf1.format(-g4) + "% mais"} que o ETS. ` +
+  if (g4 != null) H.push({n: "H4", q: `A IA supera um método estatístico clássico (${nm(estB)})?`, v: iaGanhaEts ? "sim" : etsGanhaIa ? "nao" : "parcial",
+    t: `${iaGanhaEts ? "Sim" : etsGanhaIa ? "Não" : "Empate estatístico"}: ${nm(mlBest)} ${g4 >= 0 ? "erra " + nf1.format(g4) + "% menos" : "erra " + nf1.format(-g4) + "% mais"} que o ${nm(estB)}. ` +
       (combo != null ? (combo > 0 ? `Combinando ETS e IA, o erro cai mais ${nf1.format(combo)}%: a melhor opção do estudo.` : `A combinação ETS + IA empata no erro por região${M.Combinacao.erro_total_pct <= Math.min(...Object.values(M).map(z => z.erro_total_pct)) ? `, mas tem o menor erro no total do estado (${nf1.format(M.Combinacao.erro_total_pct)}%) e menos viés` : ""}.`) : "")});
   const ROT = {sim: "Confirmada", parcial: "Em parte", nao: "Não confirmada"};
   document.getElementById("hipoteses").replaceChildren(...H.map(h => el("div", {class: "cartao hip"},
@@ -1658,34 +1745,45 @@ function laboratorio() {
 
 /* ---------- PARECER DO PROFESSOR */
 function parecer() {
-  const E = !!(D.experimentos && D.experimentos.modelos), S = !!(D.experimentos && D.experimentos.shap && D.experimentos.shap.entidades);
+  const N = numerosTese(), E = !!(D.experimentos && D.experimentos.modelos), M = N.M;
+  const S = !!(D.experimentos && D.experimentos.shap && D.experimentos.shap.entidades);
+  const nAv = typeof avaliacao !== "undefined" ? avaliacao.total() : 0;
   const itens = [
-    ["Pergunta de pesquisa e hipóteses claras", "Três hipóteses testadas com dados, com veredito.", E, "lab"],
-    ["Dados públicos, recorte e limites documentados", "SIH-SUS, CNES e IBGE; AIHs novas, por residência e data de internação.", true, "rodape"],
-    ["Sem vazamento de dados", "Teste automático prova que mudar o futuro não altera atributos do passado.", true, "ia"],
-    ["Comparação com método estatístico clássico", "ETS (Holt-Winters) além dos chutes simples.", E, "lab"],
-    ["Ajuste de hiperparâmetros sem tocar no teste", "Busca aleatória validada só no ano anterior ao teste.", E, "lab"],
-    ["Ablação da engenharia de atributos", "O ganho de cada grupo de pistas, degrau por degrau.", E, "lab"],
-    ["Significância estatística", "Diebold-Mariano e Wilcoxon contra o melhor modelo.", E, "lab"],
-    ["Margem de erro verificada fora da amostra", "Faixa de 80% conferida com o real de 2026.", true, "ia"],
-    ["Explicação de cada previsão", "Contribuição de cada pista (valores SHAP do LightGBM).", S, "porque"],
-    ["Análise de erro", "Erro por porte de região, viés e meses fora da faixa.", E, "lab"],
-    ["Aplicação prática para gestores", "Simulador de leitos e apontamentos automáticos por região.", true, "simulador"],
-    ["Reprodutível", "Pipeline em um clique, testes automáticos e código no GitHub.", true, "rodape"],
-    ["Próximo passo: SARIMA e previsão hierárquica", "Comparar com SARIMA e reconciliar região × estado.", false, null],
-    ["Próximo passo: intervalos conformais", "Garantia formal de cobertura da faixa de erro.", false, null],
-    ["Próximo passo: atualização mensal automática", "Rodar o pipeline todo mês via GitHub Actions.", false, null],
-    ["Próximo passo: validação com gestores", "Mostrar a sala a quem planeja leitos e colher feedback.", false, null],
+    ["Pergunta de pesquisa e hipóteses claras", "A banca pergunta: o que exatamente vocês queriam provar?", "Quatro hipóteses testadas com dados, cada uma com veredito.", E, "lab"],
+    ["Dados públicos, recorte e limites documentados", "De onde vêm os dados e o que fica de fora?", "SIH-SUS, CNES e IBGE; internações novas por residência e data; limitações listadas.", true, "banca"],
+    ["Sem vazamento de dados", "Como garantem que o modelo não viu o futuro?", "Atributos só com o passado, walk-forward e teste automático que comprova.", true, "ia"],
+    ["Comparação com métodos estatísticos clássicos", "A IA ganha de um bom método tradicional?", `ETS${M.SARIMA ? " e SARIMA" : ""} no mesmo protocolo; resultado honesto: empate estatístico.`, E, "lab"],
+    ["Ajuste de hiperparâmetros sem tocar no teste", "Vocês ajustaram o modelo olhando a resposta?", "Não: a busca usou só o ano anterior ao teste.", E, "lab"],
+    ["Ablação da engenharia de atributos", "Cada grupo de pistas ajuda mesmo?", N.ganhoAtrib != null ? `Sim: sazonalidade e médias reduzem o erro em ${nf1.format(N.ganhoAtrib)}%.` : "Ver laboratório.", E, "lab"],
+    ["Significância estatística", "A diferença entre modelos pode ser sorte?", "Diebold-Mariano e Wilcoxon para cada par de modelos.", E, "lab"],
+    ["Margem de erro validada fora da amostra", "Dá para confiar na faixa de erro?", N.conformal != null ? `Validação conformal: ${nf1.format(N.conformal)}% de cobertura (meta 80%).` : "Conferida com o real de 2026.", true, "ia"],
+    ["Prova com dados reais do futuro", "A previsão funcionou de verdade?", N.erro26 != null ? `Sim: ${nf1.format(N.erro26)}% de erro em jan–mar/2026, meses que a IA nunca viu.` : "Ver gráfico.", true, "ala"],
+    ["Explicação de cada previsão", "Como a IA decide?", "Valores SHAP: a soma das pistas dá exatamente a previsão.", S, "porque"],
+    ["Coerência entre regiões e estado", "As previsões regionais batem com a do estado?", "Sim: a previsão do estado é a soma das 53 regiões (reconciliação bottom-up).", true, "tabela"],
+    ["Análise de erro", "Onde a IA erra mais?", "Por porte da região, viés e meses fora da faixa.", E, "lab"],
+    ["Aplicação prática", "Isso serve para quem planeja leitos?", "Simulador de leitos, apontamentos por região e modo apresentação.", true, "simulador"],
+    ["Reprodutível e atualizado sozinho", "Outra pessoa consegue refazer?", "Código público no GitHub, testes automáticos e atualização mensal automática.", true, "rodape"],
+    ["Validação com usuários", "Quem vai usar aprovou?", nAv ? `Em andamento: ${nAv} avaliação${nAv === 1 ? "" : "ões"} recebida${nAv === 1 ? "" : "s"} no formulário da Sala.` : "Em andamento: formulário de avaliação aberto na versão do time.", "and", "avaliacao"],
   ];
-  const ok = itens.filter(i => i[2]).length;
-  document.getElementById("parecer-barra").style.width = (ok / itens.length * 100) + "%";
-  document.getElementById("parecer-txt").textContent = `${ok} de ${itens.length} critérios atendidos · ${itens.length - ok} próximos passos`;
-  document.getElementById("parecer").replaceChildren(...itens.map(([t, d, st, alvo]) => {
-    const b = el("button", {class: "crit", type: "button"}, el("span", {class: "st " + (st ? "ok" : "prox"), text: st ? "✓" : "→"}), el("div", {}, el("b", {text: t}), el("span", {text: d})));
-    if (alvo) b.addEventListener("click", () => document.getElementById(alvo).scrollIntoView({behavior: reduzir ? "auto" : "smooth", block: "start"}));
-    else b.style.cursor = "default";
+  const ok = itens.filter(i => i[3] === true).length, and = itens.filter(i => i[3] === "and").length;
+  document.getElementById("parecer-barra").style.width = ((ok + and * .5) / itens.length * 100) + "%";
+  document.getElementById("parecer-txt").textContent = `${ok} de ${itens.length} critérios concluídos${and ? ` · ${and} em andamento` : ""}`;
+  document.getElementById("parecer").replaceChildren(...itens.map(([t, q, r, st, alvo]) => {
+    const cls = st === true ? "ok" : st === "and" ? "and" : "prox", ic = st === true ? "✓" : st === "and" ? "◐" : "→";
+    const b = el("button", {class: "crit", type: "button", "aria-expanded": "false"}, el("span", {class: "st " + cls, text: ic}),
+      el("div", {}, el("b", {text: t}), el("span", {text: r}),
+        el("div", {class: "det"}, el("p", {}, el("i", {text: q})), el("span", {class: "prova", style: "color:var(--monitor);text-decoration:underline", text: "Ver a prova →"}))));
+    b.addEventListener("click", ev => {
+      if (ev.target.classList.contains("prova")) { const a = document.getElementById(alvo); if (a && !a.hidden) a.scrollIntoView({behavior: reduzir ? "auto" : "smooth"}); return; }
+      b.setAttribute("aria-expanded", String(b.getAttribute("aria-expanded") !== "true"));
+    });
     return b;
   }));
+  document.getElementById("futuro").replaceChildren(...[
+    "Incluir atendimentos ambulatoriais e CAPS (rede de atenção psicossocial).",
+    "Testar o mesmo pipeline em outros estados.",
+    "Previsão diária de ocupação dentro dos hospitais de referência.",
+    "Acompanhar com gestores reais o uso da Sala por alguns meses."].map(t => el("li", {text: t})));
 }
 
 /* ---------- CONQUISTAS, CONFETE E AVISOS */
@@ -1724,6 +1822,113 @@ const festa = (() => {
   return {soltar, aviso};
 })();
 
+/* ---------- NÚMEROS DA TESE (usados no resumo, nas perguntas e no parecer) */
+function numerosTese() {
+  const E = D.experimentos || {}, M = E.modelos || {};
+  const menor = ks => ks.filter(k => M[k]).reduce((a, b) => (!a || M[b].MAE < M[a].MAE) ? b : a, null);
+  const ml = menor(["RandomForest", "LightGBM", "LightGBM_ajustado"]), ch = menor(["Ingenuo", "Sazonal_ingenuo"]), est = menor(["ETS", "SARIMA"]);
+  const ganhoChute = ml && ch ? (1 - M[ml].MAE / M[ch].MAE) * 100 : null;
+  const mb = D.meta.melhor, t = D.total, errs = [];
+  t.status26.forEach((st, i) => { if (st === "completo" && t.real26[i] != null) errs.push(Math.abs(t.prev[mb].p[i] - t.real26[i]) / t.real26[i] * 100); });
+  let dentro = 0, n = 0;
+  D.regioes.forEach(e => e.status26.forEach((st, i) => { const r = e.real26[i]; if (st !== "completo" || r == null) return; n++; if (r >= e.prev[mb].lo[i] && r <= e.prev[mb].hi[i]) dentro++; }));
+  const ab = Object.fromEntries((E.ablacao || []).map(a => [a.grupo, a]));
+  const ganhoAtrib = ab.A ? (1 - Math.min(ab.B.MAE, ab.C.MAE, ab.D.MAE) / ab.A.MAE) * 100 : null;
+  return {E, M, ml, ch, est, ganhoChute, erro26: errs.length ? d3.mean(errs) : null, cobertura26: n ? dentro / n * 100 : null,
+    conformal: E.conformal && E.conformal.cobertura_regiao_pct, ganhoAtrib, mb,
+    total25: t.y.slice(-12).reduce((a, b) => a + b, 0), regioes: D.regioes.length};
+}
+
+function tese() {
+  const N = numerosTese();
+  const cards = [
+    [N.erro26 != null ? nf1.format(N.erro26) + "%" : "—", "de erro em 2026", `Prevendo jan–mar/2026 só com dados até 2025, a IA errou em média ${N.erro26 != null ? nf1.format(N.erro26) : "—"}% no total do estado.`],
+    [N.ganhoChute != null ? nf1.format(N.ganhoChute) + "%" : "—", "menos erro que o chute", `A IA erra menos que repetir o mês anterior, com diferença estatisticamente significativa.`],
+    [N.conformal != null ? nf1.format(N.conformal) + "%" : (N.cobertura26 != null ? Math.round(N.cobertura26) + "%" : "—"), "de acerto da margem", `A faixa de "8 em 10 chances" acertou ${N.conformal != null ? nf1.format(N.conformal) + "% nos testes" : ""}${N.cobertura26 != null ? ` e ${Math.round(N.cobertura26)}% com o real de 2026` : ""}. A margem é confiável.`],
+    [String(N.regioes), "regiões, 6 meses à frente", "Previsão por região de SP com explicação, alertas e simulador de leitos, atualizada sozinha todo mês."],
+  ];
+  document.getElementById("tese-cards").replaceChildren(...cards.map(([v, t, p]) => el("div", {class: "claim"}, el("b", {text: v}), el("h3", {text: t}), el("p", {text: p}))));
+  document.getElementById("btn-ir-banca").addEventListener("click", () => document.getElementById("banca").scrollIntoView({behavior: reduzir ? "auto" : "smooth"}));
+}
+
+function perguntasBanca() {
+  const N = numerosTese(), M = N.M, nm = k => NOME_MODELO[k] || k;
+  const zeros = (() => { let z = 0, t = 0; D.regioes.forEach(e => e.y.forEach(v => { t++; if (v === 0) z++; })); return t ? z / t * 100 : 0; })();
+  const Q = [
+    ["Por que prever por região, e não por município?", `Em município pequeno a internação por transtorno de humor é quase sempre 0 ou 1 por mês, e aí não há padrão para aprender. Agrupando os 645 municípios nas ${N.regioes} regiões imediatas do IBGE, só ${nf1.format(zeros)}% dos meses ficam com zero, e a gestão regional do SUS já trabalha nessa escala.`, "mapa-sec"],
+    ["Como vocês garantem que não houve vazamento de dados?", "Três travas: (1) todo atributo usa só meses anteriores à previsão; (2) a validação é walk-forward, ou seja, para cada mês testado o modelo é treinado do zero só com o passado; (3) um teste automático altera o futuro e confirma que nenhum atributo do passado muda.", "ia"],
+    ["Se o método estatístico empatou com a IA, para que usar IA?", N.est && N.ml ? `O ${nm(N.est)} e a IA (${nm(N.ml)}) ficaram estatisticamente empatados: ${nf1.format(M[N.est].MAE)} contra ${nf1.format(M[N.ml].MAE)} de erro médio. Mas a IA explica cada previsão, aceita outras variáveis (leitos, ansiedade, população) e, combinada com o estatístico, tem o menor erro no total do estado. Mostrar o empate com teste estatístico é parte do rigor do trabalho.` : "Veja o laboratório.", "lab"],
+    ["Por que não usar o R², que deu 0,99?", "Porque até o chute 'repetir o mês anterior' tira 0,98. As regiões têm tamanhos muito diferentes (a capital tem dezenas de vezes mais casos), e o R² acaba medindo isso, não a qualidade da previsão. Por isso usamos MAE, RMSE e erro percentual no total.", "lab"],
+    ["Quão confiável é a margem de erro?", `Ela foi validada de duas formas, sem usar o próprio dado para calibrar: na validação cruzada por origem, o real caiu dentro da faixa ${N.conformal != null ? nf1.format(N.conformal) + "%" : "—"} das vezes (meta: 80%); com o real de 2026, ${N.cobertura26 != null ? Math.round(N.cobertura26) + "%" : "—"} das regiões ficaram dentro.`, "ia"],
+    ["Como a IA chega no número?", "Cada previsão é decomposta em pistas (valores SHAP): média recente, mesmo período do ano anterior, época do ano, pandemia, leitos e outras. A soma das contribuições dá exatamente a previsão. Nada é caixa-preta.", "porque"],
+    ["A engenharia de atributos fez diferença?", N.ganhoAtrib != null ? `Sim. Com só os meses recentes o erro médio é maior; acrescentando sazonalidade e médias móveis o erro cai ${nf1.format(N.ganhoAtrib)}%. As variáveis externas praticamente empataram, o que mostra que o histórico já carrega quase toda a informação.` : "Veja o laboratório.", "lab"],
+    ["Por que transtornos de humor (F30–F39)?", "É o grupo com mais internações em saúde mental no SUS de SP fora as psicoses, com sazonalidade clara e relevância para o planejamento de leitos. Ansiedade (F40–F48) entra como variável complementar.", "ala"],
+    ["Os dados são confiáveis e éticos?", "São dados públicos do DATASUS (SIH-SUS e CNES) e do IBGE, agregados por região e mês, sem nenhuma identificação de paciente, de acordo com a LGPD. Contamos só internações novas (AIH tipo 1) pela data da internação e residência do paciente.", "rodape"],
+    ["Quais as limitações?", "Só internações SUS (não inclui rede privada nem CAPS); depende do CID principal informado; os últimos meses chegam incompletos (AIHs atrasadas); leitos de saúde mental também atendem outros diagnósticos; regiões muito pequenas têm erro percentual alto.", "lab"],
+    ["Isso serve na prática?", `Sim: o simulador mostra quantos leitos reservar e o risco de faltar; os apontamentos indicam regiões com alta prevista; a previsão é refeita sozinha todo mês. Em 2025 foram ${fmt(N.total25)} internações por esses transtornos no estado.`, "simulador"],
+  ];
+  document.getElementById("faq").replaceChildren(...Q.map(([q, r, alvo]) => el("details", {},
+    el("summary", {text: q}),
+    el("div", {class: "resp"}, el("p", {text: r}),
+      el("button", {class: "prova", type: "button", text: "Ver a prova na página →", onclick: () => { const t = document.getElementById(alvo); if (t) t.scrollIntoView({behavior: reduzir ? "auto" : "smooth"}); }})))));
+}
+
+function glossario() {
+  const G = [
+    ["MAE", "Erro médio absoluto: em média, quantas internações a previsão errou por região e mês."],
+    ["RMSE", "Parecido com o MAE, mas pesa mais os erros grandes."],
+    ["Walk-forward", "Teste que imita a vida real: treina com o passado, prevê o mês seguinte, avança um mês e repete."],
+    ["Vazamento de dados", "Quando o modelo 'vê' o futuro sem querer. Deixa o resultado bom demais e falso."],
+    ["Faixa de 80%", "Intervalo em que o valor real deve cair 8 de cada 10 vezes."],
+    ["Validação conformal", "Confere a faixa com dados que não foram usados para construí-la."],
+    ["ETS / SARIMA", "Métodos estatísticos clássicos de séries temporais, usados como adversários da IA."],
+    ["Random Forest / LightGBM", "Modelos de IA que combinam centenas de árvores de decisão."],
+    ["SHAP", "Forma de dividir uma previsão em quanto cada pista contribuiu."],
+    ["Diebold-Mariano", "Teste estatístico que diz se um modelo é realmente melhor que outro ou se a diferença é sorte."],
+    ["Ablação", "Tirar e pôr grupos de pistas para medir quanto cada um ajuda."],
+  ];
+  document.getElementById("glo").replaceChildren(...G.flatMap(([t, d]) => [el("dt", {text: t}), el("dd", {text: d})]));
+}
+
+/* ---------- AVALIAÇÃO (validação com usuários) */
+const avaliacao = (() => {
+  const notas = {utilidade: 0, clareza: 0, confianca: 0};
+  let todas = [];
+  document.querySelectorAll("#av-form .estrelas").forEach(box => {
+    const campo = box.dataset.campo;
+    box.replaceChildren(...[1, 2, 3, 4, 5].map(n => el("button", {type: "button", "aria-pressed": "false", "aria-label": `${n} de 5`, text: String(n), onclick: () => {
+      notas[campo] = n; box.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(i < n)));
+    }})));
+  });
+  function render() {
+    const box = document.getElementById("av-res"), m = k => todas.length ? d3.mean(todas, a => a[k]) : null;
+    const coment = todas.filter(a => a.comentario).slice(0, 6);
+    const PERF = {gestor: "Gestor(a)", profissional: "Profissional de saúde", professor: "Professor(a)", estudante: "Estudante", outro: "Outro"};
+    box.replaceChildren(el("h3", {text: `${todas.length} avaliação${todas.length === 1 ? "" : "ões"}`}),
+      el("div", {class: "medias"}, ...[["utilidade", "utilidade"], ["clareza", "clareza"], ["confianca", "confiança"]].map(([k, r]) =>
+        el("div", {}, el("b", {text: m(k) != null ? nf1.format(m(k)) : "—"}), el("span", {text: r})))),
+      ...(coment.length ? coment.map(a => el("p", {class: "como-ler"}, el("b", {text: (PERF[a.perfil] || "Alguém") + ": "}), a.comentario)) : [el("p", {class: "como-ler", text: "Ainda sem comentários. Mande o link para gestores e professores avaliarem."})]));
+  }
+  document.getElementById("av-form").addEventListener("submit", async ev => {
+    ev.preventDefault();
+    const msg = document.getElementById("av-msg");
+    if (!notas.utilidade || !notas.clareza || !notas.confianca) { msg.textContent = "Dê uma nota de 1 a 5 nas três perguntas."; return; }
+    if (!cap.db || !cap.eu) { msg.textContent = "Para enviar, abra a página logado no Claude."; return; }
+    msg.textContent = "Enviando…";
+    try {
+      await cap.db.doc("avaliacoes/" + cap.eu).set({...notas, perfil: document.getElementById("av-perfil").value,
+        comentario: document.getElementById("av-com").value.trim().slice(0, 500), criado: Date.now()});
+      msg.textContent = "Obrigado! Avaliação registrada."; festa.soltar();
+    } catch (e) { msg.textContent = "Não deu para enviar agora. Tente de novo."; }
+  });
+  function iniciar() {
+    if (!cap.db) return;
+    document.getElementById("avaliacao").hidden = false;
+    cap.db.collection("avaliacoes").onSnapshot(s => { todas = s.docs.map(d => d.data()); render(); parecer(); }, () => {});
+  }
+  return {iniciar, total: () => todas.length};
+})();
+
 ouvintes.mudou.push(porque);
 ouvintes.trocouRegiao.push(() => apontamentos.render());
 addEventListener("resize", () => { porque(); laboratorio(); });
@@ -1742,7 +1947,7 @@ function filtroRegiaoAtivo() { const b = document.querySelector('#mural [data-fi
     const pode = await user.can("data.write");
     cap.podeEscrever = !!db && !!cap.eu && pode !== false;
   }
-  mural.iniciar(); placar.iniciar(); cenarios.iniciar(); presenca.iniciar(); pergunte.iniciar();
+  mural.iniciar(); placar.iniciar(); cenarios.iniciar(); presenca.iniciar(); pergunte.iniciar(); avaliacao.iniciar();
 })();
 
 function atualizarTudo() {
@@ -1750,11 +1955,11 @@ function atualizarTudo() {
 }
 cena.reescalar();
 atualizarTudo(); pistas(); desafio.nova();
-apontamentos.render(); laboratorio(); parecer(); porque();
+apontamentos.render(); laboratorio(); parecer(); porque(); tese(); perguntasBanca(); glossario();
 /* navegação por seções */
 (() => {
-  const itens = [["ala", "Ala 3D"], ["simulador", "Simulador"], ["apontamentos", "Apontamentos"], ["porque", "Por quê?"], ["mapa-sec", "Mapa"],
-    ["desafio", "Você × IA"], ["mural", "Mural"], ["ia", "Erro da IA"], ["pergunte", "Pergunte"], ["lab", "Laboratório"], ["parecer-sec", "Parecer"], ["tabela", "Regiões"]];
+  const itens = [["ala", "Ala 3D"], ["tese", "A tese"], ["simulador", "Simulador"], ["apontamentos", "Apontamentos"], ["porque", "Por quê?"], ["mapa-sec", "Mapa"],
+    ["desafio", "Você × IA"], ["mural", "Mural"], ["ia", "Erro da IA"], ["pergunte", "Pergunte"], ["lab", "Laboratório"], ["banca", "Perguntas"], ["avaliacao", "Avaliar"], ["parecer-sec", "Parecer"], ["tabela", "Regiões"], ["glossario", "Glossário"]];
   const nav = document.getElementById("secoes");
   const montar = () => nav.replaceChildren(...itens.filter(([id]) => { const e = document.getElementById(id); return e && !e.hidden; })
     .map(([id, r]) => el("a", {href: "#" + id, "data-id": id, text: r, onclick: ev => { ev.preventDefault(); document.getElementById(id).scrollIntoView({behavior: reduzir ? "auto" : "smooth"}); }})));

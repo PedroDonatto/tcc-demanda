@@ -37,11 +37,15 @@ Teste: 2025-01 a 2025-12 | validação do ajuste: 2024-01 a 2024-12
 
 [5/5] Explicando as previsões de 2026 (SHAP)...
 
+Validando a faixa de 80% (conformal, deixa-uma-origem-de-fora)...
+    {'modelo': 'LightGBM', 'alvo_pct': 80, 'cobertura_regiao_pct': 79.5, 'cobertura_total_pct': 71.3, 'por_h': {1: 79.9, 2: 79.6, 3: 79.8, 4: 79.2, 5: 79.4, 6: 79.5}, 'n_origens': 23}
+
 === Modelos (teste 2025, 1 mês à frente) ===
                      MAE   RMSE  erro_total_pct  vies_pct
 Ingenuo            5.024  8.958            6.43     -0.56
 Sazonal_ingenuo    5.269  9.944            8.60     -8.60
 ETS                3.936  7.353            4.62     -3.08
+SARIMA             4.149  7.888            5.70     -5.19
 RandomForest       4.043  7.595            5.15     -2.68
 LightGBM           4.147  8.448            5.23     -1.02
 LightGBM_ajustado  4.112  8.072            5.26     -2.74
@@ -60,6 +64,7 @@ grupo               rotulo  n_atributos   MAE  erro_total_pct
            modelo contra    dm   p_dm  p_wilcoxon  significativo_5pct
           Ingenuo    ETS 4.855 0.0005      0.0000                True
   Sazonal_ingenuo    ETS 6.075 0.0001      0.0000                True
+           SARIMA    ETS 4.181 0.0015      0.0140                True
      RandomForest    ETS 0.928 0.3733      0.8384               False
          LightGBM    ETS 1.185 0.2608      0.4157               False
 LightGBM_ajustado    ETS 1.147 0.2755      0.6286               False
@@ -71,8 +76,8 @@ Pequenas         18           3.1             15.0            21.4
   Médias         17           9.4             12.2            14.8
  Grandes         18          60.6              4.1             6.4
 
-Concluído em 135s -> outputs/experimentos.json
+Concluído em 167s -> outputs/experimentos.json
 Mapa IBGE: 645 municípios
-OK: C:\Users\pedro\Downloads\tcc-demanda\tcc-demanda\outputs\web_data.json (427 KB), 53 regiões, melhor modelo LightGBM
+OK: C:\Users\pedro\Downloads\tcc-demanda\tcc-demanda\outputs\web_data.json (429 KB), 53 regiões, melhor modelo LightGBM
 Sala de Situação: C:\Users\pedro\Downloads\tcc-demanda\tcc-demanda\app\web\index.html (abra com ver_sala.bat)
 FIM 

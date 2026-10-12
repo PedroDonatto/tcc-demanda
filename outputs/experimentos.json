@@ -1,4 +1,19 @@
 {
+ "conformal": {
+  "modelo": "LightGBM",
+  "alvo_pct": 80,
+  "cobertura_regiao_pct": 79.5,
+  "cobertura_total_pct": 71.3,
+  "por_h": {
+   "1": 79.9,
+   "2": 79.6,
+   "3": 79.8,
+   "4": 79.2,
+   "5": 79.4,
+   "6": 79.5
+  },
+  "n_origens": 23
+ },
  "teste_meses": [
   "2025-01",
   "2025-02",
@@ -31,6 +46,12 @@
    "RMSE": 7.353,
    "erro_total_pct": 4.62,
    "vies_pct": -3.08
+  },
+  "SARIMA": {
+   "MAE": 4.149,
+   "RMSE": 7.888,
+   "erro_total_pct": 5.7,
+   "vies_pct": -5.19
   },
   "RandomForest": {
    "MAE": 4.043,
@@ -287,6 +308,14 @@
    "significativo_5pct": true
   },
   {
+   "modelo": "SARIMA",
+   "contra": "ETS",
+   "dm": 4.181,
+   "p_dm": 0.0015,
+   "p_wilcoxon": 0.014,
+   "significativo_5pct": true
+  },
+  {
    "modelo": "RandomForest",
    "contra": "ETS",
    "dm": 0.928,
@@ -333,6 +362,14 @@
    "contra": "ETS",
    "dm": 4.855,
    "p_dm": 0.0005,
+   "p_wilcoxon": 0.0,
+   "significativo_5pct": true
+  },
+  {
+   "modelo": "Ingenuo",
+   "contra": "SARIMA",
+   "dm": 3.918,
+   "p_dm": 0.0024,
    "p_wilcoxon": 0.0,
    "significativo_5pct": true
   },
@@ -386,6 +423,14 @@
   },
   {
    "modelo": "Sazonal_ingenuo",
+   "contra": "SARIMA",
+   "dm": 5.548,
+   "p_dm": 0.0002,
+   "p_wilcoxon": 0.0,
+   "significativo_5pct": true
+  },
+  {
+   "modelo": "Sazonal_ingenuo",
    "contra": "RandomForest",
    "dm": 6.915,
    "p_dm": 0.0,
@@ -434,6 +479,14 @@
   },
   {
    "modelo": "ETS",
+   "contra": "SARIMA",
+   "dm": -4.181,
+   "p_dm": 0.0015,
+   "p_wilcoxon": 0.986,
+   "significativo_5pct": true
+  },
+  {
+   "modelo": "ETS",
    "contra": "RandomForest",
    "dm": -0.928,
    "p_dm": 0.3733,
@@ -465,6 +518,62 @@
    "significativo_5pct": true
   },
   {
+   "modelo": "SARIMA",
+   "contra": "Ingenuo",
+   "dm": -3.918,
+   "p_dm": 0.0024,
+   "p_wilcoxon": 1.0,
+   "significativo_5pct": true
+  },
+  {
+   "modelo": "SARIMA",
+   "contra": "Sazonal_ingenuo",
+   "dm": -5.548,
+   "p_dm": 0.0002,
+   "p_wilcoxon": 1.0,
+   "significativo_5pct": true
+  },
+  {
+   "modelo": "SARIMA",
+   "contra": "ETS",
+   "dm": 4.181,
+   "p_dm": 0.0015,
+   "p_wilcoxon": 0.014,
+   "significativo_5pct": true
+  },
+  {
+   "modelo": "SARIMA",
+   "contra": "RandomForest",
+   "dm": 1.119,
+   "p_dm": 0.2868,
+   "p_wilcoxon": 0.0798,
+   "significativo_5pct": false
+  },
+  {
+   "modelo": "SARIMA",
+   "contra": "LightGBM",
+   "dm": 0.008,
+   "p_dm": 0.9939,
+   "p_wilcoxon": 0.2901,
+   "significativo_5pct": false
+  },
+  {
+   "modelo": "SARIMA",
+   "contra": "LightGBM_ajustado",
+   "dm": 0.276,
+   "p_dm": 0.7876,
+   "p_wilcoxon": 0.1313,
+   "significativo_5pct": false
+  },
+  {
+   "modelo": "SARIMA",
+   "contra": "Combinacao",
+   "dm": 2.34,
+   "p_dm": 0.0391,
+   "p_wilcoxon": 0.0073,
+   "significativo_5pct": true
+  },
+  {
    "modelo": "RandomForest",
    "contra": "Ingenuo",
    "dm": -5.593,
@@ -486,6 +595,14 @@
    "dm": 0.928,
    "p_dm": 0.3733,
    "p_wilcoxon": 0.8384,
+   "significativo_5pct": false
+  },
+  {
+   "modelo": "RandomForest",
+   "contra": "SARIMA",
+   "dm": -1.119,
+   "p_dm": 0.2868,
+   "p_wilcoxon": 0.9202,
    "significativo_5pct": false
   },
   {
@@ -538,6 +655,14 @@
   },
   {
    "modelo": "LightGBM",
+   "contra": "SARIMA",
+   "dm": -0.008,
+   "p_dm": 0.9939,
+   "p_wilcoxon": 0.7099,
+   "significativo_5pct": false
+  },
+  {
+   "modelo": "LightGBM",
    "contra": "RandomForest",
    "dm": 0.775,
    "p_dm": 0.4546,
@@ -582,6 +707,14 @@
    "dm": 1.147,
    "p_dm": 0.2755,
    "p_wilcoxon": 0.6286,
+   "significativo_5pct": false
+  },
+  {
+   "modelo": "LightGBM_ajustado",
+   "contra": "SARIMA",
+   "dm": -0.276,
+   "p_dm": 0.7876,
+   "p_wilcoxon": 0.8687,
    "significativo_5pct": false
   },
   {
@@ -631,6 +764,14 @@
    "p_dm": 0.8806,
    "p_wilcoxon": 0.9723,
    "significativo_5pct": false
+  },
+  {
+   "modelo": "Combinacao",
+   "contra": "SARIMA",
+   "dm": -2.34,
+   "p_dm": 0.0391,
+   "p_wilcoxon": 0.9927,
+   "significativo_5pct": true
   },
   {
    "modelo": "Combinacao",
@@ -687,6 +828,7 @@
    "Ingenuo": 1164.0,
    "Sazonal_ingenuo": 1185.0,
    "ETS": 1207.6,
+   "SARIMA": 1175.9,
    "RandomForest": 1188.4,
    "LightGBM": 1196.1,
    "LightGBM_ajustado": 1200.9,
@@ -698,6 +840,7 @@
    "Ingenuo": 1363.0,
    "Sazonal_ingenuo": 1176.0,
    "ETS": 1188.4,
+   "SARIMA": 1181.4,
    "RandomForest": 1226.0,
    "LightGBM": 1263.8,
    "LightGBM_ajustado": 1251.3,
@@ -709,6 +852,7 @@
    "Ingenuo": 1247.0,
    "Sazonal_ingenuo": 1177.0,
    "ETS": 1282.3,
+   "SARIMA": 1250.6,
    "RandomForest": 1236.9,
    "LightGBM": 1297.7,
    "LightGBM_ajustado": 1221.3,
@@ -720,6 +864,7 @@
    "Ingenuo": 1323.0,
    "Sazonal_ingenuo": 1188.0,
    "ETS": 1224.3,
+   "SARIMA": 1209.0,
    "RandomForest": 1269.1,
    "LightGBM": 1327.8,
    "LightGBM_ajustado": 1291.1,
@@ -731,6 +876,7 @@
    "Ingenuo": 1262.0,
    "Sazonal_ingenuo": 1168.0,
    "ETS": 1228.6,
+   "SARIMA": 1193.3,
    "RandomForest": 1272.9,
    "LightGBM": 1283.4,
    "LightGBM_ajustado": 1241.1,
@@ -742,6 +888,7 @@
    "Ingenuo": 1268.0,
    "Sazonal_ingenuo": 1092.0,
    "ETS": 1223.3,
+   "SARIMA": 1194.2,
    "RandomForest": 1257.4,
    "LightGBM": 1256.3,
    "LightGBM_ajustado": 1248.1,
@@ -753,6 +900,7 @@
    "Ingenuo": 1202.0,
    "Sazonal_ingenuo": 1213.0,
    "ETS": 1270.9,
+   "SARIMA": 1245.4,
    "RandomForest": 1260.2,
    "LightGBM": 1264.9,
    "LightGBM_ajustado": 1237.3,
@@ -764,6 +912,7 @@
    "Ingenuo": 1239.0,
    "Sazonal_ingenuo": 1335.0,
    "ETS": 1292.6,
+   "SARIMA": 1244.5,
    "RandomForest": 1248.7,
    "LightGBM": 1237.5,
    "LightGBM_ajustado": 1251.2,
@@ -775,6 +924,7 @@
    "Ingenuo": 1358.0,
    "Sazonal_ingenuo": 1229.0,
    "ETS": 1316.7,
+   "SARIMA": 1286.2,
    "RandomForest": 1269.3,
    "LightGBM": 1304.2,
    "LightGBM_ajustado": 1280.6,
@@ -786,6 +936,7 @@
    "Ingenuo": 1381.0,
    "Sazonal_ingenuo": 1223.0,
    "ETS": 1333.4,
+   "SARIMA": 1317.2,
    "RandomForest": 1324.2,
    "LightGBM": 1338.1,
    "LightGBM_ajustado": 1306.7,
@@ -797,6 +948,7 @@
    "Ingenuo": 1469.0,
    "Sazonal_ingenuo": 1157.0,
    "ETS": 1333.2,
+   "SARIMA": 1302.9,
    "RandomForest": 1338.5,
    "LightGBM": 1348.1,
    "LightGBM_ajustado": 1343.5,
@@ -808,6 +960,7 @@
    "Ingenuo": 1271.0,
    "Sazonal_ingenuo": 1164.0,
    "ETS": 1264.0,
+   "SARIMA": 1233.5,
    "RandomForest": 1322.2,
    "LightGBM": 1355.0,
    "LightGBM_ajustado": 1330.6,
@@ -4835,5 +4988,5 @@
   },
   "n_regioes": 53
  },
- "duracao_s": 135
+ "duracao_s": 167
 }
