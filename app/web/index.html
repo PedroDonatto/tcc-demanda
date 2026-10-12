@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Sala de Situação Saúde Mental</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -266,6 +267,39 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
   .escala{top:10px;left:10px}
 }
 @media (max-width:640px){.hud .grande{font-size:2.2rem}}
+/* navegação por seções */
+.secoes{max-width:1180px;margin:0 auto;padding:0 20px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.secoes::-webkit-scrollbar{display:none}
+.secoes a{flex:none;font-size:.78rem;color:var(--texto-2);text-decoration:none;border:1px solid var(--linha);border-radius:99px;padding:5px 11px;white-space:nowrap}
+.secoes a:hover{color:var(--texto)}
+.secoes a.on{color:var(--texto);border-color:var(--monitor);background:var(--monitor-fraco)}
+section.bloco,section.hero{scroll-margin-top:130px}
+input[type=range]{min-height:28px}
+/* telas grandes: aproveita a largura */
+@media (min-width:1400px){.wrap,.topo-in,.secoes{max-width:1320px}}
+/* celular */
+@media (max-width:640px){
+  body{font-size:15.5px}
+  .wrap{padding-inline:16px}
+  .topo-in{padding:8px 16px;gap:8px}
+  .secoes{padding:0 16px 8px}
+  .marca span{display:none}
+  .marca b{font-size:.95rem}
+  .ctrl{flex:1 1 calc(50% - 8px);min-width:0}
+  .ctrl select{max-width:none;width:100%;font-size:.88rem}
+  .online{display:none}
+  section.bloco{margin-top:44px}
+  section.bloco,section.hero{scroll-margin-top:150px}
+  .hero-tit h1{font-size:1.55rem}
+  #cena{height:300px}
+  .cartao{padding:14px}
+  .tempo{padding:8px 10px;gap:8px}
+  .play{width:40px;height:40px}
+  .cab p{font-size:.97rem}
+  .como-ler{font-size:.9rem}
+  .placar b{font-size:1.4rem}
+  .btn{padding:11px 16px}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -279,10 +313,11 @@ footer{margin-top:64px;border-top:1px solid var(--linha);padding-top:20px;color:
     <div class="ctrl"><label for="sel-territorio">Território</label><select id="sel-territorio"></select></div>
     <div class="ctrl"><label for="sel-modelo">Modelo de IA</label><select id="sel-modelo"></select></div>
   </div>
+  <nav class="secoes" id="secoes" aria-label="Seções da página"></nav>
 </header>
 
 <main class="wrap">
-  <section class="hero" aria-labelledby="t-hero">
+  <section class="hero" id="ala" aria-labelledby="t-hero">
     <div class="hero-tit">
       <h1 id="t-hero">Quantas pessoas vão precisar de <em>internação por depressão e bipolaridade</em> no SUS de São Paulo?</h1>
       <p>Arraste a linha do tempo. Cada leito aceso na ala virtual é ocupado por pacientes com transtornos de humor (CID F30–F39). Os leitos âmbar são a margem de segurança da previsão.</p>
@@ -1716,5 +1751,22 @@ function atualizarTudo() {
 cena.reescalar();
 atualizarTudo(); pistas(); desafio.nova();
 apontamentos.render(); laboratorio(); parecer(); porque();
+/* navegação por seções */
+(() => {
+  const itens = [["ala", "Ala 3D"], ["simulador", "Simulador"], ["apontamentos", "Apontamentos"], ["porque", "Por quê?"], ["mapa-sec", "Mapa"],
+    ["desafio", "Você × IA"], ["mural", "Mural"], ["ia", "Erro da IA"], ["pergunte", "Pergunte"], ["lab", "Laboratório"], ["parecer-sec", "Parecer"], ["tabela", "Regiões"]];
+  const nav = document.getElementById("secoes");
+  const montar = () => nav.replaceChildren(...itens.filter(([id]) => { const e = document.getElementById(id); return e && !e.hidden; })
+    .map(([id, r]) => el("a", {href: "#" + id, "data-id": id, text: r, onclick: ev => { ev.preventDefault(); document.getElementById(id).scrollIntoView({behavior: reduzir ? "auto" : "smooth"}); }})));
+  montar(); setTimeout(montar, 3000);
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      nav.querySelectorAll("a").forEach(a => a.classList.toggle("on", a.dataset.id === e.target.id));
+      const ativo = nav.querySelector("a.on"); if (ativo) nav.scrollTo({left: ativo.offsetLeft - 40, behavior: reduzir ? "auto" : "smooth"});
+    }), {rootMargin: "-40% 0px -55% 0px"});
+    itens.forEach(([id]) => { const e = document.getElementById(id); if (e) io.observe(e); });
+  }
+})();
 })();
 </script>

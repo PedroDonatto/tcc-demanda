@@ -9,3 +9,4 @@ data/*.duckdb.wal
 !**/.gitkeep
 *.part
 models/*.joblib
+_to_delete/
